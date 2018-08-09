@@ -21,6 +21,8 @@ library(scales)
 wd          = "D:/Murilo/samuca/swap/sw_sc"
 run_model   = T
 model_fn    = "swap_samuca_v1.exe"
+swap_prj    = "SWAP-SAMUCA_PIRA"
+soil_depth  = c(-10,-19.5,-28.5,-58.5) # simulated soil depth compartments to retrive data (see on swap.swp)
 
 #--- Read Measured Data
 #--- Note data must have "year" and "doy" collumns!!!!!!!
@@ -37,7 +39,11 @@ setwd(wd)
 #--- load functions
 source(paste0(wd,"/R/swap_samuca_f.R"))
 
+#--- Read model parameters
+par = read.table(file = "Samuca.par",skip = 4)
+colnames(par) = c("value","parname","type","class")
 
+#--- run swap-samuca
 if(run_model){
   #--- make sure to use the last compiled version
   file.copy(from = paste0(wd,"/Debug/",model_fn), to = wd, overwrite = T)
@@ -48,38 +54,34 @@ if(run_model){
 
 #--- Read Outputs
 #--- Crop Default
-plant_lines = readLines("Plant_SWAP-SAMUCA_PIRA.OUT")       #Read files lines
+plant_lines = readLines(paste0("Plant_",swap_prj,".OUT"))       #Read files lines
 plant_numlines = plant_lines[substr(plant_lines,1,1)=="2"]  #Separate only lines starting with "2" - Indicating its a numerical line (year = 2012,2013...)
 plant = read.table(text = plant_numlines)                   #Read numeric lines as data.frame
 colnames(plant) = c("year","doy","das","dap","gdd","dw","reserv","rw","lw","tp","sw","sucw","fibw","tch","pol","adryw","lai","till","h","devgl","itn","swface","swfacp","rtpf","lfpf","skpf","tppf","ctype","status","stage")
 
 #--- Detailed Internodes
-detint_lines = readLines("DetIntePr_SWAP-SAMUCA_PIRA.OUT")       #Read files lines
+detint_lines = readLines(paste0("DetIntePr_",swap_prj,".OUT"))       #Read files lines
 detint_numlines = detint_lines[substr(detint_lines,1,1)=="2"]    #Separate only lines starting with "2" - Indicating its a numerical line (year = 2012,2013...)
 detint = read.table(text = detint_numlines)                      #Read numeric lines as data.frame
 colnames(detint) = c("year","doy","das","dap","diac","itn",paste(rep("itlen",35),1:35),paste(rep("av_itlen",35),1:35),paste(rep("itsuc",35),1:35),paste(rep("av_itsuc",35),1:35),paste(rep("ittdw",35),1:35),paste(rep("av_ittdw",35),1:35))
 
 #--- Detailed Leaves
-detleaf_lines = readLines("DetLeafPr_SWAP-SAMUCA_PIRA.OUT")       #Read files lines
+detleaf_lines = readLines(paste0("DetLeafPr_",swap_prj,".OUT"))   #Read files lines
 detleaf_numlines = detleaf_lines[substr(detleaf_lines,1,1)=="2"]  #Separate only lines starting with "2" - Indicating its a numerical line (year = 2012,2013...)
 detleaf = read.table(text = detleaf_numlines)                     #Read numeric lines as data.frame
 colnames(detleaf) = c("year","doy","das","dap","diac","ngl","ndevgl",paste(rep("lfarea",11),1:11),paste(rep("av_lfarea",11),1:11),paste(rep("lfweight",11),1:11),paste(rep("av_lfweight",11),1:11))
 
 #--- Detailed Stress Factors
-detsfac_lines = readLines("DetPGFac_SWAP-SAMUCA_PIRA.OUT")       #Read files lines
+detsfac_lines = readLines(paste0("DetPGFac_",swap_prj,".OUT"))    #Read files lines
 detsfac_numlines = detsfac_lines[substr(detsfac_lines,1,1)=="2"]  #Separate only lines starting with "2" - Indicating its a numerical line (year = 2012,2013...)
 detsfac = read.table(text = detsfac_numlines)                     #Read numeric lines as data.frame
 colnames(detsfac) = c("year","doy","das","dap","diac","par","extcoef","lai","li","co2","rue","co2_fac","tstress","agefactor","swfacp","RGP_fac","pg","dRGP_pg","dw","RGP_pg","IPAR_acc","w","wa","w+wdead","wa+wdead","arue_dw","arue_w","arue_dwa","arue_wa","carbcheck")
 
 #--- Detailed RootSystem
-detroot_lines = readLines("DetRootSy_SWAP-SAMUCA_PIRA.OUT")       #Read files lines
+detroot_lines = readLines(paste0("DetRootSy_",swap_prj,".OUT"))   #Read files lines
 detroot_numlines = detroot_lines[substr(detroot_lines,1,1)=="2"]  #Separate only lines starting with "2" - Indicating its a numerical line (year = 2012,2013...)
 detroot = read.table(text = detroot_numlines)                     #Read numeric lines as data.frame
 colnames(detroot) = c("year","doy","das","dap","diac","wr","rd","rootsene",paste(rep("rld",45),1:45),"tqropot","ptra")
-
-#--- Model Parameters
-par = read.table(file = "Samuca.par",skip = 4)
-colnames(par) = c("value","parname","type","class")
 
 #--- Soil Water
 swba = read.csv(file = "result.vap", skip = 11)
@@ -95,8 +97,8 @@ indexc = data.frame(plant$das,plant$year,plant$doy)
 colnames(indexc) = c("das","year","doy")
 
 #--- Include das in all db
-#--- Measured data
 
+#--- Measured data
 fdr = inx(fdr)    #FDR
 et  = inx(et)     #ET
 bio = inx(bio)    #Biometrics
@@ -112,15 +114,24 @@ swba$doy  = as.factor(yday(as.Date(swba$date, format="%d-%b-%Y")))
 wstr$year = as.factor(format(as.Date(wstr$Date, format="%d-%b-%Y"),"%Y"))
 wstr$doy  = as.factor(yday(as.Date(wstr$Date, format="%d-%b-%Y")))
 
-#--- Include das in all them
+#--- Include das in all simulated
 atm       = inx(atm)    #Atmosphere
 swba      = inx(swba)   #Soil Water Balance
 wstr      = inx(wstr)   #Water stresses
 
+#==============================================
 
-#--- Soil Water Content
+#-------------------------------
+#------- Data Analysis ---------
+#-------- PERFORMANCE ----------
+#-------------------------------
+
+#-------------------------------
+#----- Soil Water Content ------
+#-------------------------------
+
 #--- seting the simulated depths as equal to FDR depths measurements (10, 20, 30, 60)
-dsim = data.frame(fdr = colnames(fdr)[4:7], depth = c(-10,-19.5,-28.5,-58.5))
+dsim = data.frame(fdr = colnames(fdr)[4:7], depth = soil_depth)
 l = merge(swba,dsim,by = "depth")
 l = l[order(l$das),]              #--- sort by das
 
@@ -128,7 +139,11 @@ sim_swc10  = l[l$fdr==colnames(fdr)[4],c("das","wcontent")]
 sim_swc20  = l[l$fdr==colnames(fdr)[5],c("das","wcontent")]
 sim_swc30  = l[l$fdr==colnames(fdr)[6],c("das","wcontent")]
 sim_swc60  = l[l$fdr==colnames(fdr)[7],c("das","wcontent")]
-sim_swc    = data.frame(das = sim_swc10$das,sim_swc10 = sim_swc10$wcontent, sim_swc20 = sim_swc20$wcontent, sim_swc30 = sim_swc30$wcontent, sim_swc60 = sim_swc60$wcontent)
+sim_swc    = data.frame(das = sim_swc10$das,
+                        sim_swc10 = sim_swc10$wcontent, 
+                        sim_swc20 = sim_swc20$wcontent, 
+                        sim_swc30 = sim_swc30$wcontent, 
+                        sim_swc60 = sim_swc60$wcontent)
 
 so_fdr = merge(fdr,sim_swc, by = "das")
 
@@ -171,7 +186,10 @@ par(mfrow=c(1,1), mar = c(4.5, 4.5, 0.5, 0.5), oma = c(0, 0, 0, 0))
 p_swc    = mperf(s_swc,o_swc,"SWC (cm3 cm-3)")
 dev.off() # end of chart exportation
 
-#--- Atmosphere
+#-------------------
+#--- Atmosphere ----
+#-------------------
+
 et_obs = data.frame(das = et$das[et$type=="ET" & et$treat=="WithoutStraw"], et = et$et[et$type=="ET" & et$treat=="WithoutStraw"])
 so_atm = merge(et_obs,atm,by = "das")
 s_et = (so_atm$Tact + so_atm$Eact) * 10
@@ -188,17 +206,17 @@ par(mfrow=c(1,1), mar = c(4.5, 4.5, 0.5, 0.5), oma = c(0, 0, 0, 0))
 p_atm  = mperf(s_et,o_et,"ET (mm d-1)")
 dev.off() # end of chart exportation
 
-#--- Biometrics
-#Stalk Fresh Mass
-colnames(bio)
+#------------------
+#--- Biometrics ---
+#------------------
 
-o_sfm  = bio[!is.na(bio$SFM) & bio$type == "AVG",c("das","SFM")]
-o_sdm  = bio[!is.na(bio$SDM) & bio$type == "AVG",c("das","SDM")]
-o_lai  = bio[!is.na(bio$LAIGD) & bio$type == "AVG",c("das","LAIGD")]
-o_til  = bio[!is.na(bio$T.AD) & bio$type == "AVG",c("das","T.AD")]
-o_pol  = bio[!is.na(bio$SU.FMD) & bio$type == "AVG",c("das","SU.FMD")]
-o_dgl  = bio[!is.na(bio$N.GL) & bio$type == "AVG",c("das","N.GL")]
-o_sth  = bio[!is.na(bio$SHTD) & bio$type == "AVG",c("das","SHTD")]
+o_sfm  = bio[!is.na(bio$SFM) & bio$type == "AVG",c("das","SFM")]          # Stalk fresh mass
+o_sdm  = bio[!is.na(bio$SDM) & bio$type == "AVG",c("das","SDM")]          # Stalk dry mass
+o_lai  = bio[!is.na(bio$LAIGD) & bio$type == "AVG",c("das","LAIGD")]      # Green Leaf Area Index
+o_til  = bio[!is.na(bio$T.AD) & bio$type == "AVG",c("das","T.AD")]        # Tillering
+o_pol  = bio[!is.na(bio$SU.FMD) & bio$type == "AVG",c("das","SU.FMD")]    # POL %
+o_dgl  = bio[!is.na(bio$N.GL) & bio$type == "AVG",c("das","N.GL")]        # Number of green leaves
+o_sth  = bio[!is.na(bio$SHTD) & bio$type == "AVG",c("das","SHTD")]        # Stalks height
 
 
 so_sfm  = merge(o_sfm,plant[,c("das","tch")]  , by = "das")
@@ -276,10 +294,13 @@ p_all$model = c("p_swc10",
 #--- Write performance
 write.csv(p_all, file = "Model_performance.csv")
 
-#------------------------#
-#-------- Charts --------#
-#--- FDR vs Simulated ---#
-#------------------------#
+#==============================================
+
+#==============================================
+#--------------------------#
+#-------- Charts ----------#
+#--- Time course charts ---#
+#--------------------------#
 
 #--- seting the simulated depths as equal to FDR depths measurements (10, 20, 30, 60)
 dsim = data.frame(fdr = colnames(fdr)[4:7], depth = c(-10,-19.5,-28.5,-58.5))
@@ -420,12 +441,12 @@ dev.off()
 ctype = plant[,c("das","ctype")]
 
 #--- link ctype with das 
-detint = merge(detint,ctype, by = "das")
+detint_m = merge(detint,ctype, by = "das")
 
 
-plot(seq(2,20)~seq(2,20),
-     #ylim = c(1,25),
-     xlim = c(1,max(detint$das)),
+plot(detint_m$`itlen 1`~detint_m$das,
+     ylim = c(1,25),
+     xlim = c(1,max(detint_m$das)),
      type = "n",
      xlab = "DAS",
      ylab = "Internodes length (cm)")
@@ -433,7 +454,7 @@ n = 35
 for(i in 1:n){
   
   pl_detdata(data.frame(das = 1, dat = -99),
-             data.frame(das = detint[,"das"],dat = detint[,paste("itlen",i)],ctype = detint[,"ctype"]),
+             data.frame(das = detint_m[,"das"],dat = detint_m[,paste("itlen",i)],ctype = detint_m[,"ctype"]),
              "Internodes length (cm)", T,i,n)
 }
 
@@ -452,10 +473,10 @@ plot(seq(2,20)~seq(2,20),
      xlab = "Rank",
      ylab = "Internodes length (cm)")
 
-for(i in seq(min(detint$das), max(detint$das), dt)){
+for(i in seq(min(detint_m$das), max(detint_m$das), dt)){
   
-  v = sapply(seq(1:35),function(x) detint[detint$das==i,paste("itlen",x)])
-  d = sapply(seq(1:35),function(x) detint[detint$das==i,"dap"])
+  v = sapply(seq(1:35),function(x) detint_m[detint_m$das==i,paste("itlen",x)])
+  d = sapply(seq(1:35),function(x) detint_m[detint_m$das==i,"dap"])
   
   detint_dt = cbind(detint_dt, v)
   
@@ -468,7 +489,7 @@ for(i in seq(min(detint$das), max(detint$das), dt)){
         xlim = c(0,35),
         yaxs="i",
         type = "l",
-        col = alpha(rgb(0,0,0.5), 0.8* unique(d)/max(detint$dap)))
+        col = alpha(rgb(0,0,0.5), 0.8* unique(d)/max(detint_m$dap)))
   
   c = c + 1
 }
