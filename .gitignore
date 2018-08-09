@@ -12,9 +12,9 @@
 
 # ignore swap outputs
 /*.ok
-/*.bal
+/result.bal
 /*.blc
-/*.crp
+result.crp
 /*.end
 /*.inc
 /*.irg
