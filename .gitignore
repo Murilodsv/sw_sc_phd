@@ -3,12 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# model outputs
-.OUT
-result*
-
-# Data
-data/
+# exclude everything except directory code and R
+/*
+!/code
+!/R
 
 # User-specific files
 *.suo
