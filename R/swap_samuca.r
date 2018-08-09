@@ -20,6 +20,7 @@ library(scales)
 
 wd          = "D:/Murilo/samuca/swap/sw_sc"
 run_model   = T
+model_fn    = "swap_samuca_v1.exe"
 
 
 
@@ -32,10 +33,11 @@ source(paste0(wd,"/R/swap_samuca_f.R"))
 
 
 if(run_model){
-  
+  #--- make sure to use the last compiled version
+  file.copy(from = paste0(wd,"/Debug/",model_fn), to = wd, overwrite = T)
   
   #--- Run SWAP_SAMUCA
-  system("SWAP_Sugarcanev1")
+  system(model_fn)
 }
 
 #--- Read Outputs

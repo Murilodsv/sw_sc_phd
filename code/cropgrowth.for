@@ -2727,7 +2727,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       
       
       !--- Reading Crop Parameters
-          open(parinp_io,FILE='Param_Set.OUT',
+          open(parinp_io,FILE='Samuca.par',
      &      STATUS='OLD',READONLY)
           
           nhd  = 4    !Number of lines of file header   

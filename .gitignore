@@ -8,6 +8,18 @@
 !/code
 !/R
 
+# ignore swap outputs
+.ok
+.bal
+.blc
+.crp
+.end
+.inc
+.irg
+.str
+.vap
+.wba
+
 # User-specific files
 *.suo
 *.user
