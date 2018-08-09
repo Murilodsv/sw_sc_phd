@@ -22,6 +22,12 @@ wd          = "D:/Murilo/samuca/swap/sw_sc"
 run_model   = T
 model_fn    = "swap_samuca_v1.exe"
 
+#--- Read Measured Data
+#--- Note data must have "year" and "doy" collumns!!!!!!!
+fdr = read.csv(file = paste0(wd,"/data/SOIL_FDR_SP_DATA.csv"))
+et  = read.csv(file = paste0(wd,"/data/bowen.csv"))
+bio = read.csv(file = paste0(wd,"/data/biometrics.csv"))
+
 
 
 #------------------------- start running ---------------
@@ -72,7 +78,7 @@ detroot = read.table(text = detroot_numlines)                     #Read numeric 
 colnames(detroot) = c("year","doy","das","dap","diac","wr","rd","rootsene",paste(rep("rld",45),1:45),"tqropot","ptra")
 
 #--- Model Parameters
-par = read.table(file = "Param_Set.out",skip = 4)
+par = read.table(file = "Samuca.par",skip = 4)
 colnames(par) = c("value","parname","type","class")
 
 #--- Soil Water
@@ -84,18 +90,13 @@ wstr = read.csv(file = "result.str", skip = 6)
 #--- Atmospheric
 atm  = read.csv(file = "result.inc", skip = 6)
 
-#--- Read Measured Data
-fdr = read.csv(file = "SOIL_FDR_SP_DATA.csv")
-et  = read.csv(file = "bowen.csv")
-bio = read.csv(file = "biometrics.csv")
-
 #--- Indexer: use year_doy as indexer for das from plant
 indexc = data.frame(plant$das,plant$year,plant$doy)
 colnames(indexc) = c("das","year","doy")
 
 #--- Include das in all db
-#--- Note data must have "year" and "doy" collumns!!!!!!!
 #--- Measured data
+
 fdr = inx(fdr)    #FDR
 et  = inx(et)     #ET
 bio = inx(bio)    #Biometrics

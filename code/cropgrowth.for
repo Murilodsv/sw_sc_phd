@@ -3205,6 +3205,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               !--- Writing the Main Output file header            
 		    write(detitout_io,11) '#Simulating for ', project      
               write(detitout_io,20)
+              write(detitout_io,201)
           endif
               
           if(fldetpgfaout)then              
@@ -3216,6 +3217,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 18        format('Result of sugarcane RootSystem:')
 19        format('Result of sugarcane LeafProfile:')
 20        format('Result of sugarcane StalkProfile:')
+201       format('Year    DOY    DAS    DAP     GDD  m_nint',<2>('hi'))
 21        format('Result of sugarcane PG Factors:') 
             
 	return      
