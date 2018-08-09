@@ -2,7 +2,7 @@
 * File content:  overview of actual water and solute balance components
 * File name:     Result.bal
 * Model version: Swap 3.2.36
-* Generated at:  06-Aug-2018 15:27:24
+* Generated at:  09-Aug-2018 14:28:54
 
 Period             :  15-Aug-2012 until  31-Dec-2012
 Depth soil profile :  140.00 cm

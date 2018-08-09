@@ -16,12 +16,27 @@ library(lubridate) #--- compute doy from date
 library(plyr)
 library(scales)
 
-wd = "D:/Murilo/samuca/swap/sw_sc"
+#--- parameters
 
+wd          = "D:/Murilo/samuca/swap/sw_sc"
+run_model   = T
+
+
+
+#------------------------- start running ---------------
 #--- Outputs Directory
 setwd(wd)
 
+#--- load functions
 source(paste0(wd,"/R/swap_samuca_f.R"))
+
+
+if(run_model){
+  
+  
+  #--- Run SWAP_SAMUCA
+  system("SWAP_Sugarcanev1")
+}
 
 #--- Read Outputs
 #--- Crop Default
