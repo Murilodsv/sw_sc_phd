@@ -3,12 +3,25 @@
 #--- 1) Read and build-up charts of SWAP-Samuca model for assessment and calibration
 #--- 2) Be used as function to automate calibration procedure as described in my Murilo Vianna phd Thesis (2017) 
 
+#--- Packages required
+pkg = c("lubridate",
+        "plyr",
+        "scales")
+
+#--- Installing missing packages
+ipkg = pkg %in% rownames(installed.packages())
+sapply(pkg[!ipkg],function(x) install.packages(x))
+
 library(lubridate) #--- compute doy from date
 library(plyr)
 library(scales)
 
+wd = "D:/Murilo/samuca/swap/sw_sc"
+
 #--- Outputs Directory
-setwd("C:/Murilo/SWAP_Sugarcanev1")
+setwd(wd)
+
+source(paste0(wd,"/R/swap_samuca_f.R"))
 
 #--- Read Outputs
 #--- Crop Default
@@ -63,12 +76,6 @@ bio = read.csv(file = "biometrics.csv")
 indexc = data.frame(plant$das,plant$year,plant$doy)
 colnames(indexc) = c("das","year","doy")
 
-#--- Function to index das on other DBs
-inx = function(df){
-  df = merge(indexc,df,by = c("year","doy"))
-  df = df[order(df$das),]#--- sort by das
-}
-
 #--- Include das in all db
 #--- Note data must have "year" and "doy" collumns!!!!!!!
 #--- Measured data
@@ -92,75 +99,6 @@ atm       = inx(atm)    #Atmosphere
 swba      = inx(swba)   #Soil Water Balance
 wstr      = inx(wstr)   #Water stresses
 
-#------------------------#
-#--- Machine Learning ---#
-#------------------------#
-
-#--- Compute statistical indexes of performance
-#--- Performance function
-mperf = function(sim,obs,vnam){
-  
-  # sim  - simulated values [R]
-  # obs  - observed values [R]
-  # vnam - Name of variable as string for chart axis  [S]
-  
-  #--- Statistical indexes
-  fit   = lm(sim~obs)
-  bias  = (1/length(obs)) * sum(sim-obs)
-  mse   = (1/length(obs)) * sum((sim-obs)^2)
-  rmse  = sqrt(mse)
-  mae   = (1/length(obs)) * sum(abs(sim-obs))
-  rrmse = rmse / mean(obs)
-  rmae  = (1/length(obs[obs>0])) * sum(abs(sim[obs>0]-obs[obs>0])/abs(obs[obs>0]))
-  ef    = 1 - (sum((sim-obs)^2) / sum((obs-mean(obs))^2))
-  r     = sum((obs-mean(obs))*(sim-mean(sim)))/sqrt(sum((obs-mean(obs))^2)*sum((sim-mean(sim))^2))
-  r2    = r^2
-  d     = 1 - (sum((sim-obs)^2) / sum((abs(sim-mean(obs))+abs(obs-mean(obs)))^2))
-  a     = summary(fit)$coefficients["(Intercept)","Estimate"]
-  b     = summary(fit)$coefficients["obs","Estimate"]
-  
-  #--- Chart Sim ~ Obs
-  varlab = vnam 
-  
-  mindt = min(obs,sim)
-  maxdt = max(obs,sim)
-  #--- Ploting limits 
-  pllim = c(mindt-0.1*(maxdt-mindt),maxdt+0.1*(maxdt-mindt))
-  xx = seq(min(obs),max(obs),length = (max(obs)-min(obs))*1000)
-  z = summary(fit)
-  
-  plot(sim~obs,
-       ylab = paste("Sim - ",varlab,sep = ""),
-       xlab = paste("Obs - ",varlab,sep = ""),
-       ylim = pllim,
-       xlim = pllim)
-  
-  lines(xx, predict(fit, data.frame(obs=xx)),
-        col = "black",
-        lty = 1,
-        lwd = 1.5)
-  
-  l11 = seq(pllim[1]-0.5*(maxdt-mindt), pllim[2] + 0.5 * (maxdt-mindt),length = 1000)
-  
-  lines(l11*1~l11,
-        col = "red",
-        lty = 2,
-        lwd = 1.5)
-  
-  perf = data.frame(bias,
-                    mse,
-                    rmse,
-                    mae,
-                    rrmse,
-                    rmae,
-                    ef,
-                    r,
-                    r2,
-                    d,
-                    a,
-                    b)
-  
-}
 
 #--- Soil Water Content
 #--- seting the simulated depths as equal to FDR depths measurements (10, 20, 30, 60)
@@ -332,26 +270,10 @@ dsim = data.frame(fdr = colnames(fdr)[4:7], depth = c(-10,-19.5,-28.5,-58.5))
 l = merge(swba,dsim,by = "depth")
 l = l[order(l$das),]#--- sort by das
 
-fdrpl = function(x){
-  
-  plot(fdr[,x]~fdr$das,
-       col  = "black",
-       xlab = "",
-       ylab = "SWC (cm3 cm-3)",
-       xlim = c(50,1500),
-       ylim = c(0.15,0.45),
-       cex.lab = 1.,
-       cex.axis= 1.,
-       main =NULL)
-  
-  lines(l$wcontent[l$fdr==x]~l$das[l$fdr==x], col = "grey")
-  
-}
 png("so_swc.png",units="in",width=12,height=12,pointsize=15,res=300)
 par(mfrow=c(4,1), mar = c(4.5, 4.5, 0.5, 0.5), oma = c(0, 0, 0, 0))
 s = sapply(colnames(fdr)[4:7], fdrpl)
 dev.off() # end of chart exportation
-
 
 #--- Atmosphere
 atm$etact = (atm$Tact + atm$Eact) * 10
@@ -430,35 +352,6 @@ o_sth  = bio[!is.na(bio$SHTD)   & bio$type == "AVG",c("das","SHTD")]
 o_bio  = c("SFM","SDM","LAIGD","T.AD","SU.FMD","N.GL" ,"SHTD")
 s_bio  = c("tch","sw" ,"lai"  ,"till","pol"   ,"devgl","h")
 
-pl_bio = function(obs,sim,yl,dxlab){
-  
-  pylim = c(min(sim$dat,obs$dat),max(sim$dat,obs$dat)*1.04)
-  pxlim = c(min(sim$das,obs$das),max(sim$das,obs$das))
-  
-  if(dxlab){
-  
-  plot(obs$dat~obs$das,
-       ylab = yl,
-       xlab = "DAS",
-       ylim = pylim,
-       xlim = pxlim,
-       yaxs="i")
-  }else{
-    
-    plot(obs$dat~obs$das,
-         ylab = yl,
-         xlab = "",
-         ylim = pylim,
-         xlim = pxlim,
-         yaxs="i",
-         xaxt='n')
-  }
-  
-  li = sapply(unique(sim$ctype), function(x) lines(sim$dat[sim$ctype==x]~sim$das[sim$ctype==x]))
-
-  }
-
-# C(bottom, left, top, right)
 
 png("so_bio.png",units="in",width=12,height=12,pointsize=15,res=300)
 
@@ -503,4 +396,638 @@ pl_bio(data.frame(das = o_sth[,"das"],dat = o_sth[,o_bio[7]]),
        data.frame(das = plant[,"das"],dat = plant[,s_bio[7]] , ctype = plant[,"ctype"]),
        "Height (m)",TRUE)
 dev.off()
+
+
+#--- retrive cana type from default outputs
+ctype = plant[,c("das","ctype")]
+
+#--- link ctype with das 
+detint = merge(detint,ctype, by = "das")
+
+
+plot(seq(2,20)~seq(2,20),
+     #ylim = c(1,25),
+     xlim = c(1,max(detint$das)),
+     type = "n",
+     xlab = "DAS",
+     ylab = "Internodes length (cm)")
+n = 35
+for(i in 1:n){
+  
+  pl_detdata(data.frame(das = 1, dat = -99),
+             data.frame(das = detint[,"das"],dat = detint[,paste("itlen",i)],ctype = detint[,"ctype"]),
+             "Internodes length (cm)", T,i,n)
+}
+
+#----------------------------------------------------------------------------------
+#--- It length primary...
+
+dt = 10
+c = 2
+
+detint_dt = data.frame(rank = seq(1,35))
+
+plot(seq(2,20)~seq(2,20),
+     #ylim = c(1,25),
+     xlim = c(1,35),
+     type = "n",
+     xlab = "Rank",
+     ylab = "Internodes length (cm)")
+
+for(i in seq(min(detint$das), max(detint$das), dt)){
+  
+  v = sapply(seq(1:35),function(x) detint[detint$das==i,paste("itlen",x)])
+  d = sapply(seq(1:35),function(x) detint[detint$das==i,"dap"])
+  
+  detint_dt = cbind(detint_dt, v)
+  
+  colnames(detint_dt)[c] = paste("len_das_",i,sep="")
+  
+  lines(v~seq(1:35),
+        ylab = "Internodes length (cm)",
+        xlab = "Rank",
+        ylim = c(1,25),
+        xlim = c(0,35),
+        yaxs="i",
+        type = "l",
+        col = alpha(rgb(0,0,0.5), 0.8* unique(d)/max(detint$dap)))
+  
+  c = c + 1
+}
+
+leg = "Primary Stalk"
+legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.0, box.lty = 1)
+
+#----------------------------------------------------------------------------------
+
+
+#--- It length average
+
+dt = 10
+c = 2
+
+detint_dt = data.frame(rank = seq(1,35))
+
+plot(seq(2,20)~seq(2,20),
+     #ylim = c(1,25),
+     xlim = c(1,35),
+     type = "n",
+     xlab = "Rank",
+     ylab = "Internodes length (cm)")
+
+for(i in seq(min(detint$das), max(detint$das), dt)){
+  
+  v = sapply(seq(1:35),function(x) detint[detint$das==i,paste("av_itlen",x)])
+  d = sapply(seq(1:35),function(x) detint[detint$das==i,"dap"])
+  
+  detint_dt = cbind(detint_dt, v)
+  
+  colnames(detint_dt)[c] = paste("len_das_",i,sep="")
+  
+  lines(v~seq(1:35),
+        ylab = "Internodes length (cm)",
+        xlab = "Rank",
+        ylim = c(1,25),
+        xlim = c(0,35),
+        yaxs="i",
+        type = "l",
+        col = alpha(rgb(0,0,0.5), 0.8* unique(d)/max(detint$dap)))
+  
+  c = c + 1
+}
+
+leg = "Average among stalks"
+legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.0, box.lty = 1)
+
+
+#----------------------------------------------------------------------------------
+
+#--- It sucrose primary
+
+dt = 10
+c = 2
+
+detint_dt = data.frame(rank = seq(1,35))
+
+plot(seq(2,20)~seq(2,20),
+     ylim = c(1,15),
+     xlim = c(1,35),
+     type = "n",
+     xlab = "Rank",
+     ylab = "Internodes Sucrose mass (g)")
+
+for(i in seq(min(detint$das), max(detint$das), dt)){
+  
+  v = sapply(seq(1:35),function(x) detint[detint$das==i,paste("itsuc",x)])
+  d = sapply(seq(1:35),function(x) detint[detint$das==i,"dap"])
+  
+  detint_dt = cbind(detint_dt, v)
+  
+  colnames(detint_dt)[c] = paste("len_das_",i,sep="")
+  
+  lines(v~seq(1:35),
+        ylab = "Internodes Sucrose mass (g)",
+        xlab = "Rank",
+        ylim = c(1,25),
+        xlim = c(0,35),
+        yaxs="i",
+        type = "l",
+        col = alpha(rgb(0,0,0.5), 0.8* unique(d)/max(detint$dap)))
+  
+  c = c + 1
+}
+
+leg = "Primary stalk"
+legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.0, box.lty = 1)
+
+
+
+#----------------------------------------------------------------------------------
+
+#--- It sucrose average
+
+dt = 10
+c = 2
+
+detint_dt = data.frame(rank = seq(1,35))
+
+plot(seq(2,20)~seq(2,20),
+     ylim = c(1,15),
+     xlim = c(1,35),
+     type = "n",
+     xlab = "Rank",
+     ylab = "Internodes Sucrose mass (g)")
+
+for(i in seq(min(detint$das), max(detint$das), dt)){
+  
+  v = sapply(seq(1:35),function(x) detint[detint$das==i,paste("av_itsuc",x)])
+  d = sapply(seq(1:35),function(x) detint[detint$das==i,"dap"])
+  
+  detint_dt = cbind(detint_dt, v)
+  
+  colnames(detint_dt)[c] = paste("len_das_",i,sep="")
+  
+  lines(v~seq(1:35),
+        ylab = "Internodes Sucrose mass (g)",
+        xlab = "Rank",
+        ylim = c(1,25),
+        xlim = c(0,35),
+        yaxs="i",
+        type = "l",
+        col = alpha(rgb(0,0,0.5), 0.8* unique(d)/max(detint$dap)))
+  
+  c = c + 1
+}
+
+leg = "Average among stalks"
+legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.2, box.lty = 1)
+
+#----------------------------------------------------------------------------------
+
+#--- It total dry mass primary
+
+dt = 10
+c = 2
+
+detint_dt = data.frame(rank = seq(1,35))
+
+plot(seq(2,20)~seq(2,20),
+     ylim = c(1,20),
+     xlim = c(1,35),
+     type = "n",
+     xlab = "Rank",
+     ylab = "Internodes Total Dry Mass (g)")
+
+for(i in seq(min(detint$das), max(detint$das), dt)){
+  
+  v = sapply(seq(1:35),function(x) detint[detint$das==i,paste("ittdw",x)])
+  d = sapply(seq(1:35),function(x) detint[detint$das==i,"dap"])
+  
+  detint_dt = cbind(detint_dt, v)
+  
+  colnames(detint_dt)[c] = paste("len_das_",i,sep="")
+  
+  lines(v~seq(1:35),
+        ylab = "Internodes Sucrose mass (g)",
+        xlab = "Rank",
+        ylim = c(1,25),
+        xlim = c(0,35),
+        yaxs="i",
+        type = "l",
+        col = alpha(rgb(0,0,0.5), 0.8* unique(d)/max(detint$dap)))
+  
+  c = c + 1
+}
+
+leg = "Primary stalk"
+legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.2, box.lty = 1)
+
+#----------------------------------------------------------------------------------
+
+#--- It total dry mass average
+
+dt = 10
+c = 2
+
+detint_dt = data.frame(rank = seq(1,35))
+
+plot(seq(2,20)~seq(2,20),
+     ylim = c(1,20),
+     xlim = c(1,35),
+     type = "n",
+     xlab = "Rank",
+     ylab = "Internodes Total Dry Mass (g)")
+
+for(i in seq(min(detint$das), max(detint$das), dt)){
+  
+  v = sapply(seq(1:35),function(x) detint[detint$das==i,paste("av_ittdw",x)])
+  d = sapply(seq(1:35),function(x) detint[detint$das==i,"dap"])
+  
+  detint_dt = cbind(detint_dt, v)
+  
+  colnames(detint_dt)[c] = paste("len_das_",i,sep="")
+  
+  lines(v~seq(1:35),
+        ylab = "Internodes Sucrose mass (g)",
+        xlab = "Rank",
+        ylim = c(1,25),
+        xlim = c(0,35),
+        yaxs="i",
+        type = "l",
+        col = alpha(rgb(0,0,0.5), 0.8* unique(d)/max(detint$dap)))
+  
+  c = c + 1
+}
+
+leg = "Average among stalks"
+legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.2, box.lty = 1)
+
+
+#----------------------------------------------------------------------------------
+
+#--- It fraction of sucrose primary
+
+dt = 10
+c = 2
+
+detint_dt = data.frame(rank = seq(1,35))
+
+plot(seq(2,20)~seq(2,20),
+     ylim = c(0,100),
+     xlim = c(1,35),
+     type = "n",
+     xlab = "Rank",
+     ylab = "Internodes Sucrose Fraction (%)")
+
+for(i in seq(min(detint$das), max(detint$das), dt)){
+  
+  w = sapply(seq(1:35),function(x) detint[detint$das==i,paste("ittdw",x)])
+  v = sapply(seq(1:35),function(x) detint[detint$das==i,paste("itsuc",x)])
+  d = sapply(seq(1:35),function(x) detint[detint$das==i,"dap"])
+  
+  detint_dt = cbind(detint_dt, v)
+  
+  colnames(detint_dt)[c] = paste("len_das_",i,sep="")
+  
+  lines((v/w*100)~seq(1:35),
+        ylab = "Internodes Sucrose mass (g)",
+        xlab = "Rank",
+        ylim = c(1,25),
+        xlim = c(0,35),
+        yaxs="i",
+        type = "l",
+        col = alpha(rgb(0,0,0.5), 0.8* unique(d)/max(detint$dap)))
+  
+  c = c + 1
+}
+
+
+leg = "Primary stalk"
+legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.2, box.lty = 1)
+
+
+#----------------------------------------------------------------------------------
+
+#--- It fraction of sucrose average
+
+dt = 10
+c = 2
+
+detint_dt = data.frame(rank = seq(1,35))
+
+plot(seq(2,20)~seq(2,20),
+     ylim = c(0,100),
+     xlim = c(1,35),
+     type = "n",
+     xlab = "Rank",
+     ylab = "Internodes Sucrose Fraction (%)")
+
+for(i in seq(min(detint$das), max(detint$das), dt)){
+  
+  w = sapply(seq(1:35),function(x) detint[detint$das==i,paste("av_ittdw",x)])
+  v = sapply(seq(1:35),function(x) detint[detint$das==i,paste("av_itsuc",x)])
+  d = sapply(seq(1:35),function(x) detint[detint$das==i,"dap"])
+  
+  detint_dt = cbind(detint_dt, v)
+  
+  colnames(detint_dt)[c] = paste("len_das_",i,sep="")
+  
+  lines((v/w*100)~seq(1:35),
+        ylab = "Internodes Sucrose mass (g)",
+        xlab = "Rank",
+        ylim = c(1,25),
+        xlim = c(0,35),
+        yaxs="i",
+        type = "l",
+        col = alpha(rgb(0,0,0.5), 0.8* unique(d)/max(detint$dap)))
+  
+  c = c + 1
+}
+
+
+leg = "Average among stalks"
+legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.2, box.lty = 1)
+
+#-------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+v = sapply(seq(1:35),function(x) detint[detint$das==400,c(paste("itlen",x),"dap")])
+
+
+
+
+#--- detailed data
+pl_bio(data.frame(das = o_sth[,"das"],dat = o_sth[,o_bio[7]]),
+       data.frame(das = plant[,"das"],dat = plant[,s_bio[7]] , ctype = plant[,"ctype"]),
+       "Height (m)",TRUE)
+
+
+
+
+
+#-------------------------------------------------------------------------------
+
+
+#--- Detailed Leaves
+detleaf_lines = readLines("DetLeafPr_SWAP-SAMUCA_PIRA.OUT")       #Read files lines
+detleaf_numlines = detleaf_lines[substr(detleaf_lines,1,1)=="2"]  #Separate only lines starting with "2" - Indicating its a numerical line (year = 2012,2013...)
+detleaf = read.table(text = detleaf_numlines)                     #Read numeric lines as data.frame
+colnames(detleaf) = c("year","doy","das","dap","diac","ngl","ndevgl",paste(rep("lfarea",11),1:11),paste(rep("av_lfarea",11),1:11),paste(rep("lfweight",11),1:11),paste(rep("av_lfweight",11),1:11))
+
+#-------------------------------------------------------------------------------
+
+#--- Leaf area (cm2)
+
+dt = 10
+c = 2
+nleaves_rank = 10
+
+detleaf_dt = data.frame(rank = seq(1,nleaves_rank))
+
+plot(seq(2,20)~seq(2,20),
+     ylim = c(0,600),
+     xlim = c(1,nleaves_rank),
+     type = "n",
+     xlab = "Rank",
+     ylab = "Leaf area (cm2)")
+
+for(i in seq(min(detleaf$das), max(detleaf$das), dt)){
+  
+  w = sapply(seq(1:nleaves_rank),function(x) detleaf[detleaf$das==i,paste("lfarea",x)])
+  d = sapply(seq(1:nleaves_rank),function(x) detleaf[detleaf$das==i,"dap"])
+  
+  detleaf_dt = cbind(detleaf_dt, w)
+  
+  colnames(detleaf_dt)[c] = paste("len_das_",i,sep="")
+  
+  lines(w~seq(1:nleaves_rank),
+        ylab = "Internodes Sucrose mass (g)",
+        xlab = "Rank",
+        ylim = c(1,25),
+        xlim = c(0,35),
+        yaxs="i",
+        type = "l",
+        col = alpha(rgb(0,0.5,0), 0.8* unique(d)/max(detint$dap)))
+  
+  c = c + 1
+}
+
+
+leg = "Average among stalks"
+legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.2, box.lty = 1)
+
+#-------------------------------------------------------------------------------
+
+#--- Leaf area (cm2)
+
+dt = 10
+c = 2
+nleaves_rank = 10
+
+detleaf_dt = data.frame(rank = seq(1,nleaves_rank))
+
+plot(seq(2,20)~seq(2,20),
+     ylim = c(0,600),
+     xlim = c(1,nleaves_rank),
+     type = "n",
+     xlab = "Rank",
+     ylab = "Leaf area (cm2)")
+
+for(i in seq(min(detleaf$das), max(detleaf$das), dt)){
+  
+  w = sapply(seq(1:nleaves_rank),function(x) detleaf[detleaf$das==i,paste("av_lfarea",x)])
+  d = sapply(seq(1:nleaves_rank),function(x) detleaf[detleaf$das==i,"dap"])
+  
+  detleaf_dt = cbind(detleaf_dt, w)
+  
+  colnames(detleaf_dt)[c] = paste("len_das_",i,sep="")
+  
+  lines(w~seq(1:nleaves_rank),
+        ylab = "Internodes Sucrose mass (g)",
+        xlab = "Rank",
+        ylim = c(1,25),
+        xlim = c(0,35),
+        yaxs="i",
+        type = "l",
+        col = alpha(rgb(0,0.5,0), 0.8* unique(d)/max(detint$dap)))
+  
+  c = c + 1
+}
+
+
+leg = "Average among stalks"
+legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.2, box.lty = 1)
+
+#-------------------------------------------------------------------------------
+
+#--- Leaf weight (g)
+
+dt = 10
+c = 2
+nleaves_rank = 10
+
+detleaf_dt = data.frame(rank = seq(1,nleaves_rank))
+
+plot(seq(2,20)~seq(2,20),
+     ylim = c(0,10),
+     xlim = c(1,nleaves_rank),
+     type = "n",
+     xlab = "Rank",
+     ylab = "Leaf dry weight (g)")
+
+for(i in seq(min(detleaf$das), max(detleaf$das), dt)){
+  
+  w = sapply(seq(1:nleaves_rank),function(x) detleaf[detleaf$das==i,paste("lfweight",x)])
+  d = sapply(seq(1:nleaves_rank),function(x) detleaf[detleaf$das==i,"dap"])
+  
+  detleaf_dt = cbind(detleaf_dt, w)
+  
+  colnames(detleaf_dt)[c] = paste("len_das_",i,sep="")
+  
+  lines(w~seq(1:nleaves_rank),
+        ylab = "Internodes Sucrose mass (g)",
+        xlab = "Rank",
+        ylim = c(1,25),
+        xlim = c(0,35),
+        yaxs="i",
+        type = "l",
+        col = alpha(rgb(0,0.5,0), 0.8* unique(d)/max(detint$dap)))
+  
+  c = c + 1
+}
+
+
+leg = "Average among stalks"
+legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.2, box.lty = 1)
+
+
+#-------------------------------------------------------------------------------
+
+#--- Leaf weight (g)
+
+dt = 10
+c = 2
+nleaves_rank = 10
+
+detleaf_dt = data.frame(rank = seq(1,nleaves_rank))
+
+plot(seq(2,20)~seq(2,20),
+     ylim = c(0,10),
+     xlim = c(1,nleaves_rank),
+     type = "n",
+     xlab = "Rank",
+     ylab = "Leaf area (cm2)")
+
+for(i in seq(min(detleaf$das), max(detleaf$das), dt)){
+  
+  w = sapply(seq(1:nleaves_rank),function(x) detleaf[detleaf$das==i,paste("av_lfweight",x)])
+  d = sapply(seq(1:nleaves_rank),function(x) detleaf[detleaf$das==i,"dap"])
+  
+  detleaf_dt = cbind(detleaf_dt, w)
+  
+  colnames(detleaf_dt)[c] = paste("len_das_",i,sep="")
+  
+  lines(w~seq(1:nleaves_rank),
+        ylab = "Internodes Sucrose mass (g)",
+        xlab = "Rank",
+        ylim = c(1,25),
+        xlim = c(0,35),
+        yaxs="i",
+        type = "l",
+        col = alpha(rgb(0,0.5,0), 0.8* unique(d)/max(detint$dap)))
+  
+  c = c + 1
+}
+
+
+leg = "Average among stalks"
+legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.2, box.lty = 1)
+
+
+#---------------------------------------------------------------------------------------------
+
+
+#--- Detailed RootSystem
+detroot_lines = readLines("DetRootSy_SWAP-SAMUCA_PIRA.OUT")       #Read files lines
+detroot_numlines = detroot_lines[substr(detroot_lines,1,1)=="2"]  #Separate only lines starting with "2" - Indicating its a numerical line (year = 2012,2013...)
+detroot = read.table(text = detroot_numlines)                     #Read numeric lines as data.frame
+colnames(detroot) = c("year","doy","das","dap","diac","wr","rd","rootsene",paste(rep("rld",45),1:45),"tqropot","ptra")
+
+
+unique(swba$depth)
+
+sl_df = data.frame(sl = seq(1:length(unique(swba$depth))),
+                   dp = sort(unique(swba$depth), decreasing = T)*-1)
+
+
+
+#--- RLD (cm cm-3)
+
+dt = 10
+c = 2
+n_sl = 45
+
+detroot_dt = data.frame(rank = seq(1,n_sl))
+
+plot(seq(2,20)~seq(2,20),
+     ylim = c(0,1),
+     xlim = c(1,sl_df[n_sl,"dp"]),
+     type = "n",
+     xlab = "Soil layers",
+     ylab = "RLD (cm cm-3)")
+
+for(i in seq(min(detroot$das), max(detroot$das), dt)){
+  
+  w = sapply(seq(1:n_sl),function(x) detroot[detroot$das==i,paste("rld",x)])
+  d = sapply(seq(1:n_sl),function(x) detroot[detroot$das==i,"dap"])
+  
+  detroot_dt = cbind(detroot_dt, w)
+  
+  colnames(detroot_dt)[c] = paste("len_das_",i,sep="")
+  
+  lines(w~(sl_df[1:n_sl,"dp"]),
+        ylab = "Internodes Sucrose mass (g)",
+        xlab = "Rank",
+        ylim = c(1,25),
+        xlim = c(0,35),
+        yaxs="i",
+        type = "l",
+        col = alpha(rgb(0.5,0,0), 0.8* unique(d)/max(detint$dap)))
+  
+  c = c + 1
+}
+
+
+leg = "Average among stalks"
+legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.2, box.lty = 1)
+
+
+#--------------------------------------------------------
+#--- detailed stresses
+
+das_end = (detsfac$das[detsfac$dap==1]-1)[2:4]
+das_end = c(das_end, max(detsfac$das))
+
+das_df = data.frame(s = c(1,das_end[1:3]+1), e = das_end)
+
+plot(c(-20,-20)~c(0,400),ylim=c(0,4))
+for(i in das_end) lines(detsfac$lai~detsfac$das)
+
+plot(detsfac$lai~detsfac$das,type = "l")
+lines(detsfac$li~detsfac$das)
+
+
+plot(detsfac$arue_dwa~detsfac$IPAR_acc)
+
+points(detroot$rd/100~detroot$dap)
 
