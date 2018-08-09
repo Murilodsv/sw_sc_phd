@@ -7,6 +7,9 @@
 .OUT
 result*
 
+# Data
+data/
+
 # User-specific files
 *.suo
 *.user
