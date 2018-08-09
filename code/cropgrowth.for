@@ -3206,6 +3206,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 		    write(detitout_io,11) '#Simulating for ', project      
               write(detitout_io,20)
               write(detitout_io,201)
+              write(detitout_io,11)
+              write(detitout_io,202) (i, i=1,itoutnumber),
+     & (i, i=1,itoutnumber), (i, i=1,itoutnumber), (i, i=1,itoutnumber),
+     & (i, i=1,itoutnumber), (i, i=1,itoutnumber)
           endif
               
           if(fldetpgfaout)then              
@@ -3217,7 +3221,16 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 18        format('Result of sugarcane RootSystem:')
 19        format('Result of sugarcane LeafProfile:')
 20        format('Result of sugarcane StalkProfile:')
-201       format('Year    DOY    DAS    DAP     GDD  m_nint',<2>('hi'))
+201       format('itpl: Primary Stalk Internode Length (cm)',/,
+     & 'ital: Average Internode Length for all Stalks (cm)',/,
+     & 'itps: Primary Stalk Internode Sucrose Mass (g)',/,
+     & 'itas: Average Internode Sucrose Mass for all Stalks (g)',/,
+     & 'itpw: Primary Stalk Internode Total Dry Mass (g)',/,
+     & 'itaw: Average Internode Total Dry Mass for all Stalks (g)')
+202       format('Year    DOY    DAS    DAP     GDD  m_nint  ',
+     & <itoutnumber>('itpl',i2.2,2x), <itoutnumber>('ital',i2.2,2x),
+     & <itoutnumber>('itps',i2.2,2x), <itoutnumber>('itas',i2.2,2x),
+     & <itoutnumber>('itpw',i2.2,2x), <itoutnumber>('itaw',i2.2,2x))
 21        format('Result of sugarcane PG Factors:') 
             
 	return      
