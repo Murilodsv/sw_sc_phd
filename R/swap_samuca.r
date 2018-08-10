@@ -23,6 +23,8 @@ run_model   = T
 model_fn    = "swap_samuca_v1.exe"
 swap_prj    = "SWAP-SAMUCA_PIRA"
 soil_depth  = c(-10,-19.5,-28.5,-58.5) # simulated soil depth compartments to retrive data (see on swap.swp)
+out_sufix   = "_test1"
+out_folder  = "/Rout/"
 
 #--- Read Measured Data
 #--- Note data must have "year" and "doy" collumns!!!!!!!
@@ -160,7 +162,7 @@ o_swc60  = so_fdr$fdr60cm
 s_swc = c(s_swc10,s_swc20,s_swc30,s_swc60)
 o_swc = c(o_swc10,o_swc20,o_swc30,o_swc60)
 
-png("p_swc_d.png",
+png(paste0(wd,out_folder,"p_swc_d",out_sufix,".png"),
     units="in", 
     width=12, 
     height=12, 
@@ -175,7 +177,7 @@ p_swc60  = mperf(s_swc60,o_swc60,"SWC at 60cm (cm3 cm-3)")
 
 dev.off() # end of chart exportation
 
-png("p_swc.png",
+png(paste0(wd,out_folder,"p_swc",out_sufix,".png"),
     units="in", 
     width=12, 
     height=12, 
@@ -195,7 +197,7 @@ so_atm = merge(et_obs,atm,by = "das")
 s_et = (so_atm$Tact + so_atm$Eact) * 10
 o_et = so_atm$et
 
-png("p_atm.png",
+png(paste0(wd,out_folder,"p_atm",out_sufix,".png"),
     units="in", 
     width=12, 
     height=12, 
@@ -227,37 +229,37 @@ so_pol  = merge(o_pol,plant[,c("das","pol")]  , by = "das")
 so_dgl  = merge(o_dgl,plant[,c("das","devgl")], by = "das")
 so_sth  = merge(o_sth,plant[,c("das","h")]    , by = "das")
 
-png("p_sfm.png",units="in",width=12,height=12,pointsize=15,res=300)
+png(paste0(wd,out_folder,"p_sfm",out_sufix,".png"),units="in",width=12,height=12,pointsize=15,res=300)
 par(mfrow=c(1,1), mar = c(4.5, 4.5, 0.5, 0.5), oma = c(0, 0, 0, 0))
 p_sfm = mperf(so_sfm$tch,o_sfm$SFM, "SFM (t ha-1)")
 dev.off() # end of chart exportation
 
-png("p_sdm.png",units="in",width=12,height=12,pointsize=15,res=300)
+png(paste0(wd,out_folder,"p_sdm",out_sufix,".png"),units="in",width=12,height=12,pointsize=15,res=300)
 par(mfrow=c(1,1), mar = c(4.5, 4.5, 0.5, 0.5), oma = c(0, 0, 0, 0))
 p_sdm = mperf(so_sdm$sw,o_sdm$SDM, "SDM (t ha-1)")
 dev.off() # end of chart exportation
 
-png("p_lai.png",units="in",width=12,height=12,pointsize=15,res=300)
+png(paste0(wd,out_folder,"p_lai",out_sufix,".png"),units="in",width=12,height=12,pointsize=15,res=300)
 par(mfrow=c(1,1), mar = c(4.5, 4.5, 0.5, 0.5), oma = c(0, 0, 0, 0))
 p_lai = mperf(so_lai$lai,o_lai$LAIGD, "LAI (m2 m-2)")
 dev.off() # end of chart exportation
 
-png("p_till.png",units="in",width=12,height=12,pointsize=15,res=300)
+png(paste0(wd,out_folder,"p_till",out_sufix,".png"),units="in",width=12,height=12,pointsize=15,res=300)
 par(mfrow=c(1,1), mar = c(4.5, 4.5, 0.5, 0.5), oma = c(0, 0, 0, 0))
 p_til = mperf(so_til$till,o_til$T.AD, "Tiller (till m-2)")
 dev.off() # end of chart exportation
 
-png("p_pol.png",units="in",width=12,height=12,pointsize=15,res=300)
+png(paste0(wd,out_folder,"p_pol",out_sufix,".png"),units="in",width=12,height=12,pointsize=15,res=300)
 par(mfrow=c(1,1), mar = c(4.5, 4.5, 0.5, 0.5), oma = c(0, 0, 0, 0))
 p_pol = mperf(so_pol$pol,o_pol$SU.FMD, "POL (%)")
 dev.off() # end of chart exportation
 
-png("p_dgl.png",units="in",width=12,height=12,pointsize=15,res=300)
+png(paste0(wd,out_folder,"p_dgl",out_sufix,".png"),units="in",width=12,height=12,pointsize=15,res=300)
 par(mfrow=c(1,1), mar = c(4.5, 4.5, 0.5, 0.5), oma = c(0, 0, 0, 0))
 p_dgl = mperf(so_dgl$devgl,o_dgl$N.GL, "N° dev GL per stalk")
 dev.off() # end of chart exportation
 
-png("p_sth.png",units="in",width=12,height=12,pointsize=15,res=300)
+png(paste0(wd,out_folder,"p_sth",out_sufix,".png"),units="in",width=12,height=12,pointsize=15,res=300)
 par(mfrow=c(1,1), mar = c(4.5, 4.5, 0.5, 0.5), oma = c(0, 0, 0, 0))
 p_sth = mperf(so_sth$h,o_sth$SHTD, "Height (m)")
 dev.off() # end of chart exportation
@@ -292,7 +294,7 @@ p_all$model = c("p_swc10",
                 "p_sth")
 
 #--- Write performance
-write.csv(p_all, file = "Model_performance.csv")
+write.csv(p_all, file = paste0(wd,out_folder,"Model_performance",out_sufix,".csv"))
 
 #==============================================
 
@@ -309,7 +311,7 @@ dsim = data.frame(fdr = colnames(fdr)[4:7], depth = c(-10,-19.5,-28.5,-58.5))
 l = merge(swba,dsim,by = "depth")
 l = l[order(l$das),]#--- sort by das
 
-png("so_swc.png",units="in",width=12,height=12,pointsize=15,res=300)
+png(paste0(wd,out_folder,"so_swc",out_sufix,".png"),units="in",width=12,height=12,pointsize=15,res=300)
 par(mfrow=c(4,1), mar = c(4.5, 4.5, 0.5, 0.5), oma = c(0, 0, 0, 0))
 s = sapply(colnames(fdr)[4:7], fdrpl)
 dev.off() # end of chart exportation
@@ -328,7 +330,7 @@ if(length(br)==length(lb)){lb = lb[1:length(br)-1]}
 
 atm$das_c = cut(atm$das,breaks = br, labels = lb, right = F)
 
-png("so_atm.png",units="in",width=12,height=12,pointsize=15,res=300)
+png(paste0(wd,out_folder,"so_atm",out_sufix,".png"),units="in",width=24,height=12,pointsize=15,res=300)
 par(mfrow=c(1,1), mar = c(4.5, 4.5, 0.5, 0.5), oma = c(0, 0, 0, 0))
 
 #--- compute 1st and 3 quartiles
@@ -392,7 +394,7 @@ o_bio  = c("SFM","SDM","LAIGD","T.AD","SU.FMD","N.GL" ,"SHTD")
 s_bio  = c("tch","sw" ,"lai"  ,"till","pol"   ,"devgl","h")
 
 
-png("so_bio.png",units="in",width=12,height=12,pointsize=15,res=300)
+png(paste0(wd,out_folder,"so_bio",out_sufix,".png"),units="in",width=12,height=12,pointsize=15,res=300)
 
 par(mfrow=c(7,1), 
     mar = c(0., 0.5, 0., 0.5), 

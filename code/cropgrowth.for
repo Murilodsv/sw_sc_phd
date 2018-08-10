@@ -3054,7 +3054,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !(i)    Call this model.exe 
           !(ii)   Compute objective function
           !(iii)  Optmize below parameters  
-          ! More info in my github repository (Murilo Vianna)
+          ! More info in github repository (Murilo Vianna)
           ! https://github.com/Murilodsv/R-scripts/blob/master/Optimization_SWAP_Sugarcane_v1.R    
           !--------------------------------------------------
           
@@ -3317,7 +3317,11 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 	return      
       
 2000  continue
-          
+	
+	!----------------------------
+	!--- Daily Rate Potential ---
+	!----------------------------
+
       !--- Linking with SWAP Variables          
       tmax = tmx                  !(oC)
       tmin = tmn                  !(oC)
@@ -3326,7 +3330,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       epp = ptra                  !(cm/d)
       ch = pleng * 100.           !(cm) Used for Penmam-M. method
       
-      !Hourly Temperature
+      !Hourly Temperature in thour array
       call TempHour(tmax,tmin,thour)
       
       !Reset rates      
@@ -3377,9 +3381,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 			    di = (t_mean-tb)     ! Degree-Days for today
           else              
 			    di = 0.d0
-          endif          
-		diac = diac + di            !Cumulative Degree-Days
-          if(flemerged) diacem = diacem + di
+          endif
           
           !Check if stalks emerged
           if(diac .gt. chustk .and. .not. flstalkemerged)then
@@ -3900,6 +3902,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           wdead     = wdead    + dwdead                    !Dead Biomass
           RGP_pg    = RGP_pg   + dRGP_pg                   !Reduced Growth due to sink FeedBack Response
           IPAR_acc  = IPAR_acc + li * par                  !Acculated intecepted PAR
+          diac	  = diac	 + di						 !Cumulative Degree-Days
+          if(flemerged) diacem = diacem + di
+          
           
           !--- Compute Stalks Sucrose, Fiber (t ha-1), Height (m) and internode number(#stk-1)
           if(ws .gt. 0.d0 .and. flstalkemerged)then
