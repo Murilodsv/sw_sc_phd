@@ -3155,13 +3155,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 		write(defout_io,15)
 		write(defout_io,16)
 		write(defout_io,17)
-          
-          !Outputs Header
-          !        Day   Days   Days  Accum    Plant   Avail    Root    Leaf    Tops   Stalk  Sucros   Fiber   Stalk          Aerial                   Plant   Devel  Number  Stress  Stress  RootGr  LeafGr  StalGr  TopPGr
-          !         of  after  after  D.Day   Weight  Reserv  Weight  Weight  Weight  Weight  Weight  Weight  Weight     POL     Dry     LAI  Tiller  Height   GLeaf  Intern  Factor  Factor   PFact   PFact   PFact   PFact
-          !Year   Year  Simul  Plant   oC.d   DMt/ha  DMt/ha  DMt/ha  DMt/ha  DMt/ha  DMt/ha  DMt/ha  DMt/ha  FMt/ha       %  DMt/ha   m2/m2    #/m2       m   #/Stk   #/Stk  Expans  Photos   (0-1)   (0-1)   (0-1)   (0-1)
-          !----  -----  -----  -----  ------ -------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------
-	
+                    
 11        format(2A,/) 		
 12        format(2A,/)
 13        format('Result of sugarcane growth simulation in daily step:')
