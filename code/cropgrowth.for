@@ -3193,6 +3193,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               !--- Writing the Main Output file header            
 		    write(detrtout_io,11) '#Simulating for ', project      
               write(detrtout_io,18)
+              write(detrtout_io,181)
+              write(detrtout_io,11)
+              write(detrtout_io,182) (i, i=1,numnod)
+              
           endif
               
           if(fldetlfprout)then              
@@ -3220,24 +3224,42 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               !--- Writing the Main Output file header            
 		    write(detpgout_io,11) '#Simulating for ', project      
               write(detpgout_io,21)
-          endif
+              write(detpgout_io,211)
+              write(detpgout_io,11)
+              write(detpgout_io,212)
               
+          endif
+          
+          !--- Detailed Root System Outputs
 18        format('Result of sugarcane RootSystem:')
+181       format(
+     &    'wr:      Total Root System Dry Mass (t ha-1)',/,
+     &    'rd:      Root System Depth (cm)',/,
+     &    'rsene:   Root Senesence Factor (0-1)',/,
+     &    'rld:     Root Length Density (cm cm-3)',/,
+     &    'qropot:  Potential Total Root Water Uptake (cm)',/,
+     &    'ptra:    Potential Transpiration (cm)')          
+182       format('Year    DOY    DAS    DAP     GDD      wr      rd  ',
+     &    ' rsene  ',<numnod>(' rld',i2.2,2x),'qropot    ptra')         
+          
+          !--- Detailed Leaf outputs
 19        format('Result of sugarcane LeafProfile:')
-191       format('ngl:   Average Number of Green Leaf per Stalk',/,
+191       format(
+     & 'ngl:   Average Number of Green Leaf per Stalk',/,
      & 'devgl: Average Number of Developed Green Leaf per Stalk ',/,
      & 'p_la:  Green Leaf Area for primary Stalk (cm2)',/,
      & 'a_la:  Average Green Leaf Area (cm2)',/,
      & 'p_lw:  Leaf Dry Weight for primary Stalk (g)',/,
      & 'a_lw:  Average Leaf Dry Weight (g)')
 192       format('Year    DOY    DAS    DAP     GDD     ngl   devgl  ',
-     & <maxgl+1>('itpl',i2.2,2x), <maxgl+1>('ital',i2.2,2x),
-     & <maxgl+1>('itps',i2.2,2x), <maxgl+1>('itas',i2.2,2x))       
+     & <maxgl+1>('p_la',i2.2,2x), <maxgl+1>('a_la',i2.2,2x),
+     & <maxgl+1>('p_lw',i2.2,2x), <maxgl+1>('a_lw',i2.2,2x))       
           
       
-          
+          !--- Detailed Internodes Outputs
 20        format('Result of sugarcane StalkProfile:')
-201       format('itpl: Primary Stalk Internode Length (cm)',/,
+201       format(
+     & 'itpl: Primary Stalk Internode Length (cm)',/,
      & 'ital: Average Internode Length for all Stalks (cm)',/,
      & 'itps: Primary Stalk Internode Sucrose Mass (g)',/,
      & 'itas: Average Internode Sucrose Mass for all Stalks (g)',/,
@@ -3247,7 +3269,56 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
      & <itoutnumber>('itpl',i2.2,2x), <itoutnumber>('ital',i2.2,2x),
      & <itoutnumber>('itps',i2.2,2x), <itoutnumber>('itas',i2.2,2x),
      & <itoutnumber>('itpw',i2.2,2x), <itoutnumber>('itaw',i2.2,2x))
-21        format('Result of sugarcane PG Factors:') 
+     
+          !--- Detailed Crop Stresses
+21        format('Result of sugarcane PG Factors:')
+211       format(     
+     & 'dpar   !Daily par MJ m-2 d-1',/,
+     & 'extc   !k',/,
+     & 'dlai   !LAI',/,
+     & 'frli   !Fraction Light Intercepted',/,
+     & 'aco2   !Atm CO2 concentration',/,
+     & 'mrue   !Maximum RUE (gDW MJ-1) - Crop',
+     &' Parameter',/,
+     & 'co2f   !CO2           Factor',/,
+     & 'tmpf   !Temperature   Factor',/,
+     & 'agef   !Age           Factor',/,
+     & 'swfp   !Avl Water     Factor',/, 
+     & 'sfbf   !Sink Feedback Factor',/,
+     & 'gpho   !Daily photosynthesis before RGP_fac',
+     & 'reduction and resp = 0.d0 (t ha-1)',/,
+     & 'prfb   !Daily photosynthesis reduction due',
+     & 'to sink feedback (t ha-1)',/,
+     & 'dtdw   !Daily total allocated',
+     & 'biomass (t ha-1)',/, 
+     & 'pcfb   !Cumulative photosynthesis reduction',
+     & 'due to sink feedback (t ha-1)',/,
+     & 'cipa   !Cumulative PAR intercepted (MJ m-2)',
+     & /,
+     & 'tldw   !Crop total live dry biomass (g m-2)',
+     & /,
+     & 'aldw   !Crop total live aerial dry biomass',
+     & '(g m-2)',/,
+     & 'ctdw   !Crop total dry biomass',
+     & 'produced (g m-2)',/,
+     & 'cadw   !Crop total aerial dry',
+     & 'biomass produced (g m-2)',/,
+     & 'drdw   !Daily Actual RUE (g MJ-1)',
+     & 'Total  Dw Basis (deadbiomass not accounted)',/,
+     & 'drtw   !Total Actual RUE (g MJ-1)',
+     & 'Total   w Basis (deadbiomass not accounted)',/,
+     & 'drda   !Daily Actual RUE (g MJ-1)',
+     & 'Total Dwa Basis (deadbiomass not accounted)',/,
+     & 'drta   !Total Actual RUE (g MJ-1)',
+     & 'Total  wa Basis (deadbiomass not accounted)',/,
+     & 'cchk   !Carbon Balance Check')
+212       format('Year    DOY    DAS    DAP     GDD  ',
+     & '  dpar    extc    dlai    frli    aco2    mrue',
+     & '    co2f    tmpf    agef    swfp    sfbf    gpho    prfb',
+     & '    dtdw    pcfb    cipa    tldw    aldw    ctdw    cadw',
+     & '    drdw    drtw    drda    drta    cchk')
+
+     
             
 	return      
       
