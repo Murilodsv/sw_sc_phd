@@ -2,7 +2,7 @@
 * File content:  cumulative water balance components (cm)
 * File name:     Result.wba
 * Model version: Swap 3.2.36
-* Generated at:  10-Aug-2018 13:39:38
+* Generated at:  10-Aug-2018 13:41:51
 *
        Date,Day,  Dcum,Rain_g,Rain_n,Irr_g,Irr_n,  RunOn, RunOff,  Tpot,  Tact,  Epot,  Eact,   Drain,     Bot,   DStor,       Gwl,  Pond, Wbal,      Date2
 15-Aug-2012,228,     1,  0.00,  0.00,  0.0,  0.0,   0.00,   0.00,  0.00,  0.00,  0.31,  0.13,   0.000,   0.007,  -0.127,          ,  0.00, 0.00,15-Aug-2012
