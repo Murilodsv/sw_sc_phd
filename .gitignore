@@ -9,7 +9,7 @@
 !/R
 !*.swp
 !*.par
-*.[oa]
+*.BAL
 
 
 # User-specific files

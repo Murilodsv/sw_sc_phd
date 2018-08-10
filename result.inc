@@ -2,7 +2,7 @@
 * File content:  water balance increments (cm/period)
 * File name:     Result.inc
 * Model version: Swap 3.2.36
-* Generated at:  10-Aug-2018 13:41:51
+* Generated at:  10-Aug-2018 13:46:15
 *
        Date,Day,  Dcum,    Rain,   Snow,   Irrig,  Interc,   Runon,  Runoff,    Tpot,    Tact,    Epot,    Eact, Drainage,  QBottom,      Gwl
 15-Aug-2012,228,     1,   0.000,   0.000,   0.000,   0.000,   0.000,   0.000,   0.000,   0.000,   0.310,   0.134,    0.000,    0.007,          

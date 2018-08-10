@@ -2,7 +2,7 @@
 * File content:  ES0, ET0, EW0, Epot, Tpot, Tact and 4 Tact-stress values for wetness, drought, salinity and frost (cm/period)
 * File name:     Result.str
 * Model version: Swap 3.2.36
-* Generated at:  10-Aug-2018 13:41:51
+* Generated at:  10-Aug-2018 13:46:15
 *
        Date,Day,  Dcum,ESoilWet,Tcropdry,Tcropwet,    Epot,    Tpot,    Tact, Tredwet, Treddry, Tredsol, Tredfrs
 16-Oct-2012,290,    63,  0.1280,  0.0000,  0.0000,  0.1280,  0.0000,  0.0000,  0.0000,  0.0000,  0.0000,  0.0000
