@@ -10,7 +10,7 @@
 !*.swp
 !*.par
 *.BAL
-
+*.*
 
 # User-specific files
 *.suo
