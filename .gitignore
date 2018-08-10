@@ -10,17 +10,7 @@
 !*.swp
 !*.par
 
-# ignore swap outputs
-/*.ok
-result.bal
-/*.blc
-result.crp
-/*.end
-/*.inc
-/*.irg
-/*.str
-/*.vap
-/*.wba
+
 
 # User-specific files
 *.suo
