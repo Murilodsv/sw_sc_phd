@@ -3199,6 +3199,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               !--- Writing the Main Output file header            
 		    write(detlfout_io,11) '#Simulating for ', project      
               write(detlfout_io,19)
+              write(detlfout_io,191)
+              write(detlfout_io,11)
+              write(detlfout_io,192) (i, i=1,maxgl+1),(i, i=1,maxgl+1),
+     & (i, i=1,maxgl+1),(i, i=1,maxgl+1)
           endif
               
           if(fldetitprout)then              
@@ -3220,6 +3224,18 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               
 18        format('Result of sugarcane RootSystem:')
 19        format('Result of sugarcane LeafProfile:')
+191       format('ngl:   Average Number of Green Leaf per Stalk',/,
+     & 'devgl: Average Number of Developed Green Leaf per Stalk ',/,
+     & 'p_la:  Green Leaf Area for primary Stalk (cm2)',/,
+     & 'a_la:  Average Green Leaf Area (cm2)',/,
+     & 'p_lw:  Leaf Dry Weight for primary Stalk (g)',/,
+     & 'a_lw:  Average Leaf Dry Weight (g)')
+192       format('Year    DOY    DAS    DAP     GDD     ngl   devgl  ',
+     & <maxgl+1>('itpl',i2.2,2x), <maxgl+1>('ital',i2.2,2x),
+     & <maxgl+1>('itps',i2.2,2x), <maxgl+1>('itas',i2.2,2x))       
+          
+      
+          
 20        format('Result of sugarcane StalkProfile:')
 201       format('itpl: Primary Stalk Internode Length (cm)',/,
      & 'ital: Average Internode Length for all Stalks (cm)',/,
