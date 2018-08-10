@@ -12,7 +12,7 @@
 
 # ignore swap outputs
 /*.ok
-/result.bal
+result.bal
 /*.blc
 result.crp
 /*.end
