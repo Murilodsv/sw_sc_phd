@@ -133,7 +133,7 @@
                         ! Extension is equal to last 3 digits of year, e.g. 003 denenotes year 2003
 
 * Use of reference evapotranspiration data from meteorological file instead of basisic data
-  SWETR  =  1           ! Switch, use reference ET values of meteo file [Y=1, N=0]]
+  SWETR  =  0           ! Switch, use reference ET values of meteo file [Y=1, N=0]]
 
 * If SWETR = 0, specify:
   LAT    =  -22.47       ! Latitude of meteo station, [-60..60 degrees, R, North = = +]

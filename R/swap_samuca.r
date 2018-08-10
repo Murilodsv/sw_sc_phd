@@ -23,7 +23,7 @@ run_model   = T
 model_fn    = "swap_samuca_v1.exe"
 swap_prj    = "SWAP-SAMUCA_PIRA"
 soil_depth  = c(-10,-19.5,-28.5,-58.5) # simulated soil depth compartments to retrive data (see on swap.swp)
-out_sufix   = "_test1"
+out_sufix   = "_test_pm"
 out_folder  = "/Rout/"
 
 #--- Read Measured Data
@@ -1051,6 +1051,11 @@ for(i in seq(min(detroot$das), max(detroot$das), dt)){
 
 leg = "Average among stalks"
 legend("topleft",inset = 0.01, legend =  leg, bg = "grey",cex = 1.2, box.lty = 1)
+
+
+plot(detroot$tqropot~detroot$das, type = "l")
+lines(detroot$ptra~detroot$das)
+lines(detsfac$swfacp~detsfac$das, col = "red")
 
 
 #--------------------------------------------------------

@@ -2428,6 +2428,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       integer  :: detpgout_io = 41    !I/O InternodeProfile Detailed pg
       integer  :: parinp_io   = 302   !I/O Crop Parameters
       integer  :: calibr_io   = 911   !I/O Calibration Parameters
+      integer  :: deb_io		= 999	!I/O for debugging
       
       logical     flemerged           !Crop emergence flag
       logical     flcropalive         !Crop is alive? (T or F)
@@ -2439,6 +2440,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       logical     fldetitprout
       logical     fldetpgfaout        !Detailed pg and factors output file?
       logical     flsink_fbres        !Simulate Feedback response of sink to photosynthesis rate? (T or F)
+      logical		fluseritchie		!use ritchie water balance instead of Feddes or De Jong?
+      logical		fldebug				!Debug code
       
       real        agefactor           !Relative age factor to reduce crop processes 
       real        chudec              !Termal time for tillering deccay (P)
@@ -2724,6 +2727,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           fldetpgfaout    = .true.
           outstk_rank     = 1     !Rank of detailed stalk (1 <= outstk_rank <= peakpop)
           itoutnumber     = 35    !Up to 35 internodes will be printed out on outstk_rank and averaged stalks
+          fluseritchie	= .false.
+          fldebug			= .true.!Debug
       
       
       !--- Reading Crop Parameters
@@ -3146,6 +3151,14 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
      &    DetPGFac_'//trim(project)//'.OUT',STATUS='REPLACE',RECL=1180)
           endif
           
+          !-----------------!
+          !--- Debugging ---!
+          !-----------------!
+          if(fldebug)then
+			open(deb_io,FILE='
+     &    Debug_'//trim(project)//'.OUT',STATUS='REPLACE',RECL=5180) 
+          endif
+	
       endif
           
           !--- Writing the Main Output file header            
@@ -3389,7 +3402,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               canestage       = 'StkGro'
               
               !initiate Stalks
-              wstkwat     = wa * (1.d0/0.3d0 - 1.d0) !Water content in stalks (70% water ~ potential condition)
+              wstkwat     = wa * (1.d0/0.3d0 - 1.d0) !Water content in stalks (70% water ~ potential condition) - this is a convertion from Dry to Fresh Mass
               noden       = 1.d0
               age_stkemer = stk_age(1,1)
           endif
@@ -3411,6 +3424,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               !--- Maintenance Respiration from Liu & Bull (2001) [Fig3]
               !--- doi.org/10.1016/S0304-3800(01)00372-6
               !--- Note: q10 curves are more apropriate to follow classical Crop Models (Thornley & Campbel, 1990)
+              !--- Note: Maintenance Respiration is only computed for before emergence conditions to simulate whether the crop has enough substrates reserves to reach surface
               mresp   = 3.991 * exp(0.046 * t_mean)                       !g CO2 g-1 w min-1 
               mresp   = mresp *((24.d0*60.d0)/10.d0**6)*(CH2O_M/CO2_M)    !g CH2O g-1 w d-1
               mresp   = mresp * w ! t ha-1 d-1
@@ -3419,7 +3433,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               availw_bg   = max(0.d0, availw_bg - mresp)
               
               !--- Sink Strength
-              !--- Assuming 30% of cost (Growth Respiration)
+              !--- Assuming 30% of cost (Growth Respiration - Inman-Bamber, 1991)
               dw_ss       = availw_bg * (biomass_useRate * diac) * 
      & 1.d0/(1.d0-0.3d0)
               
@@ -3479,8 +3493,16 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !------------------------------!
           
           !Crop coefficient as function of leaf area index
-          cf = kc_min + (eoratio - kc_min) * lai / (maxlai)
-          cf = max(0.d0,cf)
+          if(swetr .eq. 1)then
+			!--- use kc curve in relation to LAI
+			cf = kc_min + (eoratio - kc_min) * lai / (maxlai)
+			cf = max(0.d0,cf)          
+          else
+			!--- use PM method
+			cf = 1.d0
+          endif
+          
+          
           
           select case(pgmethod)                  
           case(1)
@@ -3637,22 +3659,32 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           
        !--- potential RWU 
        !--- Note that rootsene is been used here
-       !--- It can be depicted as the efficiency part of root system. 
-       !Warning: No evidences for this and very empirical!          
-       do node = 1, noddrz
-          prwu(node) = max(0.,min(0.07, 
-     &  swcon1*EXP(MIN((swcon2(node)*(theta(node)-wpp(node))),40.))/
-     &     (swcon3-LOG(rld(node)))))
-          
-        prwulay(node) = prwu(node) * laythi(node) * rld(node)
-          
-          tqropot = tqropot + prwulay(node)
-       enddo
-      !--- Correction of potential transpiration in relation to reference crop
-      !     (default = 1.0, range = 0.8 - 1.2)
-      !--- Following Wofost()
-      ptra = cf*ptra      
+       !--- It can be depicted as the efficiency part of root system.
+	 if(fluseritchie)then
+           do node = 1, noddrz
+           !--- Apply Ritchie Equation (Same as DSSAT)
+              prwu(node) = max(0.,min(0.07, 
+     &		swcon1*EXP(MIN((swcon2(node)*(theta(node)-wpp(node))),40.))/
+     &		(swcon3-LOG(rld(node)))))
+			
+			!--- compute root water uptake for each node
+		    prwulay(node) = prwu(node) * laythi(node) * rld(node)
+			
+              !--- integrate
+		    tqropot = tqropot + prwulay(node)
+              
+              !--- update qrot
+              qrot(node) = prwulay(node)
+           enddo
+       else
+		!--- use 
+       
+       endif
       
+       write(deb_io,90) iyear,daynr,daycum,daycrop,diac,sum(qrot),
+     & qrosum,
+     & tqropot,ptra,cumdens(1:202)
+      	
       ! --- water stress factors in growth and photosynthesis 
       if (ptra .le. 1.d-5) then
           !No atmospheric demand
@@ -4427,35 +4459,50 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                       rld_prof((i-1)*2+2) =rld(i)
                   enddo
                   
-              
-            do i = 1,22,2
-            rdctb(i) = (real(i)/(22.))                  
-            end do
-                  
-            do i = 2,22,2
-            rdctb(i) = (1-rdctb(i-1))**rootshape
-            end do               
-                  
-          ! ---   specify array ROOTDIS with root density distribution
-            do i = 0,100
+		enddo
+
+            do i = 1, noddrz
+            rld_prof((i-1)*2+1) =(z(i)-dz(i)*0.5d0)/-rd                      
+            if(i .eq. noddrz) rld_prof((i-1)*2+1) = 1.                      
+            rld_prof((i-1)*2+2) =rld(i)
+          enddo   
           
+          do i = 0,100          
                 depth = 0.01d0 * dble(i)
-                rootdis(i*2+1) = depth
-                rootdis(i*2+2) = afgen(rdctb,22,depth)
-                   
-            enddo  
-               
-              ! ---   specify array ROOTDIS with root distribution
-            do i = 0,100
+                rld_tocumdens(i*2+1) = depth
+                rld_tocumdens(i*2+2) = afgen(rld_prof,noddrz*2,depth)                
+          enddo     
           
-                depth = 0.01d0 * dble(i)
-                rootdis(i*2+1) = depth
-                rootdis(i*2+2) = afgen(rdctb,22,depth)
-                   
-            enddo         
+            ! ---   calculate cumulative root density function
+            do i = 1,202,2
+            ! ---     relative depths
+                cumdens(i) = rld_tocumdens(i)
+            enddo
               
-                 
-          enddo
+            if(sum(rld(1:numnod)) .gt. 0.d0)then
+                
+                soma = 0.d0
+                cumdens(2) = 0.d0
+                do i = 4,202,2
+                ! ---     cumulative root density
+                    soma = soma +(rld_tocumdens(i-2)+rld_tocumdens(i))*
+     & 0.5d0
+     &               * (cumdens(i-1)-cumdens(i-3))
+                    cumdens(i) = soma
+                enddo
+      
+                ! ---   normalize cumulative root density function to one
+                do i = 2,202,2
+                    cumdens(i) = cumdens(i) / soma
+                enddo
+            
+            else                
+                    ! ---   no root system
+                do i = 2,202,2
+                    cumdens(i) = 0.d0
+                enddo
+                
+            endif
           
       end select
                   
@@ -4469,13 +4516,13 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !PLANTDEPTH = 25.0   ! PLANTING DEPTH
           !Laclau and Laclau (2009) rate of deepening of the root front (0.53 cm day-1 or 0.048 cm oC-1 day-1) over the first 4 months after planting, and an increase thereafter to 1.75 cm day-1 (0.22 cm oC-1 day-1) in the irrigated crop and 1.86 cm day-1 (0.24 cm oC-1 day-1)
             
-          IF (diac .LT. 1000) THEN   ! A variation in RDEPTH should be computed dur the water stress - the higher WS, the deeper the root goes
+          if (diac .LT. 1000) then   ! A variation in RDEPTH should be computed dur the water stress - the higher WS, the deeper the root goes
             drdepth = (rootdrate * di) 
             !RDEPTH = 0.048 * DIAC !- Original results from Laclau & Laclau (2009)
-          ELSE
+          else
             drdepth = (rootdrate * di)
             !RDEPTH = .22 * DIAC !- Original results from Laclau & Laclau (2009)
-          END IF
+          endif
           
           ! --- determine lowest compartment containing roots
           node = 1
@@ -4669,26 +4716,26 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               
             if(sum(rld(1:numnod)) .gt. 0.d0)then
                 
-            soma = 0.d0
-            cumdens(2) = 0.d0
-            do i = 4,202,2
-            ! ---     cumulative root density
-                soma = soma +(rld_tocumdens(i-2)+rld_tocumdens(i))*0.5d0
+                soma = 0.d0
+                cumdens(2) = 0.d0
+                do i = 4,202,2
+                ! ---     cumulative root density
+                    soma = soma +(rld_tocumdens(i-2)+rld_tocumdens(i))*
+     & 0.5d0
      &               * (cumdens(i-1)-cumdens(i-3))
-                cumdens(i) = soma
-            enddo
+                    cumdens(i) = soma
+                enddo
       
-            ! ---   normalize cumulative root density function to one
-            do i = 2,202,2
-                cumdens(i) = cumdens(i) / soma
-            enddo
-            
-            else
-                
                 ! ---   normalize cumulative root density function to one
-            do i = 2,202,2
-                cumdens(i) = 0.d0
-            enddo
+                do i = 2,202,2
+                    cumdens(i) = cumdens(i) / soma
+                enddo
+            
+            else                
+                    ! ---   no root system
+                do i = 2,202,2
+                    cumdens(i) = 0.d0
+                enddo
                 
             endif
           
