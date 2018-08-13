@@ -7,8 +7,8 @@ setwd(wd)
 deb = read.table(deb_fn, col.names = c("year","doy","das","dap","gdd","qrot","ritchie","ptra",paste0(rep("cumdens",202),seq(1,202))))
 
 
-plot(deb$qrot~deb$das, type = "l", ylim = c(0,2))
-lines(deb$ritchie~deb$das, type = "l", col = "red")
+plot(deb$qrot~deb$das, type = "l", ylim = c(0,1))
+lines(deb$ptra~deb$das, type = "l", col = "red")
 
 plot(deb$qrot~deb$ritchie)
 

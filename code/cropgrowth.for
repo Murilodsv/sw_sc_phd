@@ -3676,48 +3676,51 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               !--- update qrot
               qrot(node) = prwulay(node)
            enddo
+           
+          ! --- water stress factors in growth and photosynthesis 
+          if (ptra .le. 1.d-5) then
+              !No atmospheric demand
+            wuf       = 0.d0
+            swfacp    = 1.d0
+            swface    = 1.d0
+        
+          else
+      
+          swfacp = max(0.d0, min(1.d0, tra / ptra))        
+              
+              wuf = max(tqropot/ptra,0.d0)
+        
+        
+              if (wuf .lt. rwuep1) then          
+                  swface = max(0.,min((1./rwuep1) * wuf,1.))      
+              else
+                  swface = 1.
+              endif
+          
+              wuf_swap = max(tra/ptra,0.d0)
+      
+              if (wuf_swap .lt. rwuep2) then          
+                  swfacp = max(0.,min((1./rwuep2) * wuf_swap,1.))      
+              else
+                  swfacp = 1.
+              endif     
+        
+          endif
+      
+          !--- Water Stress      
+          swfacp = max(0.d0, min(1.d0, tra / ptra))
+          swface = swfacp           
+           
        else
-		!--- use 
+		!--- use Feddes
        
        endif
       
-       write(deb_io,90) iyear,daynr,daycum,daycrop,diac,sum(qrot),
+       write(deb_io,90) iyear,daynr,daycum,daycrop,diac,
      & qrosum,
      & tqropot,ptra,cumdens(1:202)
       	
-      ! --- water stress factors in growth and photosynthesis 
-      if (ptra .le. 1.d-5) then
-          !No atmospheric demand
-        wuf       = 0.d0
-        swfacp    = 1.d0
-        swface    = 1.d0
-        
-      else
       
-      swfacp = max(0.d0, min(1.d0, tra / ptra))        
-              
-        wuf = max(tqropot/ptra,0.d0)
-        
-        
-          if (wuf .lt. rwuep1) then          
-          swface = max(0.,min((1./rwuep1) * wuf,1.))      
-          else
-          swface = 1.
-          endif
-          
-      wuf_swap = max(tra/ptra,0.d0)
-      
-          if (wuf_swap .lt. rwuep2) then          
-          swfacp = max(0.,min((1./rwuep2) * wuf_swap,1.))      
-          else
-          swfacp = 1.
-          endif     
-        
-      endif
-      
-      !--- Water Stress      
-      swfacp = max(0.d0, min(1.d0, tra / ptra))
-      swface = swfacp * 0.5
       
       
       !--- Crop Growth      
