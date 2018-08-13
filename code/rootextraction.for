@@ -111,7 +111,7 @@
           alpfrs = 1.0d0
 
 ! ---     reduction due to water stress
-          if (node.gt.botcom(1)) hlim2=hlim2l
+          if (node.gt.botcom(1)) hlim2=hlim2l 
 ! ---     waterstress/ wet circumstances
           if (h(node).le.hlim1.and.h(node).gt.hlim2) then
             alpwat = (hlim1-h(node))/(hlim1-hlim2)

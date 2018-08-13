@@ -3706,15 +3706,21 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               endif     
         
           endif
-      
-          !--- Water Stress      
-          swfacp = max(0.d0, min(1.d0, tra / ptra))
-          swface = swfacp           
-           
-       else
-		!--- use Feddes
+                 
+      else
+		!--- use Feddes method
+              
+          !p_fac_ext = 1.d0
+          !p_fac_pho = 0.8d0
+          !s_fac_ext = 1.5d0
+          !s_fac_pho = 1.d0
+          
+          !wuf_swap = max(tra/ptra,0.d0)
+          
+          
+              
        
-       endif
+      endif
       
        write(deb_io,90) iyear,daynr,daycum,daycrop,diac,
      & qrosum,
