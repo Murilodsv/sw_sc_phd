@@ -1,5 +1,33 @@
 #--- water stress factor sugarcane
 
+
+#--- function
+AScurv =  function(df,x,min,max,shp,mid,asy){
+  #--- Growth Function with asymetry (optional)
+  #--- Asymptote Curve and its first derivative (df=1)
+  #--- Author: Murilo S. Vianna
+  #--- Feb-2018
+  #--- Why using this function to describe growth? Refer to -> doi: 10.1093/aob/mcg029
+  
+  # integer df    ! Equation form: 0 = integral, 1 = 1st derivative
+  # real  x       ! X Value
+  # real  min     ! Minimum Value
+  # real  max     ! Maximum Value
+  # real  shp     ! Function Shape
+  # real  mid     ! X Value in which y = (max - min) / 2.
+  # real  asy     ! Asymetry
+  
+  if(df == 0){
+    #--- Integral form
+    return(max + ((min - max) / ((1. + (x/mid)^shp)^asy)))
+  }else{
+    #--- 1st derivative
+    return( -asy * (min-max) * ((1.+(x/mid)^shp)^(-asy-1.)) * (shp*(x/mid)^(shp-1.)) * (1./mid))
+  }
+  
+}
+
+
 #--- parameters
 
 #--- crop extension
@@ -67,32 +95,7 @@ lines(swsfac_pho~r_tra, type = "l", col = "red")
 
 
 
-#--- as function
 
-AScurv =  function(df,x,min,max,shp,mid,asy){
-#--- Growth Function with asymetry (optional)
-#--- Asymptote Curve and its first derivative (df=1)
-#--- Author: Murilo S. Vianna
-#--- Feb-2018
-#--- Why using this function to describe growth? Refer to -> doi: 10.1093/aob/mcg029
-
-# integer df    ! Equation form: 0 = integral, 1 = 1st derivative
-# real  x       ! X Value
-# real  min     ! Minimum Value
-# real  max     ! Maximum Value
-# real  shp     ! Function Shape
-# real  mid     ! X Value in which y = (max - min) / 2.
-# real  asy     ! Asymetry
-
-  if(df == 0){
-    #--- Integral form
-    return(max + ((min - max) / ((1. + (x/mid)^shp)^asy)))
-  }else{
-    #--- 1st derivative
-    return( -asy * (min-max) * ((1.+(x/mid)^shp)^(-asy-1.)) * (shp*(x/mid)^(shp-1.)) * (1./mid))
-  }
-  
-}
 
 
 
