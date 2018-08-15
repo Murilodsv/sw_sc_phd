@@ -3646,7 +3646,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !------------------------------!   
           !--------After Emergence-------!
           !------------------------------!
-                fluseritchie = .true.
+                fluseritchie = .false.
 	 if(fluseritchie)then
            
           prwu    = 0.d0
@@ -5451,7 +5451,6 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           real dws
           real tfac_per
           real Topt
-          real avg_tfac_per
           real phyloc
           real dphyn
           real di
@@ -5520,14 +5519,11 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               dper    = 0.d0 !Daily  (mm d-1)
               dper_h  = 0.d0 !Hourly (mm h-1)
               
-              avg_tfac_per = 0.d0 !Average Temperature Reducing Factor
               do h = 1, 24                  
                   tfac_per= min(1.d0,max(0.d0,thour(h)-Tbi)/(Topt-Tbi))
                   dper_h  = dpercoeff * tfac_per * swface * agefactor ! AgeFactor is an age reduction factor for dPER, based on N. G. Inman-Bamber et al. 2008 Australian Journal of Agricultural Research, Fig.3
                   dper    = dper + dper_h                  
-                  avg_tfac_per = avg_tfac_per + tfac_per
               enddo
-              avg_tfac_per = avg_tfac_per / 24.
               
         !--- Stalk diameter 
         !--- Original from SAMUCA 1st version (Marin)
