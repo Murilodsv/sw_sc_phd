@@ -3646,23 +3646,23 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !------------------------------!   
           !--------After Emergence-------!
           !------------------------------!
-        
-        ! --- reset root water extraction array
-        do node = 1,numnod
-          prwu(node) = 0.0d0
-        end do
-        tqropot = 0.
-        
-        !---  root senescence
-        !--- Depicted as the fraction of effective roots as function of total roots biomass
-        rootsene = 1.d0 - ((f_rts * wr) / (wr + 1.d0))
-          
-       !--- potential RWU 
-       !--- Note that rootsene is been used here
-       !--- It can be depicted as the efficiency part of root system.
+                fluseritchie = .true.
 	 if(fluseritchie)then
+           
+          prwu    = 0.d0
+          tqropot = 0.d0
+        
+          !---  root senescence
+          !--- Depicted as the fraction of effective roots as function of total roots biomass
+          rootsene = 1.d0 - ((f_rts * wr) / (wr + 1.d0))
+          
+          !--- potential RWU 
+          !--- Note that rootsene is NOT been used here          
+              !--- compute the potential root water uptake based on empirical relation with root length density (RLD) (Richie (1985)
+              !--- IMPORTANT:    This will be only used for crop expansion factor calculation (swface)
+              !---               The actual root water uptake is compute according to Feddes Method           
            do node = 1, noddrz
-           !--- Apply Ritchie Equation (Same as DSSAT)
+           !--- Apply Ritchie Equation
               prwu(node) = max(0.,min(0.07, 
      &		swcon1*EXP(MIN((swcon2(node)*(theta(node)-wpp(node))),40.))/
      &		(swcon3-LOG(rld(node)))))
@@ -3672,10 +3672,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 			
               !--- integrate
 		    tqropot = tqropot + prwulay(node)
-              
-              !--- update qrot
-              qrot(node) = prwulay(node)
            enddo
+           
+           !--- potential uptake never lower than actual uptake
+           tqropot = max(tqropot,qrosum)
            
           ! --- water stress factors in growth and photosynthesis 
           if (ptra .le. 1.d-5) then
@@ -3684,20 +3684,21 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
             swfacp    = 1.d0
             swface    = 1.d0
         
-          else
-      
-          swfacp = max(0.d0, min(1.d0, tra / ptra))        
+          else                             
               
-              wuf = max(tqropot/ptra,0.d0)
-        
+              wuf = max(tqropot/ptra,0.d0)        
         
               if (wuf .lt. rwuep1) then          
                   swface = max(0.,min((1./rwuep1) * wuf,1.))      
               else
                   swface = 1.
               endif
-          
-              wuf_swap = max(tra/ptra,0.d0)
+              
+              ! SWAP assumes that potential root water uptake is never greater than potential evapotranspiration (ptra), 
+              ! i. e. potential root water uptake is equal to ptra
+              ! the actual root water uptake (qrosum) is computed by the feddes factor multiplication on ptra
+              ! Note: Based on above, wuf_swap will never be greater than 1
+              wuf_swap = max(qrosum/ptra,0.d0)
       
               if (wuf_swap .lt. rwuep2) then          
                   swfacp = max(0.,min((1./rwuep2) * wuf_swap,1.))      
@@ -3708,17 +3709,12 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           endif
                  
       else
-		!--- use Feddes method
-              
-          !p_fac_ext = 1.d0
-          !p_fac_pho = 0.8d0
-          !s_fac_ext = 1.5d0
-          !s_fac_pho = 1.d0
+		!--- Use Feddes for both extension and photosynthesis stress
+          !--- Note that in this case water stress effect will have the same magnitude in crop extension and photosynthesis,
+          !--- while there are evidences that crop extension is signficantly more sensitive to water stress than photosynthesis rates
           
-          !wuf_swap = max(tra/ptra,0.d0)
-          
-          
-              
+          swfacp = max(0.d0, min(1.d0, tra / ptra))
+          swface = swfacp
        
       endif
       

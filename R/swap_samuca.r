@@ -23,8 +23,9 @@ run_model   = T
 model_fn    = "swap_samuca_v1.exe"
 swap_prj    = "SWAP-SAMUCA_PIRA"
 soil_depth  = c(-10,-19.5,-28.5,-58.5) # simulated soil depth compartments to retrive data (see on swap.swp)
-out_sufix   = "_test_pm"
+out_sufix   = "_test_pm_swf"
 out_folder  = "/Rout/"
+plot_det    = F   # plot detailed outputs?
 
 #--- Read Measured Data
 #--- Note data must have "year" and "doy" collumns!!!!!!!
@@ -61,6 +62,8 @@ plant_numlines = plant_lines[substr(plant_lines,1,1)=="2"]  #Separate only lines
 plant = read.table(text = plant_numlines)                   #Read numeric lines as data.frame
 colnames(plant) = c("year","doy","das","dap","gdd","dw","reserv","rw","lw","tp","sw","sucw","fibw","tch","pol","adryw","lai","till","h","devgl","itn","swface","swfacp","rtpf","lfpf","skpf","tppf","ctype","status","stage")
 
+if(plot_det){
+
 #--- Detailed Internodes
 detint_lines = readLines(paste0("DetIntePr_",swap_prj,".OUT"))       #Read files lines
 detint_numlines = detint_lines[substr(detint_lines,1,1)=="2"]    #Separate only lines starting with "2" - Indicating its a numerical line (year = 2012,2013...)
@@ -85,6 +88,7 @@ detroot_numlines = detroot_lines[substr(detroot_lines,1,1)=="2"]  #Separate only
 detroot = read.table(text = detroot_numlines)                     #Read numeric lines as data.frame
 colnames(detroot) = c("year","doy","das","dap","diac","wr","rd","rootsene",paste(rep("rld",45),1:45),"tqropot","ptra")
 
+}
 #--- Soil Water
 swba = read.csv(file = "result.vap", skip = 11)
 
@@ -438,7 +442,7 @@ pl_bio(data.frame(das = o_sth[,"das"],dat = o_sth[,o_bio[7]]),
        "Height (m)",TRUE)
 dev.off()
 
-
+if(plot_det){
 #--- retrive cana type from default outputs
 ctype = plant[,c("das","ctype")]
 
@@ -1076,4 +1080,4 @@ lines(detsfac$li~detsfac$das)
 plot(detsfac$arue_dwa~detsfac$IPAR_acc)
 
 points(detroot$rd/100~detroot$dap)
-
+}
