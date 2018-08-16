@@ -2441,6 +2441,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       logical     fldetpgfaout        !Detailed pg and factors output file?
       logical     flsink_fbres        !Simulate Feedback response of sink to photosynthesis rate? (T or F)
       logical		fluseritchie		!use ritchie water balance instead of Feddes or De Jong?
+      logical     flusethour          !use hourly temperature on GDD?
       logical		fldebug				!Debug code
       
       real        agefactor           !Relative age factor to reduce crop processes 
@@ -2454,7 +2455,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        ddealla             !Daily dead Leaf area (m2 m-2)
       real        ddeallw             !Daily dead Leaf biomass (t ha-1)       
       real        deadln              !DAily dead leaf number
-      real        di                  !daily accumulated temperature above TB (degree days)
+      real        di                  !daily accumulated temperature above TB used for the crop developmet (degree days)
+      real        di_air              !daily accumulated temperature above TB in above ground conditions, i.e. using air temperature (degree days)
+      real        di_soil             !daily accumulated temperature above TB in soil considering the root depth range
+      real        di_soils            !daily accumulated temperature above TB in soil surface (meant to be used for tillering)
       real        diac                !Cumulative Degree-Days
       real        diaclf              !Cumulative Degree-Days for leaf dev
       real        diam                !average stem diameter (cm)
@@ -2508,6 +2512,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        arue_wa
       real        sgpf                !
       real        shootdepth          !Shoot depth before emergence
+      real        dshootdepth         !Shoot depth before emergence daily rate 
       real        sla                 !specific leaf area (m2 kg-1) (P)
       real        srad                !Daily solar radiation (MJ m-2)
       real        srl                 !(P)
@@ -2525,6 +2530,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        rwuep1              !
       real        rwuep2              !
       real        thour(24)           !Hourly temperature
+      real        thour_soil(24)      !Hourly Soil Temperature within root depth range
+      real        thour_soils(24)     !Hourly Soil Surface Temperature
+      real        t_soil              !Daily Average Soil Temperature within root depth range         
+      real        t_soils             !Daily Average Soil Surface Temperature        
       real        tmax                !Daily maximum temperature (oC)
       real        tmin                !Daily manimum temperature (oC)
       real        t_mean              !Daily mean temperature (oC)
@@ -2733,6 +2742,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           outstk_rank     = 1     !Rank of detailed stalk (1 <= outstk_rank <= peakpop)
           itoutnumber     = 35    !Up to 35 internodes will be printed out on outstk_rank and averaged stalks
           fluseritchie	= .false.
+          flusethour      = .false.
           fldebug			= .true.!Debug
       
       
@@ -2985,7 +2995,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               endif
               
               !Initial crop depth
-              initcropdepth = plantdepth          
+              initcropdepth   = plantdepth
+              shootdepth      = plantdepth
       
       !    !Part7 ---> soil water extraction by plant roots (Feddes approach)      !    
       !    !----------------------------------------------------------------------------------------------------------------------------------
@@ -3339,20 +3350,13 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 	!----------------------------
 	!--- Daily Rate Potential ---
 	!----------------------------
-
-      !--- Linking with SWAP Variables          
-      tmax = tmx                  !(oC)
-      tmin = tmn                  !(oC)
-      t_mean = .5 * (tmax + tmin) !(oC)
-      par = (rad * .5)/0.1E7      !(MJ/m2.d)
-      epp = ptra                  !(cm/d)
-      ch = pleng * 100.           !(cm) Used for Penmam-M. method
       
-      !Hourly Temperature in thour array
-      call TempHour(tmax,tmin,thour)
-      
-      !Reset rates      
+      !Reset daily rates      
       di          = 0.d0
+      di_air      = 0.d0
+      di_soil     = 0.d0
+      di_soils    = 0.d0
+      dshootdepth = 0.d0
       dw          = 0.d0
       dw_ss       = 0.d0
       mresp       = 0.d0
@@ -3393,16 +3397,61 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       swface      = 1.d0
       RGP_fac     = 1.d0
       
-      !--- Crop Development      
-	!--- Calculating degree-days using a unique tb          
-		if (t_mean .ge. tb .and. t_mean .le. tbM) then
-			    di = (t_mean-tb)     ! Degree-Days for today
-          else              
-			    di = 0.d0
-          endif
-          
-          !Check if stalks emerged
-          if(diac .gt. chustk .and. .not. flstalkemerged)then
+      !-----------------------------------
+      !--- Linking with SWAP Variables ---
+      !-----------------------------------
+      tmax    = tmx                       !(oC)
+      tmin    = tmn                       !(oC)
+      t_mean  = 0.5 * (tmax + tmin)       !(oC)
+      par     = (rad * 0.5)/0.1E7         !(MJ/m2.d)
+      epp     = ptra                      !(cm/d)
+      ch      = pleng * 100.              !(cm) Used for Penmam-M. method
+      
+      !--- Hourly Temperature in thour array
+      call TempHour(tmax,tmin,thour)      
+      
+      !--- Calculating growing degree-days (GDD) using a unique tB
+      !--- Try To Use Soil Temperature within root depth range
+      t_soil      = t_mean    ! using Tsoil = T air
+      t_soils     = t_mean    ! add here first soil node temperature from temperature module
+      thour_soil  = thour     ! using Tsoil = T air
+      thour_soils = thour     ! add here first soil node temperature from temperature module
+      
+      if(flusethour)then
+	!--- compute on hourly base
+          do i = 1, 24
+              di_soil  = di_soil  + max(0.d0, thour_soil(i)-tb)  / 24.d0
+              di_soils = di_soils + max(0.d0, thour_soils(i)-tb) / 24.d0
+              di_air   = di_air   + max(0.d0, thour(i)-tb)       / 24.d0
+          enddo
+      else
+      !--- use daily temp average
+          di_soil     = max(0.d0, t_soil-tb)
+          di_soils    = max(0.d0, t_soils-tb)
+          di_air      = max(0.d0, t_mean-tb)
+      endif 
+      
+      !-------------------------
+      !--- Check Cane Stages ---
+      !-------------------------
+      
+      !--- Check if crop emerged
+      if(shootdepth .lt. 1.d-8 .and. .not. flemerged)then
+          flemerged   = .true. !Emerged
+          shootdepth  = 0.d0
+          chuem       = diac
+          initnstk    = init_pop
+          nstk        = initnstk
+          la          = init_la / 1.e4 !One leaf area in m2 (dim: 15 x 2 cm)
+          ln          = 2.d0           !Assuming two leaves per stem
+          lntotal     = ln             !All leaves have dewlap
+          lai         = nstk * ln * la !Considering two developed leaves per stalk
+          canestage   = 'Emergd'                  
+      endif
+      
+      !Check if stalks emerged
+      if(diac .gt. chustk .and. .not. flstalkemerged)then
+              !if(.not. flemerged) !add a warning message! Stalk growth before crop emergence! Review your crop parameters
               flstalkemerged  = .true.
               canestage       = 'StkGro'
               
@@ -3410,92 +3459,102 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               wstkwat     = wa * (1.d0/0.3d0 - 1.d0) !Water content in stalks (70% water ~ potential condition) - this is a convertion from Dry to Fresh Mass
               noden       = 1.d0
               age_stkemer = stk_age(1,1)
-          endif
+      endif
+      
+      
+      
+      
+      !------------------------!
+      !--- Before Emergence ---!
+      !------------------------!
+      
+      if(.not. flemerged)then         
           
-          !Age Factor
-          !Empirical factor to reduce crop processes due to crop aging, e.g.: Stalk extension and photosynthesis (RGP: Reduced Growth Phenomena)
-          agefactor = exp(-rate_af*(diac/1000.)) 
-          agefactor = min(1.,agefactor)
+          !--- Crop Development
+          di  = di_soil !considering crop is below ground
           
-          if(.not. flemerged)then
+          !--- Shoot expansion rate towards soil surface
+          dshootdepth  = -di * shootrate_bg !Assuming the primary shoot growth rate of 0.08 cm/DG (Keating et. al. 1999)
+          
+          !--- Maintenance Respiration from Liu & Bull (2001) [Fig3]
+          !--- doi.org/10.1016/S0304-3800(01)00372-6
+          !--- Note: q10 curves are more apropriate to follow classical Crop Models (Thornley & Campbel, 1990)
+          !--- Note: Maintenance Respiration is only computed for before emergence conditions to simulate whether the crop has enough substrates reserves to reach surface
+          mresp   = 3.991 * exp(0.046 * t_mean)                       !g CO2 g-1 w min-1 
+          mresp   = mresp *((24.d0*60.d0)/10.d0**6)*(CH2O_M/CO2_M)    !g CH2O g-1 w d-1
+          mresp   = mresp * w ! t ha-1 d-1
               
-          !------------------------------!
-          !-------Before Emergence-------!
-          !------------------------------!
+          !--- Reduce Available Sugars (Maintenance is priority)
+          availw_bg   = max(0.d0, availw_bg - mresp)
               
-              !--- Shoot expansion towards soil surface
-		    shootdepth  = plantdepth - diac * shootrate_bg !Assuming the primary shoot growth rate of 0.08 cm/DG (Keating et. al. 1999)
-		    
-              !--- Maintenance Respiration from Liu & Bull (2001) [Fig3]
-              !--- doi.org/10.1016/S0304-3800(01)00372-6
-              !--- Note: q10 curves are more apropriate to follow classical Crop Models (Thornley & Campbel, 1990)
-              !--- Note: Maintenance Respiration is only computed for before emergence conditions to simulate whether the crop has enough substrates reserves to reach surface
-              mresp   = 3.991 * exp(0.046 * t_mean)                       !g CO2 g-1 w min-1 
-              mresp   = mresp *((24.d0*60.d0)/10.d0**6)*(CH2O_M/CO2_M)    !g CH2O g-1 w d-1
-              mresp   = mresp * w ! t ha-1 d-1
-              
-              !--- Reduce Available Sugars (Maintenance is priority)
-              availw_bg   = max(0.d0, availw_bg - mresp)
-              
-              !--- Sink Strength
-              !--- Assuming 30% of cost (Growth Respiration - Inman-Bamber, 1991)
-              dw_ss       = availw_bg * (biomass_useRate * diac) * 
+          !--- Sink Strength
+          !--- Assuming 30% of cost (Growth Respiration - Inman-Bamber, 1991)
+          dw_ss       = availw_bg * (biomass_useRate * diac) * 
      & 1.d0/(1.d0-0.3d0)
               
-              !--- Carbon Balance
-              if(availw_bg .ge. dw_ss)then
-                  !Reserves can supply for potential growth
-                  gresp       = dw_ss * 0.3d0
-                  dw          = dw_ss - gresp                  
-                  availw_bg   = availw_bg - dw_ss
-              else
-                  if(dw_ss .gt. 0.d0)then !To Avoid NaN
-                      gresp       = dw_ss * 0.3d0     *(availw_bg/dw_ss)
-                      dw          = dw_ss*(1.d0-0.3d0)*(availw_bg/dw_ss)
-                      availw_bg   = 0.d0
-                  endif                      
-              endif
+          !--- Carbon Balance
+          if(availw_bg .ge. dw_ss)then
+              !Reserves can supply for potential growth
+              gresp       = dw_ss * 0.3d0
+              dw          = dw_ss - gresp                  
+              availw_bg   = availw_bg - dw_ss
+          else
+              if(dw_ss .gt. 0.d0)then !To Avoid NaN
+                  gresp       = dw_ss * 0.3d0     *(availw_bg/dw_ss)
+                  dw          = dw_ss*(1.d0-0.3d0)*(availw_bg/dw_ss)
+                  availw_bg   = 0.d0
+              endif                      
+          endif
               
-              !Total Respiration
-              resp = mresp + gresp !t ha-1
+          !Total Respiration
+          resp = mresp + gresp !t ha-1
 		    
-              !Partitioning factors
-              rgpf        = rgpf_be   !biomass to roots
-              lgpf        = 0.d0      !No blade leaves
-              tppf        = 1. - rgpf !Top parts (Below ground shoot)
-              sgpf        = 0.d0      !No stalks
-              agpf        = 0.d0      !No aerial parts
+          !Partitioning factors
+          rgpf        = rgpf_be   !biomass to roots
+          lgpf        = 0.d0      !No blade leaves
+          tppf        = 1. - rgpf !Top parts (Below ground shoot)
+          sgpf        = 0.d0      !No stalks
+          agpf        = 0.d0      !No aerial parts
                   
-              !Allocate to crop pools
-              dwr         = dw * rgpf !Roots
-              dwl         = 0.d0      !No Above ground Leaves biomass
-              dwt         = dw * tppf !Top parts (Below ground shoot)
-              dws         = 0.d0      !No Above ground Stalks biomass
+          !Allocate to crop pools
+          dwr         = dw * rgpf !Roots
+          dwl         = 0.d0      !No Above ground Leaves biomass
+          dwt         = dw * tppf !Top parts (Below ground shoot)
+          dws         = 0.d0      !No Above ground Stalks biomass
               
-              !There is no Biomass Gain, only re-allocation of reserves
-              dw  = 0.d0
+          !There is no Biomass Gain, only re-allocation of reserves
+          dw  = 0.d0
+             
+          if(availw_bg .le. 0.d0)then
+              !Not enough biomass for shoot emergence                
+              flcropalive = .false.   !Crop is dead
+              canestatus  = 'DeadLC'  ! LC - Lack of Carbon
+              !Warning Msg: Plant it shallow or increase chopped stalks biomass  
+          endif
               
-              if(availw_bg .le. 0.d0)then
-                  !Not enough biomass for shoot emergence                
-                  flcropalive = .false.   !Crop is dead
-                  canestatus  = 'DeadLC'  ! LC - Lack of Carbon
-                  !Warning Msg: Plant it shallow or increase chopped stalks biomass  
-              endif
-              
-              !For checking purpose    
-              rgpf_ck   = rgpf
-              lgpf_ck   = lgpf
-              sgpf_ck   = sgpf
-              tgpf_ck   = tppf
+          !For checking purpose    
+          rgpf_ck   = rgpf
+          lgpf_ck   = lgpf
+          sgpf_ck   = sgpf
+          tgpf_ck   = tppf
                   
-              !Use soil Kc until crop is below ground
-              cf          = cfbs              
-              
-          else	    
-		
-          !------------------------------!   
-          !--------After Emergence-------!
-          !------------------------------!
+          !Update soil Kc until crop is below ground          
+          if(swetr .eq. 1)then
+			!--- use kc curve in relation to LAI
+			cf          = cfbs          
+          else
+			!--- use PM method
+			cf          = 1.d0
+          endif
+          
+      else
+
+          !-----------------------!
+          !--- After Emergence ---!
+          !-----------------------!
+          
+          !--- Crop Development
+          di = di_air
           
           !Crop coefficient as function of leaf area index
           if(swetr .eq. 1)then
@@ -3618,6 +3677,26 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                   cbpf    = tppf - lgpf  
               
               end select
+          
+              
+      
+      endif
+                
+          if(.not. flemerged)then
+              
+          !------------------------------!
+          !-------Before Emergence-------!
+          !------------------------------!
+              
+                        
+              
+          else	    
+		
+          !------------------------------!   
+          !--------After Emergence-------!
+          !------------------------------!
+          
+          
 		
           endif
                      
@@ -3625,35 +3704,26 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       
 3000  continue    
       
+      !--- Actual crop growth rate
       if(.not. flemerged)then
           
           !------------------------------!   
           !-------Before Emergence-------!
           !------------------------------!
           
-          !Check if crop is emerged
-          if(shootdepth .LT. 1.d-8)then
-			    flemerged   = .true. !Emerged
-			    shootdepth  = 0.d0
-                  chuem       = diac
-                  initnstk    = init_pop
-                  nstk        = initnstk
-                  la          = init_la / 1.e4 !One leaf area in m2 (dim: 15 x 2 cm)
-                  ln          = 2.d0
-			    lntotal     = ln
-                  lai         = nstk * ln * la !Considering two developed leaves per stalk
-                  canestage   = 'Emergd'
-                  
-          endif             
+          !--- No stress is considered before crop emergence
+          !--- SG: Experiment with different moisture threshold and emergence rate?
           
       else
           
           !------------------------------!   
           !--------After Emergence-------!
           !------------------------------!
-                fluseritchie = .false.
+          
+          !--- Compute water stress
+          !--- Use SWAP embedded methods are more appropriated (set fluseritchie = .false.)
 	 if(fluseritchie)then
-           
+          !--- compute water stress on crop expansion based on Ritchie 1985 model (potential root water uptake is computed as function of RLD)
           prwu    = 0.d0
           tqropot = 0.d0
         
@@ -3763,10 +3833,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       
        write(deb_io,90) iyear,daynr,daycum,daycrop,diac,
      & qrosum,
-     & tqropot,ptra,cumdens(1:202)
-      	
-      
-      
+     & tqropot,ptra,cumdens(1:202)      
       
       !--- Crop Growth      
       !--- Actual Gross Photosynthesis (Recall that pg is priory affected by Radiation, Temperature, Age and CO2 - "Defining Factors")
@@ -3786,7 +3853,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               resp = mresp + gresp    
               
               case(2)
-          
+                  ! implementation of murilo vianna phd thesis (2018)
               end select
               
       !--- Net Biomass Gain Due to Photosynthesis
@@ -3810,7 +3877,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                   stk_age(tl, 2) = stk_age(tl, 1) / stk_age(1, 1) 
               enddo
               
-              !--- Age factor
+              !--- Stalks age factor
+              !--- This is implemented to account for the difference in age among stalks (primary, secondary, tertiary...)
               if((nstk + dnstk) .lt. init_pop)then
                   stk_agefac  = 1.d0
               else                  
@@ -3829,7 +3897,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                            
               !Check whether a tiller senesced              
               if(dnstk .lt. 0.d0)then
-                  !Top parts dead biomass (t ha-1)
+                  !Top parts dead biomass rate (t ha-1)
                   ddeadtop = wt * (stk_age(aint(nstk+dnstk),2) / 
      & sum(stk_age(1:aint(nstk+dnstk), 2))) * (-1.d0 * dnstk)
               endif
@@ -3901,7 +3969,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               endif
                   
                   !--- Stalk Fresh Mass
-                  !--- 0.9 and 0.5 threshold from 1st version of SAMUCA (Marin) - No documentation
+                  !--- 0.9 and 0.5 threshold from 1st version of SAMUCA (Marin) - No documentation found about these values
                   if(swfacp .lt. 0.9 .and. dws .lt. 0.5 .and. wsfresh 
      & .gt. 0.d0)then
 				    
@@ -3965,8 +4033,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               tgpf_ck   = dwt / dw
             endif
                 
-		!--- Integration of daily state variable		
-		nstk      = nstk     + dnstk                     !Number of stalks
+		!--- Integration of daily state variables
+          shootdepth= shootdepth + dshootdepth
+		nstk      = nstk     + dnstk                     !Number of stalks          
 		ln        = ln       + dnleaf - ddeadln          !Number of green leaves per Stem                   
 		noden     = noden    + dnoden                    !Number of internodes
           lai       = lai      + dla - ddealla             !Leaf Area Index
@@ -3986,12 +4055,17 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           if(flemerged) diacem = diacem + di
           
           
+          !Age Factor
+          !Empirical factor to reduce crop processes due to crop aging, e.g.: Stalk extension and photosynthesis (RGP: Reduced Growth Phenomena)
+          agefactor = exp(-rate_af*(diac/1000.)) 
+          agefactor = min(1.,agefactor)
+          
           !--- Compute Stalks Sucrose, Fiber (t ha-1), Height (m) and internode number(#stk-1)
           if(ws .gt. 0.d0 .and. flstalkemerged)then
               suc     = 0.d0
               fib     = 0.d0
               pleng   = 0.d0
-              do tl = 1, aint(nstk-dnstk)
+              do tl = 1, aint(nstk)
                   do it = 1, (aint(stk_itn(tl)) + 1)
                       suc     = suc   + itsuc(tl,it) * (1.e4/1.e6)!Sucrose Mass (t ha-1)
                       fib     = fib   + itfib(tl,it) * (1.e4/1.e6)!Fiber Mass   (t ha-1)
@@ -4849,14 +4923,14 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           save
           
 	    !Fraction Canopy light interception
-		li    = 1.d0 - EXP(-extcoef * lai)
+		li    = 1.d0 - exp(-extcoef * lai)
           
           !Effect of CO2	
 		co2_fac =  ((0.0001282051  * co2) + 0.95)
           
           tstress = 1.d0          
           do i = 1, 24
-		!Computing the Temperature Stress on Photosynthesis
+		!Computing the Temperature Stress on Photosynthesis (definig factor!)
           !Optimum Thresholds (tb,to_pg1,to_pg2,tbM) - Murilo Vianna
               
               if(thour(i) .lt. tb)then

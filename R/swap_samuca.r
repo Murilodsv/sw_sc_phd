@@ -23,7 +23,7 @@ run_model   = T
 model_fn    = "swap_samuca_v1.exe"
 swap_prj    = "SWAP-SAMUCA_PIRA"
 soil_depth  = c(-10,-19.5,-28.5,-58.5) # simulated soil depth compartments to retrive data (see on swap.swp)
-out_sufix   = "_test_pm_swf"
+out_sufix   = "_test_pm_h2"
 out_folder  = "/Rout/"
 plot_det    = F   # plot detailed outputs?
 
@@ -443,10 +443,13 @@ pl_bio(data.frame(das = o_sth[,"das"],dat = o_sth[,o_bio[7]]),
 dev.off()
 
 #--- plot water stress
-plot(plant$swface~plant$das, type = "l", col= "green")
-lines(plant$swfacp~plant$das, type = "l", col= "grey")
+plot(plant$swface~plant$das,
+     type = "l",
+     col= "green",
+     ylab = "Water Stress Factor",
+     xlab = "DAS")
+lines(plant$swfacp~plant$das, type = "l", col= "red")
 
-plot(plant$swface~plant$swfacp)
 
 if(plot_det){
 #--- retrive cana type from default outputs

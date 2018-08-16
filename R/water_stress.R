@@ -29,15 +29,15 @@ AScurv =  function(df,x,min,max,shp,mid,asy){
 
 
 #--- parameters
-
+asym = 1
 #--- crop extension
-pfac_ext_ini = 0.90
-pfac_ext_end = 0.50
+pfac_ext_ini = 0.99
+pfac_ext_end = 0.60
 sens_ext_shp = 5
 
 #--- crop photosynthesis
 pfac_pho_ini = 0.70
-pfac_pho_end = 0.20
+pfac_pho_end = 0.10
 sens_pho_shp = 5
 
 #--- ratio between actual and potential transpiration
@@ -55,7 +55,7 @@ while(adj_shp){
                       max = 1,
                       shp = shp_ext,
                       mid = mean(c(pfac_ext_ini,pfac_ext_end)),
-                      asy = 1)
+                      asy = asym)
   
   ini_sws = swsfac_ext[r_tra ==r_tra[which.min(abs(r_tra - pfac_ext_ini))]]
   end_sws = swsfac_ext[r_tra ==r_tra[which.min(abs(r_tra - pfac_ext_end))]]
@@ -77,7 +77,7 @@ while(adj_shp){
                       max = 1,
                       shp = shp_pho,
                       mid = mean(c(pfac_pho_ini,pfac_pho_end)),
-                      asy = 1)
+                      asy = asym)
   
   ini_sws = swsfac_pho[r_tra ==r_tra[which.min(abs(r_tra - pfac_pho_ini))]]
   end_sws = swsfac_pho[r_tra ==r_tra[which.min(abs(r_tra - pfac_pho_end))]]
@@ -89,10 +89,22 @@ while(adj_shp){
   }
 }
 
+swface = r_tra
+swface[r_tra >= pfac_ext_end & r_tra <= pfac_ext_ini] = (r_tra[r_tra >= pfac_ext_end & r_tra <= pfac_ext_ini] - pfac_ext_end) * (1 / (pfac_ext_ini -pfac_ext_end))
+swface[r_tra < pfac_ext_end] = 0
+swface[r_tra > pfac_ext_ini] = 1
+
+swfacp = r_tra
+swfacp[r_tra >= pfac_pho_end & r_tra <= pfac_pho_ini] = (r_tra[r_tra >= pfac_pho_end & r_tra <= pfac_pho_ini] - pfac_pho_end) * (1 / (pfac_pho_ini -pfac_pho_end))
+swfacp[r_tra < pfac_pho_end] = 0
+swfacp[r_tra > pfac_pho_ini] = 1
+
 
 plot(swsfac_ext~r_tra, type = "l", ylim = c(0,1.1))
 lines(swsfac_pho~r_tra, type = "l", col = "red")
 
+lines(swface~r_tra, lty = 3)
+lines(swfacp~r_tra, lty = 3, col = "red")
 
 
 
