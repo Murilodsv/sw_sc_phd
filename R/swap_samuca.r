@@ -442,6 +442,12 @@ pl_bio(data.frame(das = o_sth[,"das"],dat = o_sth[,o_bio[7]]),
        "Height (m)",TRUE)
 dev.off()
 
+#--- plot water stress
+plot(plant$swface~plant$das, type = "l", col= "green")
+lines(plant$swfacp~plant$das, type = "l", col= "grey")
+
+plot(plant$swface~plant$swfacp)
+
 if(plot_det){
 #--- retrive cana type from default outputs
 ctype = plant[,c("das","ctype")]
