@@ -2517,6 +2517,11 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        sucmax              !
       real        swface              !soil water excess stress factor
       real        swfacp              !soil water deficit stress factor
+      real        swfacp_ini          !Threshold of the actual/potential transpiration to start stress effect on photosynthesis (P)
+      real        swfacp_end          !Threshold of the actual/potential transpiration to which photosynthesis ceases (P)
+      real        swface_ini          !Threshold of the actual/potential transpiration to start stress effect on crop extension (P)
+      real        swface_end          !Threshold of the actual/potential transpiration to which crop extension ceases (P)          
+      real        tra_fac             !Daily actual/pontential transpiration ratio (tra_fac =1: no water stress)
       real        rwuep1              !
       real        rwuep2              !
       real        thour(24)           !Hourly temperature
@@ -3646,7 +3651,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !------------------------------!   
           !--------After Emergence-------!
           !------------------------------!
-                fluseritchie = .true.
+                fluseritchie = .false.
 	 if(fluseritchie)then
            
           prwu    = 0.d0
@@ -3717,8 +3722,42 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !--- Note that in this case water stress effect will have the same magnitude in crop extension and photosynthesis,
           !--- while there are evidences that crop extension is signficantly more sensitive to water stress than photosynthesis rates
           
-          swfacp = max(0.d0, min(1.d0, tra / ptra))
-          swface = swfacp
+              
+          swfacp_ini = 0.75
+          swfacp_end = 0.15
+          
+          swface_ini = 1.d0
+          swface_end = 0.60
+          
+          tra_fac = max(0.d0, min(1.d0, tra / ptra))
+          
+          !--- Water Stress Effect on Photosynthesis
+          if(tra_fac .ge. swfacp_end .and. tra_fac .le. swfacp_ini)then
+              !compute water stress effect on photosynthesis
+              swfacp = (tra_fac - swfacp_end) * (1.d0 / (swfacp_ini - 
+     & swfacp_end))
+              
+          else if(tra_fac .lt. swfacp_end)then
+              !ceases photynthesis due to water stress
+              swfacp = 0.d0              
+          else
+              !No water stress on photosynthesis
+              swfacp = 1.d0              
+          endif
+          
+          !--- Water Stress Effect on Crop Extension (Turgor pressure)
+          if(tra_fac .ge. swface_end .and. tra_fac .le. swface_ini)then
+              !compute water stress effect on crop extension
+              swface = (tra_fac - swface_end) * (1.d0 / (swface_ini - 
+     & swface_end))
+              
+          else if(tra_fac .lt. swface_end)then
+              !ceases crop extension due to water stress
+              swface = 0.d0              
+          else
+              !No water stress on crop extension
+              swface = 1.d0              
+          endif
        
       endif
       
