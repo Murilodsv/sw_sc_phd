@@ -3646,7 +3646,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !------------------------------!   
           !--------After Emergence-------!
           !------------------------------!
-                fluseritchie = .false.
+                fluseritchie = .true.
 	 if(fluseritchie)then
            
           prwu    = 0.d0
@@ -3704,7 +3704,11 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                   swfacp = max(0.,min((1./rwuep2) * wuf_swap,1.))      
               else
                   swfacp = 1.
-              endif     
+              endif
+              
+              if(swfacp .lt. swface)then
+                  swface = swfacp * rwuep2 / rwuep1
+              endif
         
           endif
                  
