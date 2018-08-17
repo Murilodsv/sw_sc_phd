@@ -623,7 +623,7 @@
 **********************************************************************************
 * Part 1: Specify whether simulation includes heat flow
 
-  SWHEA  = 0 ! Switch for simulation of heat transport, [Y=1, N=0]
+  SWHEA  = 1 ! Switch for simulation of heat transport, [Y=1, N=0]
 **********************************************************************************
 
 **********************************************************************************
@@ -651,8 +651,11 @@
 * and the organic matter content (g/g dry soil):
 
   ISOILLAY5  PSAND    PSILT    PCLAY    ORGMAT           ! (maximum MAHO records)
-     1        0.60     0.15     0.25     0.100
-     2        0.60     0.15     0.25     0.100
+     1        0.15     0.20     0.65     0.100
+     2        0.15     0.20     0.65     0.100
+     3        0.15     0.20     0.65     0.100
+     4        0.15     0.20     0.65     0.100
+     5        0.15     0.20     0.65     0.100
 
 * End of table
 
@@ -660,10 +663,11 @@
 * soil depth ZH [-1.0d5..0 cm, R]:
 
       ZH    TSOIL   ! (maximum MACP records)
-   -10.0     20.0
-   -40.0     20.0
-   -70.0     20.0
-   -95.0     20.0
+   -10.0     25.0
+   -40.0     23.0
+   -70.0     22.0
+   -95.0     22.0
+  -120.0     23.0
 * End of table
 
 * Define top boundary condition: 
