@@ -2467,7 +2467,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        dla                 !
       real        dleafdm             !Daily incremental leaf dry mass
       real        dnleaf              !Incremental leaf number
-      real        dnstk               !
+      real        dnstk               !Actual Tillering daily rate # m-2 t
+      real        dnstkpot            !Potential Tillering daily rate # m-2 t
       real        dpercoeff           !Maximum plant extension(P)
       real        dsuc                !Daily Sucrose Increment
       real        dw                  !incremental total plant dry matter weight (kg m-2)
@@ -2522,8 +2523,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        stkdmc              !Dry matter fraction in the stalk fresh mass
       real        suc_stk             !
       real        sucmax              !
-      real        swface              !soil water excess stress factor
-      real        swfacp              !soil water deficit stress factor
+      real        agefpg              !Age factor effect on photosynthesis
+      real        swface              !soil water stress reduction factor on crop expansion
+      real        swfacp              !soil water stress reduction factor on crop photosynthesis
+      real        swfact              !soil water stress reduction factor on tillering
       real        swfacp_ini          !Threshold of the actual/potential transpiration to start stress effect on photosynthesis (P)
       real        swfacp_end          !Threshold of the actual/potential transpiration to which photosynthesis ceases (P)
       real        swface_ini          !Threshold of the actual/potential transpiration to start stress effect on crop extension (P)
@@ -2667,7 +2670,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        frac_rtRem          !Fraction of roots biomass will remaing for next ratooning
       real        age_stkemer         !Age in which a Tiller emerges it Stalks
       real        dstkdm              !DAily stalk biomass gain after allocation t ha-1      
-      real        stk_age(60,4)       !Stalk age (1) and fraction of age in relation to the oldest stalk (2) Number of Green Leaves (3)
+      real        stk_age(60,4)       !Stalk age (1) fraction of age in relation to the oldest stalk (2) Number of Green Leaves (3) Fraction of LI (4)
       real        lfage(60,20)        !
       real        lfarea(60,20)       !
       real        lfweight(60,20)     !
@@ -2910,6 +2913,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       agefactor   = 1.d0
       swfacp      = 1.d0  
       swface      = 1.d0
+      swfact      = 1.d0
+      agefpg      = 1.d0
+      tra_fac     = 1.d0
       wuf         = 1.d0
       co2_fac     = 1.d0
       tstress     = 1.d0
@@ -3131,11 +3137,12 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                       
           end do
        
-          swcon1 = 1.32E-3 !L/?/?
-          swcon3 = 7.01    !L/?/?          
+          !swcon1 = 1.32E-3 !L/?/?
+          !swcon3 = 7.01    !L/?/?          
           
-          !swcon1 = 2.67E-3 !L/?/?
-          !swcon3 = 6.68    !L/?/?
+          !--- Original empirical coefficients for Ritchie Potential Root Water Uptake 
+          swcon1 = 2.67E-3 !L/?/?
+          swcon3 = 6.68    !L/?/?
           
       !--- Max green leaf area (to water consumption)
           maxlai      = 0.d0
@@ -3399,6 +3406,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       dfib        = 0.d0
       dper        = 0.d0
       dnstk       = 0.d0
+      dnstkpot    = 0.d0
       drdepth     = 0.d0
       drld        = 0.d0  !Array
       dnoden      = 0.d0
@@ -3411,6 +3419,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       li          = 0.d0
       swfacp      = 1.d0
       swface      = 1.d0
+      swfact      = 1.d0
+      agefpg      = 1.d0
+      tra_fac     = 1.d0
       RGP_fac     = 1.d0
       
       !-----------------------------------
@@ -3572,17 +3583,31 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !-----------------------!
           
           !--- Crop Development
-          di = di_air
+          di = di_air          
+              
+          !--- Tillers Rate calculated in Stalks/m2
+          !--- Computed based on soil surface temperature (process site)
+          if(diac .gt. chuem .and. diac .lt. chupeak)then
+              dnstkpot = ((poppeak-initnstk)/(chupeak-chuem))*di_soils    !initial tiller grow
+          elseif (diac .ge. chupeak .and. diac .lt. chudec)then
+              dnstkpot = 0.d0								                ! peak tiller 
+          elseif (diac .ge. chudec .and. diac .lt. chumat)then
+              dnstkpot = (-(poppeak - popmat)/(chumat-chudec))*di_soils   ! reduction phase to mature
+          elseif (diac .ge. chumat) then
+              dnstkpot = 0.d0		            					        ! late stable tiller population
+          endif
           
           !--- Crop Growth
           select case(pgmethod)                  
           case(1)
-              !--- Compute Potential Canopy Photosynthesis based on RUE (pg in tDW ha-1)
-              swfacp = 1.d0 !This is Potential Rate
               
+              !--- Compute Potential Canopy Photosynthesis based on RUE (pg in tDW ha-1)
+              !--- Note that age factor is not computed for photosynthesis (No concrete evidences for that)
+              swfacp  = 1.d0 !This is Potential Rate
+              agefpg  = 1.d0
               if(di .gt. 0.d0)then !No photosynthesis below tb          
               call pgs_rue(par,co2,t_mean,thour,flusethour,swfacp,
-     & agefactor,lai,extcoef,tb,to_pg1,to_pg2,tbM,rue,pgpot,li,tstress,
+     & agefpg,lai,extcoef,tb,to_pg1,to_pg2,tbM,rue,pgpot,li,tstress,
      & co2_fac)                  
               endif
       
@@ -3725,6 +3750,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !------------------------------!
           
           !--- Compute water stress
+          
           !--- Use SWAP embedded methods are more appropriated (set fluseritchie = .false.)
 	 if(fluseritchie)then
           !--- compute water stress on crop expansion based on Ritchie 1985 model (potential root water uptake is computed as function of RLD)
@@ -3790,6 +3816,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               endif
         
           endif
+          
+          !--- Water Stress Effect on Tillering (to be included...)    
+          swfact = 1.d0
                  
       else
 		!--- Use Feddes for both extension and photosynthesis stress
@@ -3825,7 +3854,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               !No water stress on crop extension
               swface = 1.d0              
           endif
-       
+          
+          !--- Water Stress Effect on Tillering (to be included...)    
+          swfact = 1.d0
+              
       endif
       
       !-- code debug    
@@ -3833,80 +3865,60 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
      & qrosum,
      & tqropot,ptra,cumdens(1:202)
       
+      !--- Crop Development
+      !--- Actual Tillering Rate
+      dnstk = dnstkpot * swfact
+      
       !--- Crop Growth      
-      !--- Actual Gross Photosynthesis (Recall that pg is priory affected by Radiation, Temperature, Age and CO2 - "Defining Factors")
-      !--- Here the "Limiting factor" is only water stress (swfacp), nutrients effect are not included (Note that when crop is under water stress, nutrients are not absorbed - increase the uncertainty)
+      !--- Actual Gross Photosynthesis
+      !--- Here the "Limiting factor" is only water stress (swfacp), nutrients effect are not included
       !--- None "Reducing Factors" are simulated due to the high level of uncertainty/unknow effect
-              pg = pgpot * swfacp 
+      pg = pgpot * swfacp
               
-              !--- Crop Respiration
-              select case(pgmethod)
-                  
-              case(1)
+      !--- Crop Respiration
+      select case(pgmethod)                  
+          case(1)              
+          !--- RUE       
+          !--- NOTE: Respiration is set to zero here because we are using RUE method (gDW MJ-1).
+          mresp = 0.d0
+          gresp = 0.d0
+          resp = mresp + gresp
               
-              !RUE       
-              !NOTE: Respiration is set to zero here because we are using RUE method (gDW MJ-1).
-              mresp = 0.d0
-              gresp = 0.d0
-              resp = mresp + gresp
-              
-              case(2)
-                  ! implementation of murilo vianna phd thesis (2018)
-              end select
+          case(2)
+          !---  Implementation of murilo vianna phd thesis (2018)
+      end select
               
       !--- Net Biomass Gain Due to Photosynthesis
-           dw = max(0.d0, pg - resp)
-          
-      !--- Crop Development    
-      !--- Tillers Rate calculated in Stalks/m2	
-			if(diac .gt. chuem .and. diac .lt. chupeak)then
-				dnstk = ((poppeak-initnstk)/(chupeak-chuem)) * di               !initial tiller grow
-			elseif (diac .ge. chupeak .and. diac .lt. chudec)then
-				dnstk = 0.d0								          ! peak tiller 
-			elseif (diac .ge. chudec .and. diac .lt. chumat)then
-				dnstk = (-(poppeak - popmat) / (chumat-chudec)) * di  ! reduction phase to mature
-			elseif (diac .ge. chumat) then
-				dnstk = 0.d0		            					  ! late stable tiller population
-              endif
+      dw = max(0.d0, pg - resp)      
               
-              !--- Update tillers age
-              do tl = 1, aint(nstk + dnstk)
-                  stk_age(tl, 1) = stk_age(tl, 1) + di
-                  stk_age(tl, 2) = stk_age(tl, 1) / stk_age(1, 1) 
-              enddo
+      !--- Stalk Canopy Fraction
+      !--- Partition of light among stalks based on thermal-age
+      !--- The stk_age(1:60,4) is the fraction of light intercepted for each stalk
+      !--- Each stalk has a total LA area is integrated from top-down the canopy
+      !--- For each canopy step integration the LI is computed with first derivative of Beer's Law
+      !--- in each step, the LI is fractioned among stalks that share the same thermal-age range
+      call stk_li(stk_age,lai,kdif,nstk)
               
-              !--- Stalks age factor
-              !--- This is implemented to account for the difference in age among stalks (primary, secondary, tertiary...)
-              if((nstk + dnstk) .lt. init_pop)then
-                  stk_agefac  = 1.d0
-              else                  
-                  stk_agefac  = sum(stk_age(1:aint(nstk + dnstk), 2)) / 
-     & (aint(nstk + dnstk))
-              endif
-              
-              !--- Stalk Canopy Fraction
-              call stk_li(stk_age,lai,kdif,nstk)
-              
-              !--- Canopy Development
-              call lais(diac,di,phyloc,nstk,swface,stk_agefac,ln,maxgl,
+      !--- Canopy Development
+      call lais(diac,di,phyloc,nstk,swface,stk_agefac,ln,maxgl,
      & cumla,ddealla,mla,sla,cumlw,ddeallw,dnleaf,dla,dleafdm,dw,lgpf,
      & dnetbiomass,dnoden,ddeadln,devgl,stk_age,lfage,lfarea,lfweight,
      & dnstk,stk_dnetbiomass,init_nlf,lfshp,maxdevgl)
                            
-              !Check whether a tiller senesced              
-              if(dnstk .lt. 0.d0)then
-                  !Top parts dead biomass rate (t ha-1)
-                  ddeadtop = wt * (stk_age(aint(nstk+dnstk),2) / 
+      !Check whether a tiller senesced              
+      if(dnstk .lt. 0.d0)then
+          !Top parts dead biomass rate (t ha-1)
+          ddeadtop = wt * (stk_age(aint(nstk+dnstk),2) / 
      & sum(stk_age(1:aint(nstk+dnstk), 2))) * (-1.d0 * dnstk)
-              endif
+      endif
               
       !--- Dry Biomass Allocation
-              if(.not. flstalkemerged)then
-              !--- Before Stalks emergence
-              !The surplus biomass from leaves are allocated to roots
-              !Note that only surplus of biomass is considered, 
-              !and the lack of carbon (dnetbiomass < 0) cannot be provided 
-              !by reserves using this approach (Unless a constrain in root growth is imposed)                  
+      if(.not. flstalkemerged)then
+      !--- Before Stalks emergence
+      !The surplus biomass from leaves are allocated to roots
+      !Note that only surplus of biomass is considered, 
+      !and the lack of carbon (dnetbiomass < 0) cannot be provided 
+      !by reserves using this approach (Unless a constrain in root growth is imposed)                  
                   dwr     = dw * rgpf + max(0.d0, dnetbiomass) !Daily root biomass gain (t ha-1)
                   dwl     = dleafdm
                   dwt     = dw * cbpf
@@ -4052,6 +4064,20 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           diac	  = diac	 + di						 !Cumulative Degree-Days
           if(flemerged) diacem = diacem + di
           
+          !--- Update tillers age
+          do tl = 1, aint(nstk)
+              stk_age(tl, 1) = stk_age(tl, 1) + di
+              stk_age(tl, 2) = stk_age(tl, 1) / stk_age(1, 1) 
+          enddo
+          
+          !--- Stalks age factor
+          !--- This is implemented to account for the difference in age among stalks (primary, secondary, tertiary...)
+          if(nstk .lt. init_pop)then
+              stk_agefac  = 1.d0
+          else                  
+              stk_agefac  = sum(stk_age(1:aint(nstk), 2)) / 
+     &    (aint(nstk))
+          endif
           
           !Age Factor
           !Empirical factor to reduce crop processes due to crop aging, e.g.: Stalk extension and photosynthesis (RGP: Reduced Growth Phenomena)
@@ -4276,7 +4302,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !--- (ii) Vertical Canopy LI is fractioned among tillers based on its thermal-age
           
           !--- Stalk height could alternatively be used on Item (ii), but would need to implement stalk height for every single stalk.
-          !--- Moreover, stalk height is also driven by temperature. Another alternative would be to use the diameter of the spherical model
+          !--- Another alternative would be to use the diameter of the spherical model
           !--- of LI used by Unsworth and Campbel and apply the J. Goudriaan Model, however, this could be quite lot detail and work for perhaps no expressive
           !--- or none improvements, besides, the uncertainty would be even higher when including other abiotic stresses
           
@@ -4303,7 +4329,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           
           save
           
-          dx      = 0.005     !Relative change in LAI
+          dx      = 0.005     !Relative step change in LAI
           n       = 1 / dx    
           dlai    = dx * lai
           
@@ -4320,7 +4346,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               fcanopy = (lai - laiacc) / lai
               !Count the number of stalks that will share light at this canopy-layer (dx)
               do stk = 1, aint(nstk)
-                  if(stk_age(stk,2) .ge. fcanopy) nsh_stk = nsh_stk + 1                  
+                  if(stk_age(stk,2) .ge. fcanopy) nsh_stk = nsh_stk + 1 
               enddo
               
               if(nsh_stk .gt. 0) fshare  = dli / nsh_stk
@@ -4331,7 +4357,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               enddo              
           enddo
           
-          !Normalize to intercepeted light 
+          !Normalize to intercepted light 
           if(liacc .gt. 0.d0)then
               stk_age(1:60,4) = stk_age(1:60,4) / liacc
           endif
@@ -4865,7 +4891,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               
               
 		
-	subroutine pgs_rue(par,co2,t_mean,thour,flusethour,swfacp,agefactor,
+	subroutine pgs_rue(par,co2,t_mean,thour,flusethour,swfacp,agefpg,
      & lai,extcoef,tb,to_pg1,to_pg2,tbM,rue,pg,li,tstress,co2_fac)
       
 	implicit none
@@ -4886,7 +4912,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 		real pg
           real rue
 		real swfacp
-		real agefactor
+		real agefpg
 		real extcoef
 		real t_mean
           real thour(24)
@@ -4962,7 +4988,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !--- Gross photosynthesis
           !--- Factors imposed to reduce gross photosynthesis:
           !Atm CO2, crop age, temperature and soil water 
-		pg = par * li * rue * co2_fac * agefactor * tstress * swfacp  
+		pg = par * li * rue * co2_fac * agefpg * tstress * swfacp  
 		pg = pg  * (1.e4/1.e6) !(t ha-1)
 	
 		return
