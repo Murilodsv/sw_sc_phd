@@ -2441,7 +2441,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       logical     fldetpgfaout        !Detailed pg and factors output file?
       logical     flsink_fbres        !Simulate Feedback response of sink to photosynthesis rate? (T or F)
       logical		fluseritchie		!use ritchie water balance instead of Feddes or De Jong?
-      logical     flusethour          !use hourly temperature on GDD?
+      logical     flusethourgdd       !use hourly temperature on GDD?
+      logical     flusethour          !Compute hourly temperature based on Parton&Logan(1981) model?
       logical		fldebug				!Debug code
       
       real        agefactor           !Relative age factor to reduce crop processes 
@@ -2604,7 +2605,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        rootdrate           !
       real        initrootdwrate      !
       real        minrgpf             !
-      real        rgpf_be             !
+      real        rgpf_be             !Fraction of structural biomass to be allocated to roots before crop emergence [crop will share reserves among: respiration, roots and apical shoot]
       real        maxlgpf             !
       real        gresp               !
       real        mresp               !
@@ -2719,7 +2720,11 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 
 1000  continue
       
-      !Warnings to include:
+      !------------------------------------------------
+      !----- MODEL DEBUGGING AND CONSTANTS CONTROL ----
+      !------------------------------------------------
+      
+      !Warnings\errors to include:
       
       !Dont let the below variables or its results equal to zero to avoid undesired NaN errors (x/0.d0)
       !(chupeak-chuem)
@@ -2733,6 +2738,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !(rgpf_be-minrgpf) cannot be negative!
       ! midtime_rgpf cannot be .le. than 0.d0
       
+      !--- control (Try to make as user settings)
+      
           flsink_fbres    = .true.!Simulate Feedback response of sink to photosynthesis rate? (T or F)
       !--- Output Options (put this on a control input file)          
           fldetrtsyout    = .true.!Detailed Root System output?
@@ -2742,10 +2749,13 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           outstk_rank     = 1     !Rank of detailed stalk (1 <= outstk_rank <= peakpop)
           itoutnumber     = 35    !Up to 35 internodes will be printed out on outstk_rank and averaged stalks
           fluseritchie	= .false.
-          flusethour      = .false.
+          flusethourgdd   = .false.
+          flusethour      = .true.
           fldebug			= .true.!Debug
-      
-      
+          
+      !------------------------------------------------
+      !------------------------------------------------
+            
       !--- Reading Crop Parameters
           open(parinp_io,FILE='Samuca.par',
      &      STATUS='OLD',READONLY)
@@ -3400,24 +3410,29 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !-----------------------------------
       !--- Linking with SWAP Variables ---
       !-----------------------------------
-      tmax    = tmx                       !(oC)
-      tmin    = tmn                       !(oC)
-      t_mean  = 0.5 * (tmax + tmin)       !(oC)
-      par     = (rad * 0.5)/0.1E7         !(MJ/m2.d)
-      epp     = ptra                      !(cm/d)
-      ch      = pleng * 100.              !(cm) Used for Penmam-M. method
-      
-      !--- Hourly Temperature in thour array
-      call TempHour(tmax,tmin,thour)      
-      
-      !--- Calculating growing degree-days (GDD) using a unique tB
-      !--- Try To Use Soil Temperature within root depth range
-      t_soil      = t_mean    ! using Tsoil = T air
-      t_soils     = t_mean    ! add here first soil node temperature from temperature module
-      thour_soil  = thour     ! using Tsoil = T air
+      tmax        = tmx                       !(oC)
+      tmin        = tmn                       !(oC)
+      t_mean      = 0.5 * (tmax + tmin)       !(oC)
+      par         = (rad * 0.5)/0.1E7         !(MJ/m2.d)
+      epp         = ptra                      !(cm/d)
+      ch          = pleng * 100.              !(cm) Used for Penmam-M. method      
+      if(swhea .eq. 1)then
+          !--- link to soil heat flux
+          t_soil  = sum(tsoil(1:noddrz))/(max(1,size(tsoil(1:noddrz)))) ! Average Soil Temperature within rootsystem depth
+          t_soils = tetop                     ! Temperatures (ºC) at top of soil profile (under snow cover) [Implement mulch cover...]
+      else
+          !--- assume as equal as air temp
+          t_soil  = t_mean
+          t_soils = t_mean          
+      endif
+            
+      !--- Hourly Temperature in thour array based on Parton & Logan empirical model
+      call TempHour(tmax,tmin,thour)
+      thour_soil  = thour     ! using Tsoil = T air (How to compute max and min temperature on soil?- MV)
       thour_soils = thour     ! add here first soil node temperature from temperature module
       
-      if(flusethour)then
+      !--- Calculating growing degree-days (GDD) using a unique tB
+      if(flusethourgdd)then
 	!--- compute on hourly base
           do i = 1, 24
               di_soil  = di_soil  + max(0.d0, thour_soil(i)-tb)  / 24.d0
@@ -3449,7 +3464,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           canestage   = 'Emergd'                  
       endif
       
-      !Check if stalks emerged
+      !--- Check if stalks emerged
       if(diac .gt. chustk .and. .not. flstalkemerged)then
               !if(.not. flemerged) !add a warning message! Stalk growth before crop emergence! Review your crop parameters
               flstalkemerged  = .true.
@@ -3461,9 +3476,6 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               age_stkemer = stk_age(1,1)
       endif
       
-      
-      
-      
       !------------------------!
       !--- Before Emergence ---!
       !------------------------!
@@ -3471,7 +3483,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       if(.not. flemerged)then         
           
           !--- Crop Development
-          di  = di_soil !considering crop is below ground
+          di  = di_soil !Assuming crop is below ground
           
           !--- Shoot expansion rate towards soil surface
           dshootdepth  = -di * shootrate_bg !Assuming the primary shoot growth rate of 0.08 cm/DG (Keating et. al. 1999)
@@ -3488,7 +3500,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           availw_bg   = max(0.d0, availw_bg - mresp)
               
           !--- Sink Strength
-          !--- Assuming 30% of cost (Growth Respiration - Inman-Bamber, 1991)
+          !--- Assuming 30% of cost for growth respiration (Growth Respiration - Inman-Bamber, 1991)
           dw_ss       = availw_bg * (biomass_useRate * diac) * 
      & 1.d0/(1.d0-0.3d0)
               
@@ -3522,17 +3534,17 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           dwt         = dw * tppf !Top parts (Below ground shoot)
           dws         = 0.d0      !No Above ground Stalks biomass
               
-          !There is no Biomass Gain, only re-allocation of reserves
-          dw  = 0.d0
+          !There is no Biomass Gain (pg = 0.d0), only re-allocation of reserves and respiration
+          dw  = -resp
              
           if(availw_bg .le. 0.d0)then
-              !Not enough biomass for shoot emergence                
-              flcropalive = .false.   !Crop is dead
+              !Not enough reserves for shoot emergence                
+              flcropalive = .false.   !Crop is dead before emergence!
               canestatus  = 'DeadLC'  ! LC - Lack of Carbon
               !Warning Msg: Plant it shallow or increase chopped stalks biomass  
           endif
               
-          !For checking purpose    
+          !--- For carbon checking purpose
           rgpf_ck   = rgpf
           lgpf_ck   = lgpf
           sgpf_ck   = sgpf
@@ -3556,39 +3568,30 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !--- Crop Development
           di = di_air
           
-          !Crop coefficient as function of leaf area index
-          if(swetr .eq. 1)then
-			!--- use kc curve in relation to LAI
-			cf = kc_min + (eoratio - kc_min) * lai / (maxlai)
-			cf = max(0.d0,cf)          
-          else
-			!--- use PM method
-			cf = 1.d0
-          endif
-          
-          
-          
+          !--- Crop Growth
           select case(pgmethod)                  
           case(1)
-              !--- Compute Potential Canopy Photosynthesis based on RUE (pg in tDW ha-1)              
-              if(di .gt. 0.d0)then !No photosynthesis below Tb                  
-              call pgs_rue(par,co2,tmax,tmin,thour,swfacp,agefactor,lai,
-     & extcoef,rue,diac,w,pg,li,tstress,co2_fac,tb,to_pg1,to_pg2,tbM)
-              endif           
-      
+              !--- Compute Potential Canopy Photosynthesis based on RUE (pg in tDW ha-1)
+              swfacp = 1.d0 !This is Potential Rate
+              
+              if(di .gt. 0.d0)then !No photosynthesis below tb          
+              call pgs_rue(par,co2,t_mean,thour,flusethour,swfacp,
+     & agefactor,lai,extcoef,tb,to_pg1,to_pg2,tbM,rue,pg,li,tstress,
+     & co2_fac)                  
+              endif
       
               case(2)
               !To be included...
               !Can call totass() -> Layered Canopy Method (J. Goudriaan)
           end select 
                  
-      !Dry biomass partitioning to roots, leaves and stalks - With no Water Stress                 
-              select case(pfmethod)
+          !Dry biomass partitioning to roots, leaves and stalks - With no Water Stress
+          select case(pfmethod)
               case(1)
                   
-                  !--- From original Marin & Jones (2014)
+                  !--- From original samuca v1 Marin & Jones (2014)
                   
-                  if(diac .lt. chustk)then              
+                  if(diac .lt. chustk)then
                   
                   !Mid time for rgpf decay
                   midtime_rgpf = (chustk) / 2.d0
@@ -3599,15 +3602,17 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                   rgpf = max(minrgpf,min(1.d0,rgpf)) !Constraining to minrgpf and 1
                   else
                       rgpf    = minrgpf
-          !Warning:
-          write(*,*) "Warning:Stalks start growing before emergence"
-          write(*,*) "Check: CHUSTK or Planting Depth parameters"
+                  !Warning:
+                  write(*,*) "Warning:Stalks start growing before",
+     & "emergence"
+                  write(*,*) "Check: CHUSTK or Planting Depth",
+     & "parameters"
                   endif
                   
 				lgpf = 1. - rgpf !Complementary
                   sgpf = 0.d0 !No above ground Stalks yet. Warning: physiologically this may not be true.    
         
-          elseif(diac .ge. chustk)then              
+                  elseif(diac .ge. chustk)then              
                   
                   !Mid time for rgpf decay
                   midtime_rgpf = chustk / 2.d0
@@ -3618,9 +3623,11 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                   rgpf = max(minrgpf,min(1.d0,rgpf)) !Constraining to minrgpf and 1
                   else
                       rgpf    = minrgpf
-          !Warning:
-          write(*,*) "Warning:Stalks start growing before emergence"
-          write(*,*) "Check: CHUSTK or Planting Depth parameters"
+                  !Warning:
+                  write(*,*) "Warning:Stalks start growing before ",
+     & "emergence"
+                  write(*,*) "Check: CHUSTK or Planting Depth",
+     & "parameters"
                   endif
                   
                   lgpf = 1. - rgpf !Complementary
@@ -3639,7 +3646,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                       !Canopy is priority (reduce sgpf to match the unit)                       
                       sgpf = 1. - (rgpf + lgpf)
                   endif		
-          endif
+                  endif
                   
                   
               case(2)
@@ -3677,29 +3684,20 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                   cbpf    = tppf - lgpf  
               
               end select
-          
-              
+                        
+          !Crop coefficient as function of leaf area index (EORATIO method)
+          if(swetr .eq. 1)then
+			!--- use kc curve in relation to LAI
+			cf = kc_min + (eoratio - kc_min) * lai / (maxlai)
+			cf = max(0.d0,cf)          
+          else
+			!--- use PM method
+			cf = 1.d0
+          endif             
       
       endif
-                
-          if(.not. flemerged)then
-              
-          !------------------------------!
-          !-------Before Emergence-------!
-          !------------------------------!
-              
-                        
-              
-          else	    
-		
-          !------------------------------!   
-          !--------After Emergence-------!
-          !------------------------------!
-          
-          
-		
-          endif
-                     
+      
+      !--- End of Potential Rates                    
       return
       
 3000  continue    
@@ -3850,7 +3848,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               !NOTE: Respiration is set to zero here because we are using RUE method (gDW MJ-1).
               mresp = 0.d0
               gresp = 0.d0
-              resp = mresp + gresp    
+              resp = mresp + gresp
               
               case(2)
                   ! implementation of murilo vianna phd thesis (2018)
@@ -4039,7 +4037,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 		ln        = ln       + dnleaf - ddeadln          !Number of green leaves per Stem                   
 		noden     = noden    + dnoden                    !Number of internodes
           lai       = lai      + dla - ddealla             !Leaf Area Index
-		w         = w        + dw  - dwdead - resp       !Total Dry Biomass
+		w         = w        + dw  - dwdead              !Total Dry Biomass
           wl        = wl       + dwl - ddeallw             !Leaf Dry Biomass
           wt        = wt       + dwt - ddeadtop            !Top parts Dry Biomass
           wr        = wr       + dwr                       !Root Dry Biomass
@@ -4867,8 +4865,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               
               
 		
-	subroutine pgs_rue(par,co2,tmax,tmin,thour,swfacp,agefactor,lai,
-     & extcoef,rue,diac,w,pg,li,tstress,co2_fac,tb,to_pg1,to_pg2,tbM)
+	subroutine pgs_rue(par,co2,t_mean,thour,flusethour,swfacp,agefactor,
+     & lai,extcoef,tb,to_pg1,to_pg2,tbM,rue,pg,li,tstress,co2_fac)
       
 	implicit none
 	
@@ -4881,44 +4879,26 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 	!******************************************************************************
 	!-----------------------------------------------------------------------
           integer i
-		REAL par
-		REAL*8 lai
-		REAL diac
-		REAL li                      !Canopy Light interception
-		REAL pg
-		REAL e_fac
-		REAL pratio
-		REAL ct
-		REAL swfacp
-		REAL rowspc
-		REAL w
-		REAL agefactor
-		REAL extcoef
-		REAL chudec
-		REAL chustk
-		REAL t_mean
-		REAL rue
-		REAL tstress
-          real tfac_h(24)
-          real tmax
-          real tmin
+		real par
+		real*8 lai
+		real diac
+		real li                      !Canopy Light interception
+		real pg
+          real rue
+		real swfacp
+		real agefactor
+		real extcoef
+		real t_mean
           real thour(24)
-		REAL*8 co2
-		REAL co2_fac
-          REAL epp
-          REAL trwu
-          REAL rwuep2
-		REAL rwuep1
-		REAL rdm
-		REAL qr
-		REAL trwuafter
-          REAL ptrats
-          REAL epp_cm
-          
           real tb
           real to_pg1
           real to_pg2
           real tbM
+		real tstress
+          real tfac_h(24)
+		real*8 co2
+		real co2_fac          
+          logical flusethour
           
           save
           
@@ -4926,12 +4906,15 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 		li    = 1.d0 - exp(-extcoef * lai)
           
           !Effect of CO2	
-		co2_fac =  ((0.0001282051  * co2) + 0.95)
+		co2_fac =  ((0.0001282051  * co2) + 0.95)          
           
-          tstress = 1.d0          
-          do i = 1, 24
-		!Computing the Temperature Stress on Photosynthesis (definig factor!)
-          !Optimum Thresholds (tb,to_pg1,to_pg2,tbM) - Murilo Vianna
+          if(flusethour)then
+              
+              !--- use hourly air temperature
+              tstress = 1.d0
+              do i = 1, 24
+		    !Computing the Temperature Stress on Photosynthesis (definig factor!)
+              !Optimum Thresholds (tb,to_pg1,to_pg2,tbM) - Murilo Vianna
               
               if(thour(i) .lt. tb)then
                   !No photosynthesis below tb
@@ -4950,16 +4933,36 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                   tfac_h(i) = 0.d0    
               endif
                   
-          enddo
+              enddo
           
-          !Averaged DAily Tempererature stress    
-          tstress = sum(tfac_h(1:24)) / 24.d0
-		
-          !Gross photosynthesis
-          !Factors imposed to reduce gross photosynthesis
+              !Averaged Daily Tempererature stress
+              tstress = sum(tfac_h(1:24)) / 24.d0
+              
+          else
+              !--- use daily mean air temperature
+                  
+              if(t_mean .lt. tb)then
+                  !No photosynthesis below tb
+                  tstress = 0.d0                  
+              elseif(t_mean .ge. tb .and. t_mean .lt. to_pg1)then
+                  !Below optimum temperature range
+                  tstress = (t_mean - tb) / (to_pg1 - tb) 
+              elseif(t_mean .ge. to_pg1 .and. t_mean .lt. to_pg2)then
+                  !Optimun temperature range    
+                  tstress = 1.d0
+              elseif(t_mean .ge. to_pg2 .and. t_mean .lt. tbM)then
+                  !Above optimun temperature range    
+                  tstress = 1.d0 - (t_mean - to_pg2) / (tbM - to_pg2)
+              elseif(t_mean .gt. tbM)then
+                  !No photosynthesis above tbM
+                  tstress = 0.d0    
+              endif
+          endif
+          		
+          !--- Gross photosynthesis
+          !--- Factors imposed to reduce gross photosynthesis:
           !Atm CO2, crop age, temperature and soil water 
 		pg = par * li * rue * co2_fac * agefactor * tstress * swfacp  
-				
 		pg = pg  * (1.e4/1.e6) !(t ha-1)
 	
 		return
