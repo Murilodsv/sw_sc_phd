@@ -2443,7 +2443,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       logical		fluseritchie		!use ritchie water balance instead of Feddes or De Jong?
       logical     flusethourgdd       !use hourly temperature on GDD?
       logical     flusethour          !Compute hourly temperature based on Parton&Logan(1981) model?
-      logical		fldebug				!Debug code
+      logical     flglaiplas          !Use Green Leaf Area Plasticity Related to Water Stress?
+      logical		fldebug				!Debug code      
       
       real        agefactor           !Relative age factor to reduce crop processes 
       real        chudec              !Termal time for tillering deccay (P)
@@ -2674,6 +2675,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        lfage(60,20)        !
       real        lfarea(60,20)       !
       real        lfweight(60,20)     !
+      real        plas_fac            !Green leaf area plasticity to water stress
+      real*8      glai                !Green leaf area
       real        ngl
       real        av_lfage(20)        !Averaged lfage(60,20) among stalks
       real        av_lfarea(20)       !Averaged lfarea(60,20) among stalks
@@ -2756,6 +2759,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           flusethourgdd   = .false.
           flusethour      = .true.
           fldebug			= .true.!Debug
+          flglaiplas      = .false.
           
       !------------------------------------------------
       !------------------------------------------------
@@ -2870,6 +2874,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       deadln      = 0.d0
       la          = 0.d0
       lai         = 0.d0
+      glai        = 0.d0
       w           = 0.d0
       wl          = 0.d0
       wt          = 0.d0
@@ -3607,7 +3612,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               agefpg  = 1.d0
               if(di .gt. 0.d0)then !No photosynthesis below tb          
               call pgs_rue(par,co2,t_mean,thour,flusethour,swfacp,
-     & agefpg,lai,extcoef,tb,to_pg1,to_pg2,tbM,rue,pgpot,li,tstress,
+     & agefpg,glai,extcoef,tb,to_pg1,to_pg2,tbM,rue,pgpot,li,tstress,
      & co2_fac)                  
               endif
       
@@ -3714,12 +3719,12 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                   lgpf    = (lfcb_ratio / (lfcb_ratio + 1.d0)) * tppf
                   cbpf    = tppf - lgpf  
               
-              end select
+          end select
                         
           !Crop coefficient as function of leaf area index (EORATIO method)
           if(swetr .eq. 1)then
 			!--- use kc curve in relation to LAI
-			cf = kc_min + (eoratio - kc_min) * lai / (maxlai)
+			cf = kc_min + (eoratio - kc_min) * glai / (maxlai)
 			cf = max(0.d0,cf)          
           else
 			!--- use PM method
@@ -3825,7 +3830,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           !--- Note that in this case water stress effect will have the same magnitude in crop extension and photosynthesis,
           !--- while there are evidences that crop extension is signficantly more sensitive to water stress than photosynthesis rates
           
-          tra_fac = max(0.d0, min(1.d0, tra / ptra))
+          tra_fac = max(0.d0, min(1.d0, (tra+qredwetsum) / ptra))
           
           !--- Water Stress Effect on Photosynthesis
           if(tra_fac .ge. swfacp_end .and. tra_fac .le. swfacp_ini)then
@@ -3876,7 +3881,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       pg = pgpot * swfacp
               
       !--- Crop Respiration
-      select case(pgmethod)                  
+      select case(pgmethod)
           case(1)              
           !--- RUE       
           !--- NOTE: Respiration is set to zero here because we are using RUE method (gDW MJ-1).
@@ -3887,9 +3892,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           case(2)
           !---  Implementation of murilo vianna phd thesis (2018)
       end select
-              
+      
       !--- Net Biomass Gain Due to Photosynthesis
-      dw = max(0.d0, pg - resp)      
+      dw = max(0.d0, pg - resp)
               
       !--- Stalk Canopy Fraction
       !--- Partition of light among stalks based on thermal-age
@@ -3897,7 +3902,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !--- Each stalk has a total LA area is integrated from top-down the canopy
       !--- For each canopy step integration the LI is computed with first derivative of Beer's Law
       !--- in each step, the LI is fractioned among stalks that share the same thermal-age range
-      call stk_li(stk_age,lai,kdif,nstk)
+      call stk_li(stk_age,glai,kdif,nstk)
               
       !--- Canopy Development
       call lais(diac,di,phyloc,nstk,swface,stk_agefac,ln,maxgl,
@@ -3908,10 +3913,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !Check whether a tiller senesced              
       if(dnstk .lt. 0.d0)then
           !Top parts dead biomass rate (t ha-1)
-          ddeadtop = wt * (stk_age(aint(nstk+dnstk),2) / 
-     & sum(stk_age(1:aint(nstk+dnstk), 2))) * (-1.d0 * dnstk)
+          ddeadtop = wt * -(stk_age(aint(nstk),2) / 
+     & sum(stk_age(1:aint(nstk), 2)))
       endif
-              
+      
       !--- Dry Biomass Allocation
       if(.not. flstalkemerged)then
       !--- Before Stalks emergence
@@ -4064,6 +4069,14 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           diac	  = diac	 + di						 !Cumulative Degree-Days
           if(flemerged) diacem = diacem + di
           
+          !--- Green leaf area plasticity realted to water stress
+          if(flglaiplas)then
+              plas_fac = 0.15
+              glai = (lai * (1.d0 - plas_fac)) + lai * plas_fac * swface
+          else
+              glai = lai
+          endif         
+          
           !--- Update tillers age
           do tl = 1, aint(nstk)
               stk_age(tl, 1) = stk_age(tl, 1) + di
@@ -4145,7 +4158,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 		
 	!--- write default outputs        
       write(defout_io,9) iyear,daynr,daycum,daycrop,diac,w,availw_bg,wr,
-     & wl,wt,ws,suc,fib,wsfresh,pol,wdead,lai,nstk,pleng,devgl,
+     & wl,wt,ws,suc,fib,wsfresh,pol,wdead,glai,nstk,pleng,devgl,
      & itnumber,swface,swfacp,rgpf_ck, lgpf_ck,sgpf_ck,tgpf_ck,
      & canetype,canestatus,canestage     
       
@@ -4252,7 +4265,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               write(detpgout_io,90) iyear,daynr,daycum,daycrop,diac,
      & par                        , !Daily par MJ m-2 d-1
      & extcoef                    , !k
-     & lai                        , !LAI  
+     & glai                       , !LAI  
      & li                         , !Fraction Light Intercepted 
      & co2                        , !Atm CO2 concentration
      & rue                        , !Maximum RUE (gDW MJ-1) - Crop Parameter
@@ -5124,7 +5137,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           logical new_tl
           
           save
-                             			
+            			
       !--- Calculating the daily leaf number increment per stalk
 		dnleaf = di / phyloc 
           
@@ -5162,7 +5175,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           stk_ssfac   = 1.d0
           stk_dleafdm = 0.d0
           
-          !--- How much Carbon is been partioned before sinking demand
+          !--- How much Carbon is been partioned before sink demand
           dleafdm     = dw * lgpf                 ! t ha-1
           stk_dleafdm = dleafdm * stk_age(1:60, 4)! Partition for each stalk as function of light intercepetion
           dleafdm     = 0.d0                      ! Recalculated on carbon balance
@@ -5273,18 +5286,18 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                       !Use constant growing rate
                       !Check whether the leaf is still growing
                       if(lfage(tl,lf) .lt. (lfgrp * phyloc))then
-                          !Growing Rate (cm2)
+                          !Expansion Rate (cm2)
                           dla_ss_stk = dla_ss_stk + 
-     & (di * mla_rate * swface)  
+     & (di * mla_rate)  
                       endif                          
                           
                   else                          
                       !Use variable growing rate with respect to Lf age
                       mla_rate = AScurv(2,lfage(tl,lf),0.,mla,lfshp,
      & (lfgrp*phyloc/2.),1.)
-                      !Growing Rate (cm2)
+                      !Expansion Rate (cm2)
                       dla_ss_stk = dla_ss_stk + 
-     & (di * mla_rate * swface)
+     & (di * mla_rate)
                   endif
      
                 if(lfage(tl,lf) .ge. ((maxgl-maxdevgl) * phyloc))then 
@@ -5346,14 +5359,14 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                   if(gRatefunc .eq. 1)then  
                       if(lfage(tl,lf) .lt. (lfgrp * phyloc))then
                           !Actual leaf daily area increment (cm2)
-                          dla_lf = (di*mla_rate*swface) * stk_ssfac(tl) 
+                          dla_lf = (di*mla_rate) * stk_ssfac(tl) 
                       endif
                   else
                       !Use variable growing rate with respect to Lf age
                       mla_rate = AScurv(2,lfage(tl,lf),0.,mla,lfshp,
      & (lfgrp*phyloc/2.),1.)
                       !Actual leaf daily area increment (cm2)
-                      dla_lf = (di*mla_rate*swface) * stk_ssfac(tl) 
+                      dla_lf = (di*mla_rate) * stk_ssfac(tl) 
                   endif                      
                   
                     lfage(tl,lf)    = lfage(tl,lf)      + di          !Lf Age increment (dd)

@@ -23,7 +23,7 @@ run_model   = T
 model_fn    = "swap_samuca_v1.exe"
 swap_prj    = "SWAP-SAMUCA_PIRA"
 soil_depth  = c(-10,-19.5,-28.5,-58.5) # simulated soil depth compartments to retrive data (see on swap.swp)
-out_sufix   = "_test_pm_till"
+out_sufix   = "_test_pm_till_qrosum"
 out_folder  = "/Rout/"
 plot_det    = F   # plot detailed outputs?
 
