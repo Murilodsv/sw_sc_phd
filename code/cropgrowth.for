@@ -3829,7 +3829,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 		!--- Use Feddes for both extension and photosynthesis stress
           !--- Note that in this case water stress effect will have the same magnitude in crop extension and photosynthesis,
           !--- while there are evidences that crop extension is signficantly more sensitive to water stress than photosynthesis rates
-          
+          ! There is room to explore wet (qredwetsum), salinity and frost effects here
           tra_fac = max(0.d0, min(1.d0, tra / ptra))
           
           !--- Water Stress Effect on Photosynthesis
