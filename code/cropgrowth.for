@@ -2761,9 +2761,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
      &      STATUS='OLD',READONLY)
           
           nhd  = 4    !Number of lines of file header   
-          nf   = 72   !Number of Real parameters
+          nf   = 76   !Number of Real parameters (72 previous)
           ni   = 11   !Number of Integer parameters
-119       format(<nhd>(/),<ni>(I15,a30,/),<nf-1>(f15.5,a30,/),f15.5,a30)
+119       format(<nhd>(/),<ni>(I15,a30,/),<nf-1>(f15.5,a30,/),f15.5,a30)                  
           
           read (parinp_io,119)   !Type  Debuging values (RB867515) - Not totally calibrated yet
      &	idev 			,skip, !(I)   1          
@@ -2820,6 +2820,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
      &	ADCRL  			,skip, !(R)   0.
      &	rwuep1          ,skip, !(R)   2.         
      &	rwuep2          ,skip, !(R)   1.  
+     &    swfacp_ini      ,skip, !
+     &    swfacp_end      ,skip,
+     &    swface_ini      ,skip,
+     &    swface_end      ,skip,
      &	cfbs    		,skip, !(R)   0.4        
      &	kc_min  		,skip, !(R)   0.70       
      &	eoratio 		,skip, !(R)   1.5          
@@ -3789,13 +3793,6 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 		!--- Use Feddes for both extension and photosynthesis stress
           !--- Note that in this case water stress effect will have the same magnitude in crop extension and photosynthesis,
           !--- while there are evidences that crop extension is signficantly more sensitive to water stress than photosynthesis rates
-          
-              
-          swfacp_ini = 0.75
-          swfacp_end = 0.15
-          
-          swface_ini = 1.d0
-          swface_end = 0.60
           
           tra_fac = max(0.d0, min(1.d0, tra / ptra))
           

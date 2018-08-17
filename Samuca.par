@@ -56,6 +56,10 @@ Value              Name(Type)
       0.000000000 !ADCRL             (R) Crop
       2.000000000 !rwuep1            (R) Crop
       1.000000000 !rwuep2            (R) Crop
+      0.750000000 !swfacp_ini        (R) Crop
+      0.150000000 !swfacp_end        (R) Crop
+      1.000000000 !swface_ini        (R) Crop
+      0.600000000 !swface_end        (R) Crop
       0.400000000 !cfbs              (R) Environment
       0.700000000 !kc_min            (R) Crop
       1.500000000 !eoratio           (R) Crop
