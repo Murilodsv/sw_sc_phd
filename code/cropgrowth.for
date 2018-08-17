@@ -2496,6 +2496,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        par                 !
       real        perday              !plant elongation rate per day
       real        pg                  !canopy gross photosynthesis rate (t ha-2 day-1)
+      real        pgpot               !canopy potential gross photosynthesis rate (t ha-2 day-1) [after defining factors reduction]
       real        phyloc              !(P)
       real        plantdepth          !(P)
       real        pleng               !
@@ -3390,6 +3391,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       ddeadtop    = 0.d0
       deadln      = 0.d0
       pg          = 0.d0
+      pgpot       = 0.d0
       dRGP_pg     = 0.d0
       dnetbiomass = 0.d0
       dwwater     = 0.d0
@@ -3580,7 +3582,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               
               if(di .gt. 0.d0)then !No photosynthesis below tb          
               call pgs_rue(par,co2,t_mean,thour,flusethour,swfacp,
-     & agefactor,lai,extcoef,tb,to_pg1,to_pg2,tbM,rue,pg,li,tstress,
+     & agefactor,lai,extcoef,tb,to_pg1,to_pg2,tbM,rue,pgpot,li,tstress,
      & co2_fac)                  
               endif
       
@@ -3826,15 +3828,16 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
        
       endif
       
+      !-- code debug    
        write(deb_io,90) iyear,daynr,daycum,daycrop,diac,
      & qrosum,
-     & tqropot,ptra,cumdens(1:202)      
+     & tqropot,ptra,cumdens(1:202)
       
       !--- Crop Growth      
       !--- Actual Gross Photosynthesis (Recall that pg is priory affected by Radiation, Temperature, Age and CO2 - "Defining Factors")
       !--- Here the "Limiting factor" is only water stress (swfacp), nutrients effect are not included (Note that when crop is under water stress, nutrients are not absorbed - increase the uncertainty)
       !--- None "Reducing Factors" are simulated due to the high level of uncertainty/unknow effect
-              pg = pg * swfacp 
+              pg = pgpot * swfacp 
               
               !--- Crop Respiration
               select case(pgmethod)
