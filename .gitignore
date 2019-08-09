@@ -17,6 +17,10 @@ R/R_samuca/performance/results/*
 model/*.OUT
 model/result.bal
 model/result*
+model/heatparam*
+model/soilphys*
+model/swap.ok
+
 
 
 # R_Samuca
