@@ -1,0 +1,40 @@
+* Project:       SWAP-SAMUCA_PIRA
+* File content:  irrigation data
+* File name:     Result.irg
+* Model version: Swap 3.2.36
+* Generated at:  09-Aug-2019 18:48:19
+*
+*      Crop name        Date   Day   Day  Irrigation     Solute
+*                             Crop   Cum          cm     mg/cm3
+*<=============><==========><====><====><==========><=========>
+       Crop name,       Date,  Day,  Day, Irrigation,    Solute
+Sugarcane       ,16-Oct-2012,   1,    63,       3.0,  0.100E+04
+Sugarcane       ,02-Nov-2012,  18,    80,       0.4,  0.100E+04
+Sugarcane       ,03-Nov-2012,  19,    81,       0.5,  0.100E+04
+Sugarcane       ,06-Nov-2012,  22,    84,       1.0,  0.100E+04
+Sugarcane       ,08-Nov-2012,  24,    86,       1.2,  0.100E+04
+Sugarcane       ,12-Dec-2012,  58,   120,       1.2,  0.100E+04
+Sugarcane       ,22-Dec-2012,  68,   130,       0.6,  0.100E+04
+Sugarcane       ,27-Dec-2012,  73,   135,       2.0,  0.100E+04
+Sugarcane       ,20-Feb-2013, 128,   190,       2.1,  0.100E+04
+Sugarcane       ,07-Mar-2013, 143,   205,       2.5,  0.100E+04
+Sugarcane       ,09-Mar-2013, 145,   207,       2.4,  0.100E+04
+Sugarcane       ,27-Apr-2013, 194,   256,       2.5,  0.100E+04
+Sugarcane       ,28-Apr-2013, 195,   257,       2.5,  0.100E+04
+Sugarcane       ,10-May-2013, 207,   269,       1.2,  0.100E+04
+Sugarcane       ,13-May-2013, 210,   272,       2.2,  0.100E+04
+Sugarcane       ,24-May-2013, 221,   283,       1.9,  0.100E+04
+Sugarcane       ,25-Nov-2013,  41,   468,       2.0,  0.100E+04
+Sugarcane       ,01-Dec-2013,  47,   474,       1.0,  0.100E+04
+Sugarcane       ,04-Dec-2013,  50,   477,       1.0,  0.100E+04
+Sugarcane       ,13-Dec-2013,  59,   486,       2.0,  0.100E+04
+Sugarcane       ,17-Dec-2013,  63,   490,       1.4,  0.100E+04
+Sugarcane       ,20-Jan-2014,  97,   524,       1.8,  0.100E+04
+Sugarcane       ,24-Jan-2014, 101,   528,       0.8,  0.100E+04
+Sugarcane       ,31-Jan-2014, 108,   535,       0.4,  0.100E+04
+Sugarcane       ,11-Feb-2014, 119,   546,       0.4,  0.100E+04
+Sugarcane       ,20-Feb-2014, 128,   555,       1.8,  0.100E+04
+Sugarcane       ,24-Feb-2015, 224,   924,       3.0,  0.100E+04
+Sugarcane       ,04-Mar-2015, 232,   932,       1.0,  0.100E+04
+Sugarcane       ,06-Jul-2015,  28,  1056,       1.5,  0.100E+04
+Sugarcane       ,12-Aug-2015,  65,  1093,       3.0,  0.100E+04

@@ -1,0 +1,30 @@
+        !COMPILER-GENERATED INTERFACE MODULE: Fri Aug 09 18:40:54 2019
+        ! This source file is for reference only and may not completely
+        ! represent the generated interface used by the compiler.
+        MODULE ABSORPTION__genmod
+          INTERFACE 
+            SUBROUTINE ABSORPTION(ITASK,ICPBTDM,ICPBTPERZON,ICPTPPERZON,&
+     &ICPTPSATZON,ICPTPWASRDM,ID,AWLCORFAC,FRMPWALWET,FRREDUQ,          &
+     &QOUTMTXUNSDMCP,SORPDMCP,THTSRPREFDMCP,TIMABSCUMDMCP,              &
+     &FLWOUTMTXUNSDMCPPOT,FLWOUTMTXUNSDMPOT,FLENDSRPEVT,ZWALEVDM)
+              INTEGER(KIND=4) :: ITASK
+              INTEGER(KIND=4) :: ICPBTDM
+              INTEGER(KIND=4) :: ICPBTPERZON
+              INTEGER(KIND=4) :: ICPTPPERZON
+              INTEGER(KIND=4) :: ICPTPSATZON
+              INTEGER(KIND=4) :: ICPTPWASRDM
+              INTEGER(KIND=4) :: ID
+              REAL(KIND=8) :: AWLCORFAC(5000)
+              REAL(KIND=8) :: FRMPWALWET(20,5000)
+              REAL(KIND=8) :: FRREDUQ
+              REAL(KIND=8) :: QOUTMTXUNSDMCP(20,5000)
+              REAL(KIND=8) :: SORPDMCP(20,5000)
+              REAL(KIND=8) :: THTSRPREFDMCP(20,5000)
+              REAL(KIND=8) :: TIMABSCUMDMCP(20,5000)
+              REAL(KIND=8) :: FLWOUTMTXUNSDMCPPOT(20,5000)
+              REAL(KIND=8) :: FLWOUTMTXUNSDMPOT
+              LOGICAL(KIND=4) :: FLENDSRPEVT(20,5000)
+              REAL(KIND=8) :: ZWALEVDM(20)
+            END SUBROUTINE ABSORPTION
+          END INTERFACE 
+        END MODULE ABSORPTION__genmod

@@ -1,0 +1,40 @@
+        !COMPILER-GENERATED INTERFACE MODULE: Fri Aug 09 18:39:08 2019
+        ! This source file is for reference only and may not completely
+        ! represent the generated interface used by the compiler.
+        MODULE MACROSTATE__genmod
+          INTERFACE 
+            SUBROUTINE MACROSTATE(NNCRAR,FLENDSRPEVT,QEXCMTXDMCP,       &
+     &QINTOPLATDM,QINTOPPREDM,QOUTDRRAPCP,WASRMPDM,ICPBTDM,ICPBTPERZON, &
+     &ICPSATGWL,ICPSATPEGWL,ICPTPPERZON,ICPTPSATZON,ICPTPWASRDM,ARMPSSDM&
+     &,AWLCORFAC,FRMPWALWET,SORPDMCP,THTSRPREFDMCP,TIMABSCUMDMCP,VLMPDM,&
+     &VLMPDMCP,VLMPDYCP,WASRMP,WASRMPDMCP,ZBTDM,ZWALEVDM)
+              INTEGER(KIND=4) :: NNCRAR
+              LOGICAL(KIND=4) :: FLENDSRPEVT(20,5000)
+              REAL(KIND=8) :: QEXCMTXDMCP(20,5000)
+              REAL(KIND=8) :: QINTOPLATDM(20)
+              REAL(KIND=8) :: QINTOPPREDM(20)
+              REAL(KIND=8) :: QOUTDRRAPCP(5000)
+              REAL(KIND=8) :: WASRMPDM(20)
+              INTEGER(KIND=4) :: ICPBTDM(20)
+              INTEGER(KIND=4) :: ICPBTPERZON
+              INTEGER(KIND=4) :: ICPSATGWL
+              INTEGER(KIND=4) :: ICPSATPEGWL
+              INTEGER(KIND=4) :: ICPTPPERZON
+              INTEGER(KIND=4) :: ICPTPSATZON
+              INTEGER(KIND=4) :: ICPTPWASRDM(20)
+              REAL(KIND=8) :: ARMPSSDM(20)
+              REAL(KIND=8) :: AWLCORFAC(5000)
+              REAL(KIND=8) :: FRMPWALWET(20,5000)
+              REAL(KIND=8) :: SORPDMCP(20,5000)
+              REAL(KIND=8) :: THTSRPREFDMCP(20,5000)
+              REAL(KIND=8) :: TIMABSCUMDMCP(20,5000)
+              REAL(KIND=8) :: VLMPDM(20)
+              REAL(KIND=8) :: VLMPDMCP(20,5000)
+              REAL(KIND=8) :: VLMPDYCP(5000)
+              REAL(KIND=8) :: WASRMP
+              REAL(KIND=8) :: WASRMPDMCP(20,5000)
+              REAL(KIND=8) :: ZBTDM(20)
+              REAL(KIND=8) :: ZWALEVDM(20)
+            END SUBROUTINE MACROSTATE
+          END INTERFACE 
+        END MODULE MACROSTATE__genmod
