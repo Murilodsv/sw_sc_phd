@@ -14,6 +14,9 @@ model/Output/*
 R/R_samuca/performance/results/*
 */model/.Rhistory
 *.Rhistory
+model/*.OUT
+model/result.*
+
 
 # R_Samuca
 R/R_samuca/results_perf
