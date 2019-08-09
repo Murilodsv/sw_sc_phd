@@ -16,6 +16,7 @@ R/R_samuca/performance/results/*
 *.Rhistory
 model/*.OUT
 model/result.bal
+model/result*
 
 
 # R_Samuca
