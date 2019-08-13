@@ -2428,7 +2428,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       integer		nsublay_cm                            ! 
       integer		phy                                   ! 
       integer		pos_it_bg                             ! 
-      integer		sl                                    ! 
+      integer		sl                                    !
+      integer     sub_sl                                !
+      integer     n_sub_sl                              !
       integer		tl                                    ! 
       logical		fl_potential                          ! 
       logical		fl_appear_leaf                        ! 
@@ -2899,6 +2901,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        PLANTDEPTH	      
       
       real        SLTHICKNESS(numlay)
+      real        tsoil_lay(numlay)
       real        SRL
       real        UPPER(numlay)
       real        RLD(numlay)
@@ -3006,6 +3009,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !   retrieve slthickness, bottom, upper and dep from swap                               [OK]
       !   retrieve environmental variables from swap (temperature, rain, radiation, etc...)   []
       !   check if tsoil is calculated for subcompartments or by soil layers                  []
+      !   review water_stress to cope with swap
       
       ! Arrays from control
       ! ratoon
@@ -3161,6 +3165,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       t_mid_ws_til    = t_mid_ws_pho
       t_min_ws_til    = t_min_ws_pho
       
+      !--- Species-related response
+      co2_pho_res_end =   270.d0
+      co2_pho_res_ini =   0.d0
+      
       !--- retrive soil vertical discretization from 'Swap.swp'
       slthickness = hsublay(1:numlay)
       do sl = 1, numlay         
@@ -3177,7 +3185,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         !--- Simulation Options ---!
         !--------------------------!
     
-      potential_growth    = .false.
+      potential_growth    = .true.    ! Change it when water stress is reviewed
       tillermet           = 1
       ratoon              = .false.
       plantdepth          = 20.d0
@@ -3185,6 +3193,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       seqnow              = 1
       usetsoil            = .true.      
       mulcheffect         = .false.   ! Mulch effect turned off for this version
+      swroottyp           = 1         ! Root water uptake type 1 = Feddes; 2 = Matric Flux [SWAP-GLOBAL VARIABLE]
+      co2                 = 380.d0
       
         !--- Simulate Water Stress
         fl_potential      = potential_growth
@@ -3512,10 +3522,29 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 3000  continue
       
       !-------------------------------------!
-    !--- Time-Step Rate Initialization ---!
-    !-------------------------------------!
+      !--- Time-Step Rate Initialization ---!
+      !-------------------------------------!
+      
+      !--- Link with SWAP variables
+      srad    =   rad * 1.e-6
+      tmax    =   tmx
+      tmin    =   tmn      
+      tmed    =   (tmax + tmin) / 2.d0
+      eop     =   ptra
+      
+      doy     =   daynr
+      year    =   iyear
+      lat_sim =   lat
+      
+      
+      !tmax        = tmx                       !(oC)
+      !tmin        = tmn                       !(oC)
+      !t_mean      = 0.5 * (tmax + tmin)       !(oC)
+      !par         = (rad * 0.5)/0.1E7         !(MJ/m2.d)
+      !epp         = ptra                      !(cm/d)
+      !ch          = pleng * 100.              !(cm) Used for Penmam-M. method      
     
-    !--- Crop Step-Rates
+      !--- Crop Step-Rates
       di							= 0.d0
       disoil						= 0.d0
       drdepth						= 0.d0
@@ -3917,6 +3946,21 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !--- Use Soil Temperature ---!
       !----------------------------!
           
+          !--- Retrive soil temperature for each layer
+          tsoil_lay   = 0.d0
+          sl          = 1
+          n_sub_sl    = 1        
+          do sub_sl = 1, numnod              
+              
+              tsoil_lay(sl)   =  tsoil_lay(sl) +  tsoil(sub_sl) * 
+     & dz(numnod) / slthickness(sl)
+              
+              if(n_sub_sl .gt. ncomp(sl))then
+                  n_sub_sl = 1
+                  sl       = sl + 1
+              endif
+          enddo
+          
       if(mulcheffect)then
           !--- Mulch effect when mulch is present (skip the first layer temperature (mulch))
               !--- average soil temperature in plant depth soil layers (weighted mean)
@@ -3936,6 +3980,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               else
               !--- use soil temperature but without mulch effect (bare soil)
               !--- average soil temperature in plant depth soil layers (weighted mean)
+                      
                   soiltemperature = 0.d0
                   do sl = 1, numlay
                       if(initcropdepth .gt. upper(sl)) then
@@ -4553,9 +4598,12 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
             !--- Canopy Gross Photosynthesis ---!
             !-----------------------------------!
             
+            !--- LAI for assimilation
+            lai_ass  = lai
+            
             !--- Canopy gross photosysntesis rate
-            call PGS(swfacp,1.,1.,1.,chustk,par_rad,lai,dtg,resp,diac,
-     & tmed,dw_total,CCEFF,CCMAX,k_can,PHTMAX,CCMP,PARMAX)
+            call PGS(swfacp,1.,1.,1.,chustk,par_rad,lai_ass,dtg,resp,
+     & diac,tmed,dw_total,CCEFF,CCMAX,k_can,PHTMAX,CCMP,PARMAX)
             
             !--- Growth and Maintenance respiration (computed on PGS subroutine)
             dtg = max(0.d0,dtg)
