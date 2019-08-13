@@ -56,6 +56,8 @@
 		<File RelativePath=".\code\ReadFile_samuca.f90"/>
 		<File RelativePath=".\code\readswap.for"/>
 		<File RelativePath=".\code\reduceva.for"/>
+		<File RelativePath=".\code\rld.f90"/>
+		<File RelativePath=".\code\root_profile.f90"/>
 		<File RelativePath=".\code\rootextraction.for"/>
 		<File RelativePath=".\code\SharedExchange.for"/>
 		<File RelativePath=".\code\SharedSimulation.for"/>
@@ -63,13 +65,17 @@
 		<File RelativePath=".\code\soilwater.for"/>
 		<File RelativePath=".\code\solute.for"/>
 		<File RelativePath=".\code\sptabulated.for"/>
+		<File RelativePath=".\code\substrates_balance.f90"/>
+		<File RelativePath=".\code\sucrose_content.f90"/>
 		<File RelativePath=".\code\surfacewater.for"/>
 		<File RelativePath=".\code\Swap.for"/>
 		<File RelativePath=".\code\swapoutput.for"/>
 		<File RelativePath=".\code\temperature.for"/>
 		<File RelativePath=".\code\timecontrol.for"/>
+		<File RelativePath=".\code\totass_samuca.f90"/>
 		<File RelativePath=".\code\tridag.for"/>
 		<File RelativePath=".\code\Variables.for"/>
+		<File RelativePath=".\code\water_stress_sugarcane.f90"/>
 		<File RelativePath=".\code\watstor.for"/></Filter>
 		<Filter Name="ttutil">
 		<File RelativePath=".\lib\addinf.for"/>

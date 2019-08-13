@@ -459,28 +459,6 @@
           call rdfdor ('ksatfit',1.d-5,1.d5,ksatfit,maho,numlay)
         else
           call rdfdor ('ksat',1.d-5,1.d5,ksatfit,maho,numlay)
-          
-          !--------------------------------------------------
-          !WARNING: ADDED HERE TO CALIBRATE KSAT WITH R OPTIM
-          !--------------------------------------------------
-          !BY MURILO VIANNA
-          
-          
-!          OPEN(911,FILE='Param_optim.opt',
-!     &      STATUS='OLD',READONLY)          
-!          
-!          call readrea('Calibration',2,real_host,1,.false.,
-!     &.false.,911,'Param_optim.opt',messag)
-!          
-!          ores(5) = real_host(1)
-!          write(*,91) ores(5)
-!91           FORMAT(5F8.2)
-!          
-!          close(911)          
-          
-          !--------------------------------------------------
-          
-          
         endif
         flksatexm  =.false.
         if(rdinqr('ksatexm')) then
