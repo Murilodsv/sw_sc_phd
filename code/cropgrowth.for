@@ -2911,7 +2911,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real 		SWFACP
       real 		SWFACF
       real 		SWFACE
-      real 		SRAD
+      real 		SRAD*8
       integer 	NDWS
       integer 	NDEWS
       logical 	MULCHEFFECT
@@ -2928,15 +2928,19 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       logical  	WRITEACTOUT
       integer  	WARN
       real  		TRASW
-      real  		SINLD
       real  		RESP
       real  		POL
       integer  	OUTDPP
       real  		KC
-      real  		DAYL
       integer  	DAS
       integer  	DAP
-      real  		COSLD
+      real*8      dso
+      real*8      dsinbe
+      real*8      dsinb
+      real*8      cosld
+      real*8      dayl
+      real*8      sinld
+      real        tmed
       
       integer     outp        
       integer     outd
@@ -3798,15 +3802,15 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !-------------------!
 
       !--- Temperature stress on photosynthesis
-      tempfac_pho      = temperature_factor(tmn, tb0pho, tb1pho, tb2pho,
+      tempfac_pho      = temperature_factor(tmed, tb0pho, tb1pho,tb2pho,
      & tbfpho) ! Photosynthesis
       
       !--- Temperature stress factor on expansioning
-      tempfac_per      = min(1.,max(0.,tmn - tbper) / 
+      tempfac_per      = min(1.,max(0.,tmed - tbper) / 
      & (tbMax_per - tbper)) 
 
       !--- Hourly Temperature (PL model)
-      call TempHour(tmax, tmin, doy, lat_sim, a_pl, b_pl, c_pl, thour)
+      call TempHour_samuca(tmax,tmin,doy,lat_sim,a_pl,b_pl,c_pl,thour)
 
       !--- Hourly Plant Extension Temperature Factor
       do hour = 1, 24
@@ -3948,7 +3952,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 
               !--- Degree-days using soil and air temperatures
               disoil  = min(max(0.d0, soiltemperature - tb)   ,tbm - tb)
-              diair   = min(max(0.d0, tmn - tb)               ,tbm - tb)
+              diair   = min(max(0.d0, tmed - tb)              ,tbm - tb)
 
               !--- Use soil temperature to compute crop age until stalks arises (Appical meristems is the sensor)
               if(.not. fl_stalk_emerged) then
@@ -3977,10 +3981,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         !--------------------------------!
 
         !--- Considering soil temperature equal as air temperature
-        soiltemperature = tmn
+        soiltemperature = tmed
 
         !--- Computing crop age (degree-days) based on air temperature
-        di      = min(max(0.d0, tmn - tb), tbm - tb)
+        di      = min(max(0.d0, tmed - tb), tbm - tb)
         diair   = di
         disoil  = di
         dileaf  = di
@@ -4201,7 +4205,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
             if(fl_it_AG(phy))then                
                 !--- Above ground
                 diphy   = di
-                t_mresp = tmn
+                t_mresp = tmed
             else
                 !--- Below ground
                 diphy   = disoil
@@ -4245,7 +4249,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
             
                 !--- Leaf Maintenance respiration [gCH2O]
                 mresp_lf    = dw_lf_phy * (kmr_leaf * q10_leaf ** 
-     & ((tmn - tref_mr) / 10.))                
+     & ((tmed - tref_mr) / 10.))                
                 
                 !--- Leaf Dry Weight Sink Strength rate [gDW]
                 dw_ss_lf    = fgrowth(1, max_lf_dw, ini_dw_lf_phy, 0.,
@@ -4470,7 +4474,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         !----------------------!
         
         !--- Select among photosynthesis methods
-        select case(metpg(1))
+        select case(metpg)
         
         case(1)
             
@@ -4498,8 +4502,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
             !--- CO2 Assimilation by Canopy Layer ---!
             !----------------------------------------!
             
-            !--- Astrological calculations for difuse and direct PAR interception on hourly-step
-            call astro 
+            !--- Astrological calculations for difuse and direct PAR interception
+            call astro(logf,swscre,doy,lat,dayl,daylp,
+     & sinld,cosld,dsinb,dsinbe,dso)
                         
             !--- Convert CO2 Assimilation rate to kgCO2 ha-1 h-1
             amax_conv   = amax / 1.e3 * 1.e4 * 3600 * 44.d0 / 1.e6
@@ -4550,7 +4555,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
             
             !--- Canopy gross photosysntesis rate
             call PGS(swfacp,1.,1.,1.,chustk,par_rad,lai,dtg,resp,diac,
-     & tmn,dw_total,CCEFF,CCMAX,k_can,PHTMAX,CCMP,PARMAX)
+     & tmed,dw_total,CCEFF,CCMAX,k_can,PHTMAX,CCMP,PARMAX)
             
             !--- Growth and Maintenance respiration (computed on PGS subroutine)
             dtg = max(0.d0,dtg)
@@ -4785,7 +4790,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         if(fl_it_AG(phy))then                
             !--- Above ground
             diphy   = di
-            t_mresp = tmn
+            t_mresp = tmed
         else
             !--- Below ground
             diphy   = disoil
@@ -5927,7 +5932,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !--- Stress Factors Outputs
       write(outstres, 145) das, dap, trasw, eop, 
      & trwup*10.d0, max(trwup/(eop/10.),0.d0), swfacp, 
-     & swface, swfacf, swfact, tmn, tempfac_pho, tempfac_per, 
+     & swface, swfacf, swfact, tmed, tempfac_pho, tempfac_per, 
      & co2, pho_fac_co2, diacem, agefactor_amax, 
      & agefactor_per, sug_it_BG, amaxfbfac, dtg*(1.e6/1.e4), per
 
@@ -5935,7 +5940,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         !--------------------!
         !--- Crop Outputs ---!
         !--------------------!
-        if(writeactout(1))then
+        if(writeactout)then
             write(outp,109) seqnow,     
      & pltype,
      & year,  
@@ -6110,7 +6115,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        shootdepth          !Shoot depth before emergence
       real        dshootdepth         !Shoot depth before emergence daily rate 
       real        sla                 !specific leaf area (m2 kg-1) (P)
-      real        srad                !Daily solar radiation (MJ m-2)
+      real        srad*8              !Daily solar radiation (MJ m-2)
       real        srl                 !(P)
       real        stalkgpf            !
       real        stkdmc              !Dry matter fraction in the stalk fresh mass
@@ -9043,100 +9048,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 	return
 	end subroutine LAIS	
           
-      subroutine TempHour(tmaxday,tminday,thour)
-        !Calculates the Hourly temperature based on Parton & Logan (1981)
-        !Murilo Vianna
-    
-          Use Variables
-	    Implicit None	
-	
-            integer hour
-            integer doy
-            real tsunset                               !Temperature related variables !oC        
-            real decsol                                ! astronomic variables
-            real ahn                                   ! astronomic variables
-            real timnight                              ! time related variables
-            real timday                                ! time related variables
-            real sunset
-            real sunrise
-            real photop
-            real nigthp
-            real bb
-            real be
-            real bbd_iday
-            real bbd_inight
-            real bbd_inight2
-            real bbe
-            real ddy
-            real tmaxday
-            real tminday
-            real thour(24)
-            
-            real d_2_r
-            real r_2_d
-            real :: pi  = 3.14159265
-        
-            real :: a   = 1.607 !Calibrated for Sao Paulo State   (original constants from Parton and Logan paper = 2.000)
-            real :: b   = 2.762 !Calibrated for Sao Paulo State   (original constants from Parton and Logan paper = 2.200)
-            real :: c   = 1.179 !Calibrated for Sao Paulo State   (original constants from Parton and Logan paper = -0.17)
-		  
-            save
-            
-            !Linking with SWAP variables            
-            doy       = daynr
-            d_2_r     = pi/180.
-            r_2_d     = 180./pi
-            
-          		
-		    !calculating photoperiod			
-              decsol  = 23.45 * sin(((360./365.)*(doy-80.)*d_2_r))
-		    photop  = acos((-tan((lat)*d_2_r))*(tan((decsol)*d_2_r))) * 
-     & r_2_d * (2./15.)
-              
-		    nigthp  = 24. - photop
-		    sunrise = 12. - photop/2.
-		    sunset  = 12. + photop/2.
-		
-            bb      = 12. - photop / 2. + c
-            be      = 12. + photop / 2.
-            ddy     = photop - c
-        
-            !Calculating air temperature follow Parton & Logan (1981)				
-            tsunset = (tmaxday-tminday)*sin(((pi*ddy)/(photop+2*a))) + 
-     & tminday
-        
-		    !Initial Conditions
-		    do hour = 1,24
-			    
-                    bbd_iday    = hour - bb
-                    bbe         = hour - be
-                    bbd_inight2 = (24. + be) + hour
-                
-                    !Rescaling time
-                    if(hour .gt. sunset) then
-                        bbd_inight  = hour - sunset
-                    else
-                        bbd_inight = (24. + hour) - sunset
-                    endif
-                
-                    !Day time temperature
-                    if(hour .ge. bb .and. hour .le. sunset) then
-                
-                        thour(hour) = (tmaxday - tminday) * 
-     & sin(((pi * bbd_iday) / (photop + 2*a))) + tminday
-                    
-                    else
-                        !Night time temperature                    
-                        thour(hour) = tminday + (tsunset - tminday) * 
-     & exp(-b * bbd_inight/(24. - photop))                    
-                    
-                    endif						
-		    enddo
-		
-	    return
-	end subroutine TempHour     
           
                     
+
           
 	subroutine DIAMPERS(thour,Tbi,Topt,dpercoeff,swface,agefactor,nstk, !Input
      & pleng,noden,sucmax,SucAccFac,dws,di,diac,phyloc,dw,sgpf,    !Input
@@ -9594,9 +9508,196 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 	return
       end subroutine DIAMPERS
 	
-	     
+	
+         subroutine TempHour_samuca(tmaxday,tminday,doy,lat,a,b,c,thour)
+        !Calculates the Hourly temperature based on Parton & Logan (1981)
+    
+        Implicit None
+
+        integer hour
+        integer doy
+        real tsunset                               !Temperature related variables !oC
+        real decsol                                ! astronomic variables
+        real ahn                                   ! astronomic variables
+        real timnight                              ! time related variables
+        real timday                                ! time related variables
+        real sunset
+        real sunrise
+        real photop
+        real nigthp
+        real bb
+        real be
+        real bbd_iday
+        real bbd_inight
+        real bbd_inight2
+        real bbe
+        real ddy
+        real tmaxday
+        real tminday
+        real lat
+        real d_2_r
+        real r_2_d
+
+        real a          !       = 1.607 Calibrated for Sao Paulo State   (original constants from Parton and Logan paper = 2.000)
+        real b          !       = 2.762 Calibrated for Sao Paulo State   (original constants from Parton and Logan paper = 2.200)
+        real c          !       = 1.179 Calibrated for Sao Paulo State   (original constants from Parton and Logan paper = -0.17)
+
+        real thour(24)
+
+        real :: pi      =  3.14159265
+
+        save
+
+        d_2_r = pi/180.
+        r_2_d = 180./pi
+
+        !calculating photoperiod
+        decsol  = 23.45 * sin(((360./365.)*(doy-80.)*d_2_r))
+
+        !ahn     = acos((-tan(d_2_r*lat)*tan(d_2_r*decsol)))
+        photop  = acos((-tan((lat)*d_2_r))*(tan((decsol)*d_2_r))) * 
+     & r_2_d * (2./15.)
+        nigthp  = 24 - photop
+        sunrise = 12 - photop/2
+        sunset  = 12 + photop/2
+
+        bb      = 12. - photop / 2. + c
+        be      = 12. + photop / 2.
+        ddy     = photop - c
+
+        !Calculating air temperature follow Parton & Logan (1981)
+        tsunset = (tmaxday - tminday) * sin(((pi*ddy)/(photop+2*a))) + 
+     &  tminday
+
+        !Initial Conditions
+        do hour = 1,24
+
+            bbd_iday    = hour - bb
+            bbe         = hour - be
+            bbd_inight2 = (24. + be) + hour
+
+            !Rescaling time
+            if(hour .gt. sunset) then
+                bbd_inight  = hour - sunset
+            else
+                bbd_inight = (24. + hour) - sunset
+            endif
+
+            !Day time temperature
+            if(hour .ge. bb .and. hour .le. sunset) then
+
+                thour(hour) = (tmaxday - tminday) * 
+     & sin(((pi * bbd_iday) / (photop + 2*a))) + tminday
+
+            else
+            !Night time temperature
+
+                thour(hour) = tminday + (tsunset - tminday) * 
+     & exp(-b * bbd_inight/(24. - photop))
+
+
+            endif
+        enddo
+		
+        return
+        end subroutine TempHour_samuca
       
 
+        subroutine TempHour(tmaxday,tminday,thour)
+        !Calculates the Hourly temperature based on Parton & Logan (1981)
+        !Murilo Vianna
+    
+          Use Variables
+	    Implicit None	
+	
+            integer hour
+            integer doy
+            real tsunset                               !Temperature related variables !oC        
+            real decsol                                ! astronomic variables
+            real ahn                                   ! astronomic variables
+            real timnight                              ! time related variables
+            real timday                                ! time related variables
+            real sunset
+            real sunrise
+            real photop
+            real nigthp
+            real bb
+            real be
+            real bbd_iday
+            real bbd_inight
+            real bbd_inight2
+            real bbe
+            real ddy
+            real tmaxday
+            real tminday
+            real thour(24)
+            
+            real d_2_r
+            real r_2_d
+            real :: pi  = 3.14159265
+        
+            real :: a   = 1.607 !Calibrated for Sao Paulo State   (original constants from Parton and Logan paper = 2.000)
+            real :: b   = 2.762 !Calibrated for Sao Paulo State   (original constants from Parton and Logan paper = 2.200)
+            real :: c   = 1.179 !Calibrated for Sao Paulo State   (original constants from Parton and Logan paper = -0.17)
+		  
+            save
+            
+            !Linking with SWAP variables            
+            doy       = daynr
+            d_2_r     = pi/180.
+            r_2_d     = 180./pi
+            
+          		
+		    !calculating photoperiod			
+              decsol  = 23.45 * sin(((360./365.)*(doy-80.)*d_2_r))
+		    photop  = acos((-tan((lat)*d_2_r))*(tan((decsol)*d_2_r))) * 
+     & r_2_d * (2./15.)
+              
+		    nigthp  = 24. - photop
+		    sunrise = 12. - photop/2.
+		    sunset  = 12. + photop/2.
+		
+            bb      = 12. - photop / 2. + c
+            be      = 12. + photop / 2.
+            ddy     = photop - c
+        
+            !Calculating air temperature follow Parton & Logan (1981)				
+            tsunset = (tmaxday-tminday)*sin(((pi*ddy)/(photop+2*a))) + 
+     & tminday
+        
+		    !Initial Conditions
+		    do hour = 1,24
+			    
+                    bbd_iday    = hour - bb
+                    bbe         = hour - be
+                    bbd_inight2 = (24. + be) + hour
+                
+                    !Rescaling time
+                    if(hour .gt. sunset) then
+                        bbd_inight  = hour - sunset
+                    else
+                        bbd_inight = (24. + hour) - sunset
+                    endif
+                
+                    !Day time temperature
+                    if(hour .ge. bb .and. hour .le. sunset) then
+                
+                        thour(hour) = (tmaxday - tminday) * 
+     & sin(((pi * bbd_iday) / (photop + 2*a))) + tminday
+                    
+                    else
+                        !Night time temperature                    
+                        thour(hour) = tminday + (tsunset - tminday) * 
+     & exp(-b * bbd_inight/(24. - photop))                    
+                    
+                    endif						
+		    enddo
+		
+	    return
+	end subroutine TempHour     
+        
+        
+        
       ! ----------------------------------------------------------------------
       subroutine readsamuca (crpfil,pathcrop,tdwi,laiem,rgrlai,slatb,
      &  ssa,span,tbase,kdif,kdir,eff,amaxtb,tmpftb,tmnftb,cvl,cvr,cvs,
