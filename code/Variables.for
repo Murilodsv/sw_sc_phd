@@ -576,7 +576,7 @@
       real*8    TePrRain           ! Temperature above which all precipitation is rain,[ 0.0...5.0 oC, R]
       real*8    TePrSnow           ! Temperature below which all precipitation is snow,[-5.0...0.0 oC, R]
       logical   flsnow             ! Flag indicating simulation of snow accumulation and melt
-
+      
 ! --- solute variables
       integer   nconc              ! Number of initial solute concentrations as provided in the input
       integer   sba                ! Internal number of output file *.SBA with cumulative solute balance components

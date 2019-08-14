@@ -2992,6 +2992,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real		dlroot(maho)                                  !
       real		drld(maho)                                    !
       real		drld_dead(maho)                               !
+      real        relative_rld(maho)
       logical		fl_it_AG(100)                                   ! Above Ground Internode Flag
       logical		fl_lf_AG(100)                                   ! Above Ground Leaf Flag
       logical		fl_lf_alive(100) 
@@ -3179,7 +3180,6 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       
       !--- retrive soil vertical discretization from 'Swap.swp'
       slthickness = hsublay(1:numlay)
-      array_deb   = slthickness
       do sl = 1, numlay         
         if (sl == 1)then             
              dep(sl) = slthickness(sl)
@@ -3190,13 +3190,13 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         bottom(sl) = dep(sl)        
       enddo      
     
+      !--- Get initial and final icrop rotation IDs for sugarcane
       i           = 1
       icrop_end   = 0
       do while(cropstart(i) .gt. 0.0001)
           if(cropfil(i) .eq. 'Sugarcane') icrop_end = i
           i = i + 1
-      enddo
-      
+      enddo      
       i           = 1
       do while(cropstart(i) .gt. 0.0001 .and. 
      & .not. (cropfil(i) .eq. 'Sugarcane'))
@@ -3204,6 +3204,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       enddo
       icrop_ini = i
       
+      !--- Update flags and seq ID
       if(icrop .eq. icrop_ini)then
           seqnow      =   1
           flinit_file =   .true.
@@ -3212,8 +3213,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           seqnow      =   seqnow  +   1
           flinit_file =   .false.
           if(icrop .eq. icrop_end) flclos_file =   .true. 
-      endif
-      
+      endif      
       
         !--------------------------!
         !--- Simulation Options ---!
@@ -3560,6 +3560,44 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
      &                    writedcrop,     
      &                    writehead)
         endif
+        
+        !--- Link with SWAP        
+        !--- prepare rld data for cumdens calculation
+        
+        do sl = 2, numlay*2,2
+            !relative_rld(sl-1)
+            !relative_rld(sl)
+            write(*,*)    sl
+        enddo
+        
+        
+!        ! --- CALCULATE NORMALIZED CUMULATIVE ROOT DENSITY FUNCTION      
+!
+!! ---   specify array ROOTDIS with root density distribution
+!        do i = 0,100
+!          depth = 0.01d0 * dble(i)
+!          rootdis(i*2+1) = depth
+!          rootdis(i*2+2) = afgen(rdctb,22,depth)
+!        enddo
+!
+!! ---   calculate cumulative root density function
+!        do i = 1,202,2
+!! ---     relative depths
+!          cumdens(i) = rootdis(i)
+!        enddo
+!        sum = 0.d0
+!        cumdens(2) = 0.d0
+!        do i = 4,202,2
+!! ---     cumulative root density
+!          sum = sum + (rootdis(i-2)+rootdis(i)) * 0.5d0
+!     &               * (cumdens(i-1)-cumdens(i-3))
+!          cumdens(i) = sum
+!        enddo
+!
+!! ---   normalize cumulative root density function to one
+!        do i = 2,202,2
+!          cumdens(i) = cumdens(i) / sum
+!        enddo
             
 	return      
       

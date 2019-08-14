@@ -33,10 +33,10 @@ subroutine root_profile(nlay			            , & ! Input
     real    srl_prof(nsublay)       ! V
     real    ddw_rt_prof(nsublay)    ! V
     real    drld_prof(nsublay)      ! V
-    real    drld(nlay)              ! O [cm cm-3]
-    real    ddw_rt_sl(nlay)         ! O [g cm-2 layer-1]
+    real    drld(nlay)               ! O [cm cm-3]
+    real    ddw_rt_sl(nlay)          ! O [g cm-2 layer-1]
     real    bottom(nlay)            ! I [cm]
-    real    slthickness(nlay)       ! I [cm]
+    real    slthickness(nlay)        ! I [cm]
     real    nrootprof               ! V
     real    pfac_root_cm            ! V
     logical flemerged               ! I
