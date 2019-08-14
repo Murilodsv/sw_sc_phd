@@ -3514,7 +3514,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !--- Potential rates ---!
       !-----------------------!
     
-      !--- Not in use anymore. 
+      !--- Not in use by SAMUCA.
       !--- To run potential conditions, turn-off the Limiting Factors -> potential_growth = .true.
 	
       return
@@ -3953,8 +3953,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           do sub_sl = 1, numnod              
               
               tsoil_lay(sl)   =  tsoil_lay(sl) +  tsoil(sub_sl) * 
-     & dz(numnod) / slthickness(sl)
+     & dz(sub_sl) / slthickness(sl)
               
+              n_sub_sl = n_sub_sl + 1              
               if(n_sub_sl .gt. ncomp(sl))then
                   n_sub_sl = 1
                   sl       = sl + 1
@@ -3970,10 +3971,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 
                           if(initcropdepth .gt. bottom(sl)) then
                               soiltemperature = soiltemperature + 
-     & tsoil(sl+1) * slthickness(sl) / initcropdepth
+     & tsoil_lay(sl+1) * slthickness(sl) / initcropdepth
                           else
                               soiltemperature = soiltemperature + 
-     & tsoil(sl+1) * (initcropdepth - bottom(sl-1))  / initcropdepth
+     & tsoil_lay(sl+1) * (initcropdepth - bottom(sl-1))  / initcropdepth
                           endif
                       endif
                   enddo
@@ -3986,10 +3987,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                       if(initcropdepth .gt. upper(sl)) then
                           if(initcropdepth .ge. bottom(sl)) then
                               soiltemperature = soiltemperature + 
-     & tsoil(sl) * slthickness(sl) / initcropdepth
+     & tsoil_lay(sl) * slthickness(sl) / initcropdepth
                           else
                               soiltemperature = soiltemperature + 
-     & tsoil(sl) * (initcropdepth - bottom(sl-1))  / initcropdepth
+     & tsoil_lay(sl) * (initcropdepth - bottom(sl-1))  / initcropdepth
                           endif
                       endif
                   enddo
