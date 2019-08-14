@@ -85,7 +85,7 @@
 ! ---   detailed grass growth  -----------------------------------------------
         if (croptype(numcrop) .eq. 3) call Grass(3)
 ! ---   detailed sugarcane growth --------------------------------------------
-        if (croptype(icrop) .eq. 4) call Samuca(3)
+        if (croptype(numcrop) .eq. 4) call Samuca(3)
       endif
 
       return
@@ -2391,6 +2391,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       integer     inte_host(6)                            ! Array with integer crop parameters
       real        real_host(108)                          ! Array with real crop parameters
       
+      integer     icrop_ini
+      integer     icrop_end
+      integer     i
+      
       integer		task                                  ! Controler of call ordering from the main program
       integer		method_ws                             ! Water Stress Method:  1 = linear response; 2 = asymptote response
       integer		method_pop                            ! Tillering Method:     1 = Cdays; 2 = Cdays + Light Transmission; 3 = Source-Sink
@@ -2895,16 +2899,16 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       integer     SEQNOW			
       logical     RATOON			
       
-      real        BOTTOM(numlay)		
-      real        DEP(numlay)			
+      real        BOTTOM(maho)		
+      real        DEP(maho)			
       logical     FLCROPALIVE	
       real        PLANTDEPTH	      
       
-      real        SLTHICKNESS(numlay)
-      real        tsoil_lay(numlay)
+      real        SLTHICKNESS(maho)
+      real        tsoil_lay(maho)
       real        SRL
-      real        UPPER(numlay)
-      real        RLD(numlay)
+      real        UPPER(maho)
+      real        RLD(maho)
       logical 	USETSOIL
       real 		TRWUP
       real 		TMIN
@@ -2959,6 +2963,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        diac
       real        sgpf
       logical     flemerged
+      logical     flinit_file
+      logical     flclos_file
       
       character 	(len = 6)	pltype          				    !  Planting type (Ratoon or PlCane)    
       character 	(len = 6)	cropstatus          			    !  Dead or Alive
@@ -2966,30 +2972,32 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 
       !--- Arrays Variables
       real		phprof(100,60)                                  ! Phytomer profile and attributes dimensions    
-      real		drld_sl(numlay)                                 !
-      real		dw_rt_sl(numlay)                                !
-      real		ddw_rt_sl(numlay)                               !
+      real		drld_sl(maho)                                 !
+      real		dw_rt_sl(maho)                                !
+      real		ddw_rt_sl(maho)                               !
       real		srl_prof(1000)                                  !
       real		ddw_rt_prof(1000)                               !
       real		drld_prof(1000)                                 !
-      real		geot(numlay)                                    !
+      real		geot(maho)                                    !
       real		rootprof(1000)                                  ! Root profile (index = cm comparment)    Up to 10 meters
-      real		dw_rt_prof(numlay)                              !
+      real		dw_rt_prof(maho)                              !
       real		tillerageprof(100,2)                            !
       real		tempfac_h_per(24)                               ! 24 hours
       real		Acanopy(3+1,5+1)                                ! Instantaneous CO2 Assimilation Rate at three hours and five canopy depth in kg(CO2) ha-1(leaf) h-1 
       real		Qleaf(3+1,5+1)                                  ! Instantaneous par absorbed by leaves at three hours and five canopy depth in W m-2
       real		incpar(3,4)                                     ! Incoming direct, difuse and total par radiation above canopy in three hours W m-2
       real		photo_layer_act(3)                              ! Actual Total Daily Photosynthesis per canopy Layer  
-      real		rgf(numlay+1,3)                                 !
-      real		lroot(numlay)                                   !
-      real		dlroot(numlay)                                  !
-      real		drld(100)                                       !
-      real		drld_dead(100)                                  !
+      real		rgf(maho+1,3)                                 !
+      real		lroot(maho)                                   !
+      real		dlroot(maho)                                  !
+      real		drld(maho)                                    !
+      real		drld_dead(maho)                               !
       logical		fl_it_AG(100)                                   ! Above Ground Internode Flag
       logical		fl_lf_AG(100)                                   ! Above Ground Leaf Flag
       logical		fl_lf_alive(100) 
     
+      real        array_deb(MAHO)
+      
       !--- Real Functions
       real		afgen                                           ! Interpolation function (The Fortran Simulation Translator, FST version 2.0)
       real		fgrowth                                         ! Flexible growth function
@@ -3008,7 +3016,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !   make sure all control parameters are readable or set in the code                    [OK]
       !   retrieve slthickness, bottom, upper and dep from swap                               [OK]
       !   retrieve environmental variables from swap (temperature, rain, radiation, etc...)   []
-      !   check if tsoil is calculated for subcompartments or by soil layers                  []
+      !   check if tsoil is calculated for subcompartments or by soil layers                  [OK]
       !   review water_stress to cope with swap
       
       ! Arrays from control
@@ -3171,6 +3179,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       
       !--- retrive soil vertical discretization from 'Swap.swp'
       slthickness = hsublay(1:numlay)
+      array_deb   = slthickness
       do sl = 1, numlay         
         if (sl == 1)then             
              dep(sl) = slthickness(sl)
@@ -3181,20 +3190,69 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         bottom(sl) = dep(sl)        
       enddo      
     
+      i           = 1
+      icrop_end   = 0
+      do while(cropstart(i) .gt. 0.0001)
+          if(cropfil(i) .eq. 'Sugarcane') icrop_end = i
+          i = i + 1
+      enddo
+      
+      i           = 1
+      do while(cropstart(i) .gt. 0.0001 .and. 
+     & .not. (cropfil(i) .eq. 'Sugarcane'))
+          i = i + 1
+      enddo
+      icrop_ini = i
+      
+      if(icrop .eq. icrop_ini)then
+          seqnow      =   1
+          flinit_file =   .true.
+          flclos_file =   .false.      
+      else
+          seqnow      =   seqnow  +   1
+          flinit_file =   .false.
+          if(icrop .eq. icrop_end) flclos_file =   .true. 
+      endif
+      
+      
         !--------------------------!
         !--- Simulation Options ---!
         !--------------------------!
-    
+      writeactout         = .true.
+      writedetphoto       = .true.
+      writedcrop          = .true.
+      writehead           = .true.
       potential_growth    = .true.    ! Change it when water stress is reviewed
       tillermet           = 1
+      metpg               = 2
       ratoon              = .false.
       plantdepth          = 20.d0
       rowsp               = 140.d0
-      seqnow              = 1
       usetsoil            = .true.      
-      mulcheffect         = .false.   ! Mulch effect turned off for this version
-      swroottyp           = 1         ! Root water uptake type 1 = Feddes; 2 = Matric Flux [SWAP-GLOBAL VARIABLE]
-      co2                 = 380.d0
+      mulcheffect         = .false.   ! Mulch effect turned off for this version      
+      co2                 = 380.d0      
+      swcf                = 1
+      
+      !--- SWAP Methods:
+      swroottyp           = 1         ! Root water uptake type 1 = Feddes; 2 = Matric Flux 
+      idev 			    = 1         ! Switch for length of growth period in case of simple crop: 1 = fixed; 2 = depends on temperature sum
+      swgc                = 1         ! Switch for simple crop: 1 = leaf area index is input; 2 = soil cover fraction is input
+      swcf                = 1         ! Switch for simple crop: 1 = crop factor is input; 2 = crop height is input
+      swinter             = 1         ! Switch for interception method: 0 = no interception; 1 = agricultural crops; 2 = trees and forests
+      if (swcf.eq.1) then
+          !--- use standard values for ETref (FAO56)
+          albedo = 0.23d0
+          rsc = 70.0d0
+          rsw = 0.0d0
+      else
+          write(*,*) 
+     & 'SWCF = 0. Please provide sugarcane albedo, rsc and rsw in'//
+     & ' file.crp'
+      endif
+      
+      ch    =   0.d0      ! Crop Height [cm] for PenMon()
+      kc    =   kc_min    ! Crop factor (-)
+      cf    =   kc        ! Crop factor for SWAP (-)
       
         !--- Simulate Water Stress
         fl_potential      = potential_growth
@@ -3487,12 +3545,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         outdpa      =   904
         outpfac     =   905
         outstres    =   906
-                
-        writedetphoto =   .true.
-        writedcrop    =   .true.
-        writehead     =   .true.
         
-        !--- open output files        
+        if(flinit_file)then
+        !--- open output files
         call output_samuca(  2,           
      &                    project,        
      &                    outp,           
@@ -3504,7 +3559,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
      &                    writedetphoto,  
      &                    writedcrop,     
      &                    writehead)
-        
+        endif
             
 	return      
       
@@ -3524,26 +3579,19 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !-------------------------------------!
       !--- Time-Step Rate Initialization ---!
       !-------------------------------------!
-      
+           
       !--- Link with SWAP variables
       srad    =   rad * 1.e-6
       tmax    =   tmx
       tmin    =   tmn      
       tmed    =   (tmax + tmin) / 2.d0
-      eop     =   ptra
-      
+      eop     =   ptra      
       doy     =   daynr
+      das     =   daycum
+      dap     =   daycrop
       year    =   iyear
       lat_sim =   lat
       
-      
-      !tmax        = tmx                       !(oC)
-      !tmin        = tmn                       !(oC)
-      !t_mean      = 0.5 * (tmax + tmin)       !(oC)
-      !par         = (rad * 0.5)/0.1E7         !(MJ/m2.d)
-      !epp         = ptra                      !(cm/d)
-      !ch          = pleng * 100.              !(cm) Used for Penmam-M. method      
-    
       !--- Crop Step-Rates
       di							= 0.d0
       disoil						= 0.d0
@@ -3940,7 +3988,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !----------------!
       !--- Age Rate ---!
       !----------------!
-      if(usetsoil)then
+      if(usetsoil)then          
 
       !----------------------------!
       !--- Use Soil Temperature ---!
@@ -3961,6 +4009,18 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                   sl       = sl + 1
               endif
           enddo
+          
+          !######## DEBUG
+          if(icrop .eq. 2)then
+              write(*,*) 'debug'
+          endif
+          
+          if(isnan(tsoil_lay(1)))then
+              write(*,*) 'debug'
+          
+          endif         
+          
+          !######## DEBUG
           
       if(mulcheffect)then
           !--- Mulch effect when mulch is present (skip the first layer temperature (mulch))
@@ -4223,21 +4283,21 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 
           endif
 
-              !--- Leaf appearance
-              if(fl_appear_leaf)then
+            !--- Leaf appearance
+            if(fl_appear_leaf)then
 
-              !--- Leaf Area Index Gain [m2 m-2]
-              dlai_gain_appear    = phprof(1, 5) * nstk_now * 
+            !--- Leaf Area Index Gain [m2 m-2]
+            dlai_gain_appear    = phprof(1, 5) * nstk_now * 
      & tilleragefac / 1.e4
 
               !--- Leaf Dry Weight Gain [ton ha-1]
               ddw_lf_appear       = phprof(1, 6) * nstk_now * 
      & tilleragefac * 1.e4/1.e6
 
-              !--- Leaf appeared, update flag
-              fl_appear_leaf = .false.
+            !--- Leaf appeared, update flag
+            fl_appear_leaf = .false.
 
-              endif
+            endif
         
         !---------------------!
         !--- Sink Strength ---!
@@ -5078,7 +5138,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         endif  
         
         !--- Correct to meet carbon balance
-        dstr_it_BG  = dstr_it_BG    *   dsug_corr_fac_BG
+        dstr_it_BG  = dstr_it_BG  *   dsug_corr_fac_BG
         dsug_it_BG  = dsug_it_BG	*   dsug_corr_fac_BG
         
         !--- Biomass Rates [ton ha-1]
@@ -6017,8 +6077,27 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         endif
     
 109     format(I2,3X,A6,3X,I4,4X,I3,3X,I4,4X,I3,1F8.1,2f8.2,
-     & 3F8.2,8F8.2,3X,A6,2X,A6,2X,A20)      
-      
+     & 3F8.2,8F8.2,3X,A6,2X,A6,2X,A20)     
+        
+        !--- Link with SWAP variables
+        ch    =   stk_h * 1.e2    ! Crop Height [cm] for PenMon()
+        cf    =   kc              ! Crop factor (-)
+        
+        if(flclos_file .and. flCropEnd)then
+        !--- close output files
+        call output_samuca(  3,           
+     &                    project,        
+     &                    outp,           
+     &                    outd,           
+     &                    outdph,         
+     &                    outdpa,         
+     &                    outpfac,        
+     &                    outstres,       
+     &                    writedetphoto,  
+     &                    writedcrop,     
+     &                    writehead)
+        endif
+        
       return
       
       end subroutine Samuca
