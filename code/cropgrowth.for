@@ -3563,11 +3563,11 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         
         !--- Link with SWAP        
         !--- prepare rld data for cumdens calculation
-        
+        i = 1
         do sl = 2, numlay*2,2
-            !relative_rld(sl-1)
-            !relative_rld(sl)
-            write(*,*)    sl
+            relative_rld(sl-1)    =   (upper(i) + bottom(i)) / 2.d0
+            relative_rld(sl)      =   rld(i)
+            i = i + 1
         enddo
         
         
