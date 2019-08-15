@@ -629,7 +629,7 @@
 **********************************************************************************
 * Part 2: Heat flow calculation method
 
-  SWCALT = 2     ! Switch for method: 1 = analytical method, 2 = numerical method
+  SWCALT = 1     ! Switch for method: 1 = analytical method, 2 = numerical method
 **********************************************************************************
 
 **********************************************************************************
@@ -678,14 +678,14 @@
   TSOILFILE = 'Haarweg' ! File name without extension .TSS, [A16]
 
 * Define bottom boundary condition: 
-  SwBotbHea = 1     ! 1 = no heat flux; 2 = prescribe bottom temperature
+  SwBotbHea = 2     ! 1 = no heat flux; 2 = prescribe bottom temperature
 
 * If SwBotbHea = 2, specify a tabel with dates and temperatures at bottom boundary
 
   DATET           TBOT   ! (maximum MABBC records)
-  01-jan-1980    -15.0
-  30-jun-1980    -20.0
-  23-dec-1980    -10.0
+  01-jan-2012    -22.0
+  30-jun-2014    -18.0
+  23-dec-2016    -21.0
 * End of table
 **********************************************************************************
 

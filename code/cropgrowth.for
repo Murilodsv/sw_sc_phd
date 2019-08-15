@@ -2965,6 +2965,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       logical     flemerged
       logical     flinit_file
       logical     flclos_file
+      real        depth*8                                         ! Dynamic variable for cumdens
+      real        rootdis(202)                                    ! Dynamic array for cumdens
+      real        soma                                            ! Dynamic variable for cumdens
+        
       
       character 	(len = 6)	pltype          				    !  Planting type (Ratoon or PlCane)    
       character 	(len = 6)	cropstatus          			    !  Dead or Alive
@@ -2992,7 +2996,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real		dlroot(maho)                                  !
       real		drld(maho)                                    !
       real		drld_dead(maho)                               !
-      real        relative_rld(maho)
+      real        relative_rld*8(maho)
       logical		fl_it_AG(100)                                   ! Above Ground Internode Flag
       logical		fl_lf_AG(100)                                   ! Above Ground Leaf Flag
       logical		fl_lf_alive(100) 
@@ -3000,7 +3004,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real        array_deb(MAHO)
       
       !--- Real Functions
-      real		afgen                                           ! Interpolation function (The Fortran Simulation Translator, FST version 2.0)
+      real		afgen*8                                         ! Interpolation function (The Fortran Simulation Translator, FST version 2.0)
       real		fgrowth                                         ! Flexible growth function
       real		asy_ws                                          ! Flexible function for water stress response
       real		tiller_senes                                    ! Tiller senescence function
@@ -3534,6 +3538,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         !--- Resources used for emergence (reset plant memory)
         res_used_emerg      = 0.d0
         
+        !--- Roots cumulative density (Required by SWAP)        
+        call root_cumdens(numlay,rld,upper,bottom,cumdens)        
+        
         !--------------------!
         !--- Output files ---!
         !--------------------!
@@ -3560,44 +3567,6 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
      &                    writedcrop,     
      &                    writehead)
         endif
-        
-        !--- Link with SWAP        
-        !--- prepare rld data for cumdens calculation
-        i = 1
-        do sl = 2, numlay*2,2
-            relative_rld(sl-1)    =   (upper(i) + bottom(i)) / 2.d0
-            relative_rld(sl)      =   rld(i)
-            i = i + 1
-        enddo
-        
-        
-!        ! --- CALCULATE NORMALIZED CUMULATIVE ROOT DENSITY FUNCTION      
-!
-!! ---   specify array ROOTDIS with root density distribution
-!        do i = 0,100
-!          depth = 0.01d0 * dble(i)
-!          rootdis(i*2+1) = depth
-!          rootdis(i*2+2) = afgen(rdctb,22,depth)
-!        enddo
-!
-!! ---   calculate cumulative root density function
-!        do i = 1,202,2
-!! ---     relative depths
-!          cumdens(i) = rootdis(i)
-!        enddo
-!        sum = 0.d0
-!        cumdens(2) = 0.d0
-!        do i = 4,202,2
-!! ---     cumulative root density
-!          sum = sum + (rootdis(i-2)+rootdis(i)) * 0.5d0
-!     &               * (cumdens(i-1)-cumdens(i-3))
-!          cumdens(i) = sum
-!        enddo
-!
-!! ---   normalize cumulative root density function to one
-!        do i = 2,202,2
-!          cumdens(i) = cumdens(i) / sum
-!        enddo
             
 	return      
       
@@ -4048,14 +4017,10 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
               endif
           enddo
           
-          !######## DEBUG
-          if(icrop .eq. 2)then
-              write(*,*) 'debug'
-          endif
+          !######## DEBUG       
           
           if(isnan(tsoil_lay(1)))then
-              write(*,*) 'debug'
-          
+              write(*,*) 'debug'          
           endif         
           
           !######## DEBUG
@@ -6120,6 +6085,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         !--- Link with SWAP variables
         ch    =   stk_h * 1.e2    ! Crop Height [cm] for PenMon()
         cf    =   kc              ! Crop factor (-)
+        
+        !--- Roots cumulative density (Required by SWAP)        
+        call root_cumdens(numlay,rld,upper,bottom,cumdens)    
         
         if(flclos_file .and. flCropEnd)then
         !--- close output files

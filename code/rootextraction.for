@@ -82,6 +82,7 @@
      &             (afgen(cumdens,202,bot)-afgen(cumdens,202,top))* ptra
 
         enddo
+       
         
 !=============================================================================        
 !        do node = 1,noddrz
