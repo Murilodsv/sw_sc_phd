@@ -1,0 +1,32 @@
+! Soil Profile DataBase File
+
+! 	Usage: 
+!-	Start soil profile information with "*" followed by soil code "SOIL0000". 
+!-	The "!" lines are ingnored.
+!-	Do not repeat IDs
+!-	Please note: reading will stop whether a blank line is encountered within the soil profile
+!-	IMPORTANT DO NOT USE TABS to separate values only ordinary spaces (Fortran considers TABS as values)
+!-	Never change the order of parameters or add further parameters without changing the source code.
+
+! Parameters Description:
+! WPp     -   Wilting point (cm3/cm3)
+! FCp     -   Field capacity point (cm3/cm3)
+! STp     -   Satured point (cm3/cm3)
+! DP      -   Layer depth (cm)
+! DRNp    -   Drainage fraction (frac/day)
+! KSAT    -   Hydraulic conductivity at saturation point (cm/h)
+! SWC_INI -   Soil water content at initial conditions (cm3/cm3)
+! Nitr    -   Nitrogen content (mg/dm3)
+! Phos    -   Phosphorus content (mg/dm3)
+! Pota    -   Potasium content (mg/dm3)
+
+!WARNING: PSAND,PSILT PCLAY AND PORG ARE ESTIMATED!!
+
+
+*OLIM1001 Latossolo Vermelho Amarelo
+!       WPp       FCp       STp         DP      DRNp      KSAT   SWC_INI   Psand   Psilt   Pclay   Porgm    Nitr      Phos      Pota
+!  (cm3/cm3) (cm3/cm3) (cm3/cm3)       (cm)  (frac/d)   (cm/h)  (cm3/cm3)  (g/g)   (g/g)   (g/g)   (g/g)   (mg/dm3)  (mg/dm3)  (mg/dm3
+      0.16      0.37      0.48      20.000      0.10     1.800      0.48    0.14    0.14    0.68    0.01      5.3       12.       8.1
+      0.16      0.37      0.48      60.000      0.10     1.500      0.48    0.15    0.15    0.69    0.01      5.3       12.       8.1
+      0.16      0.37      0.48     100.000      0.10     0.800      0.48    0.15    0.15    0.68    0.01      5.3       12.       8.1
+      0.16      0.37      0.48     130.000      0.10     0.700      0.48    0.14    0.14    0.69    0.01      5.3       12.       8.1

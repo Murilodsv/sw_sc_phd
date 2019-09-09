@@ -1,0 +1,10 @@
+! Soil Profile DataBase File
+
+*<soil.id> <soil.nm> 
+! Project: <prj.nm>
+! Site:    <site.nm>
+! Sim.Det: <sim.det>
+! 
+!      WPp       FCp       STp        DP      DRNp      KSAT   SWC_INI      Psand     Psilt     Pclay     Porgm    Nitr      Phos      Pota
+! (cm3/cm3) (cm3/cm3) (cm3/cm3)      (cm)  (frac/d)   (cm/h)  (cm3/cm3)     (g/g)     (g/g)     (g/g)     (g/g)  (mg/dm3)  (mg/dm3)  (mg/dm3)
+ <wpp> <fcp> <stp> <dp> <drnp> <ksat> <swc_ini> <psand> <psilt> <pclay> <porgm> <nitr> <phos> <pota>

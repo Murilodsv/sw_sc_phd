@@ -1,0 +1,104 @@
+! Soil Profile DataBase File
+
+! 	Usage: 
+!-	Start soil profile information with "*" followed by soil code "SOIL0000". 
+!-	The "!" lines are ingnored.
+!-
+!-  DO NOT:
+!-		Change the order of parameters or add further parameters without changing the source code;
+!-		Repeat IDs;
+!-		Use TABS to separate values only ordinary spaces;
+
+
+
+! Parameters Description:
+! WPp     -   Wilting point (cm3/cm3)
+! FCp     -   Field capacity point (cm3/cm3)
+! STp     -   Satured point (cm3/cm3)
+! DP      -   Layer depth (cm)
+! DRNp    -   Drainage fraction (frac/day)
+! KSAT    -   Hydraulic conductivity at saturation point (cm/h)
+! SWC_INI -   Soil water content at initial conditions (cm3/cm3)
+! Nitr    -   Nitrogen content (mg/dm3)
+! Phos    -   Phosphorus content (mg/dm3)
+! Pota    -   Potasium content (mg/dm3)
+
+
+*PIRA1001 Nitossolo Fazenda Areão
+!       WPp       FCp       STp          DP      DRNp      KSAT   SWC_INI       Nitr      Phos      Pota
+!  (cm3/cm3) (cm3/cm3) (cm3/cm3)        (cm)  (frac/d)   (cm/h)  (cm3/cm3)   (mg/dm3)  (mg/dm3)  (mg/dm3)
+       0.22      0.29      0.38      15.000      0.20     2.400      0.25       5.3       12.       8.1
+       0.23      0.32      0.37      30.000      0.20     2.400      0.30       5.3       12.       8.1
+       0.22      0.39      0.43      60.000      0.20     2.400      0.30       5.3       12.       8.1
+       0.27      0.38      0.45     120.000      0.20     2.400      0.30       5.3       12.       8.1
+
+*PIRA1002 Nitossolo Fazenda Areão
+!       WPp       FCp       STp         DP      DRNp      KSAT   SWC_INI       Nitr      Phos      Pota
+!  (cm3/cm3) (cm3/cm3) (cm3/cm3)       (cm)  (frac/d)   (cm/h)  (cm3/cm3)   (mg/dm3)  (mg/dm3)  (mg/dm3)
+       0.20      0.36      0.43        20.0      0.20     2.4       0.25       5.3       12.       8.1
+       0.21      0.34      0.47        50.0      0.20     2.4       0.30       5.3       12.       8.1
+       0.22      0.33      0.48        90.0      0.20     2.4       0.30       5.3       12.       8.1
+       0.25      0.33      0.49       120.0      0.20     2.4       0.30       5.3       12.       8.1
+
+*PIRA1003 Nitossolo-Vermelho (NV) 
+!Trincheira A - Fazenda Areão (Obs: Ksat estimated based on relation KsatxFCP)
+!       WPp       FCp       STp         DP      DRNp      KSAT   SWC_INI       Nitr      Phos      Pota
+!  (cm3/cm3) (cm3/cm3) (cm3/cm3)       (cm)  (frac/d)   (cm/h)  (cm3/cm3)   (mg/dm3)  (mg/dm3)  (mg/dm3)
+      0.191     0.255     0.371        5.0      0.20     2.51      0.25         5.3       12.       8.1
+      0.239     0.313     0.369       15.0      0.20     0.88      0.30         5.3       12.       8.1
+      0.272     0.343     0.372       30.0      0.20     0.52      0.30         5.3       12.       8.1
+      0.308     0.379     0.406       60.0      0.20     0.27      0.30         5.3       12.       8.1
+      0.198     0.434     0.422      100.0      0.20     0.10      0.30         5.3       12.       8.1
+
+*PIRA1004 Argissolo-Vermelho (PV) 
+!Trincheira B - Fazenda Areão (Obs: Ksat estimated based on relation KsatxFCP)
+!       WPp       FCp       STp         DP      DRNp      KSAT   SWC_INI       Nitr      Phos      Pota
+!  (cm3/cm3) (cm3/cm3) (cm3/cm3)       (cm)  (frac/d)   (cm/h)  (cm3/cm3)   (mg/dm3)  (mg/dm3)  (mg/dm3)
+      0.230	    0.305     0.360        5.0      0.20     1.03      0.25         5.3       12.       8.1
+      0.245	    0.299     0.334       15.0      0.20     1.15      0.30         5.3       12.       8.1
+      0.357	    0.414     0.448       30.0      0.20     0.14      0.30         5.3       12.       8.1
+      0.350	    0.397     0.431       60.0      0.20     0.19      0.30         5.3       12.       8.1
+      0.303	    0.357     0.437      100.0      0.20     0.40      0.30         5.3       12.       8.1
+
+*PIRA1005 Nitossolo-Vermelho (NV) 
+!Trincheira C - Fazenda Areão (Obs: Ksat estimated based on relation KsatxFCP)
+!       WPp       FCp       STp         DP      DRNp      KSAT   SWC_INI       Nitr      Phos      Pota
+!  (cm3/cm3) (cm3/cm3) (cm3/cm3)       (cm)  (frac/d)   (cm/h)  (cm3/cm3)   (mg/dm3)  (mg/dm3)  (mg/dm3)
+      0.208     0.269     0.340        5.0      0.20     1.96      0.25         5.3       12.       8.1
+      0.245     0.296     0.345       15.0      0.20     1.20      0.30         5.3       12.       8.1
+      0.231     0.305     0.360       30.0      0.20     1.02      0.30         5.3       12.       8.1
+      0.319     0.406     0.474       60.0      0.20     0.16      0.30         5.3       12.       8.1
+      0.284     0.384     0.486      100.0      0.20     0.24      0.30         5.3       12.       8.1
+
+*PIRA1006 Argissolo-Vermelho (PV) 
+!Trincheira D - Fazenda Areão (Obs: Ksat estimated based on relation KsatxFCP)
+!       WPp       FCp       STp         DP      DRNp      KSAT   SWC_INI       Nitr      Phos      Pota
+!  (cm3/cm3) (cm3/cm3) (cm3/cm3)       (cm)  (frac/d)   (cm/h)  (cm3/cm3)   (mg/dm3)  (mg/dm3)  (mg/dm3)
+      0.203     0.278     0.370        5.0      0.20     1.67      0.25         5.3       12.       8.1
+      0.224     0.315     0.375       15.0      0.20     0.85      0.30         5.3       12.       8.1
+      0.233     0.322     0.386       30.0      0.20     0.75      0.30         5.3       12.       8.1
+      0.304     0.396     0.444       60.0      0.20     0.19      0.30         5.3       12.       8.1
+      0.304     0.396     0.444      100.0      0.20     0.19      0.30         5.3       12.       8.1
+
+*PIRA1007 Argissolo-Nitossolo-Vermelho (NPV) 
+!Média Trincheiras (A a D) - Fazenda Areão (Obs: Ksat estimated based on relation KsatxFCP)
+!       WPp       FCp       STp         DP      DRNp      KSAT   SWC_INI       Nitr      Phos      Pota
+!  (cm3/cm3) (cm3/cm3) (cm3/cm3)       (cm)  (frac/d)   (cm/h)  (cm3/cm3)   (mg/dm3)  (mg/dm3)  (mg/dm3)
+      0.208     0.277     0.360        5.0      0.20     1.70      0.22         5.3       12.       8.1
+      0.238     0.306     0.396       15.0      0.20     1.01      0.36         5.3       12.       8.1
+      0.273     0.346     0.392       30.0      0.20     0.49      0.32         5.3       12.       8.1
+      0.273     0.346     0.392       60.0      0.20     0.20      0.33         5.3       12.       8.1
+      0.262     0.392     0.449      100.0      0.20     0.21      0.35         5.3       12.       8.1
+
+*PIRA1008 Argissolo-Nitossolo-Vermelho (NPV) 
+!Média Trincheiras (A a D) - Fazenda Areão (Obs: Ksat estimated based on relation KsatxFCP)
+!       WPp       FCp       STp         DP      DRNp      KSAT   SWC_INI   Psand   Psilt   Pclay   Porgm    Nitr      Phos      Pota
+!  (cm3/cm3) (cm3/cm3) (cm3/cm3)       (cm)  (frac/d)   (cm/h)  (cm3/cm3)  (g/g)   (g/g)   (g/g)   (g/g)   (mg/dm3)  (mg/dm3)  (mg/dm3)
+      0.216     0.285     0.380        5.0      0.20     1.70      0.22     0.14    0.14    0.68    0.01     5.3       12.       8.1
+      0.240     0.303     0.352       15.0      0.20     1.01      0.36     0.15    0.15    0.69    0.01     5.3       12.       8.1
+      0.278     0.347     0.390       30.0      0.20     0.95      0.32     0.15    0.15    0.68    0.01     5.3       12.       8.1
+      0.278     0.347     0.390       45.0      0.20     0.85      0.33     0.14    0.14    0.69    0.01     5.3       12.       8.1
+      0.307     0.394     0.428       60.0      0.20     0.62      0.33     0.15    0.15    0.69    0.01     5.3       12.       8.1
+      0.307     0.394     0.428       75.0      0.20     0.21      0.35     0.15    0.15    0.69    0.01     5.3       12.       8.1
+      0.307     0.394     0.428       90.0      0.20     0.21      0.35     0.15    0.15    0.69    0.01     5.3       12.       8.1
+      0.253     0.393     0.456      100.0      0.20     0.21      0.35     0.15    0.15    0.69    0.01     5.3       12.       8.1

@@ -1,0 +1,36 @@
+find,rep,justify,width,type,digits,nsmall
+<prj.nm>,M_ID_20,l,50,c,0,0
+<site.nm>,Coruripe - AL,l,50,c,0,0
+<sim.det>,Automaticaly created by R-Script,l,50,c,0,0
+<cv.id>,SC0001,l,6,c,0,0
+<cv.nm>,RB867515,l,20,c,0,0
+<amax>,67.8,r,7,r,7,1
+<eff>,0.33,r,7,r,7,1
+<phtmax>,282.9,r,7,r,7,1
+<parmax>,56.2,r,7,r,7,1
+<ccmp>,80,r,7,r,7,1
+<ccmax>,1.09,r,7,r,7,1
+<cceff>,0.007,r,7,r,7,1
+<rue>,2.6,r,7,r,7,1
+<tb>,12,r,7,r,7,1
+<chustk>,650,r,7,r,7,1
+<chupeak>,1800,r,7,r,7,1
+<chudec>,1290,r,7,r,7,1
+<chumat>,4400,r,7,r,7,1
+<popmat>,9,r,7,r,7,1
+<poppeak>,17,r,7,r,7,1
+<phyloc>,115,r,7,r,7,1
+<maxgl>,10,r,7,r,7,1
+<sla>,160,r,7,r,7,1
+<mrdp>,100,r,7,r,7,1
+<k>,0.55,r,7,r,7,1
+<sgpf>,0.93,r,7,r,7,1
+<dpercoef>,6.5,r,7,r,7,1
+<sucmax>,0.65,r,7,r,7,1
+<srl>,12,r,7,r,7,1
+<mla>,780,r,7,r,7,1
+<q10mr>,1.68,r,7,r,7,1
+<kcmin>,0.75,r,7,r,7,1
+<kcmax>,1.15,r,7,r,7,1
+<swsp>,0.3,r,7,r,7,1
+<swse>,0.9,r,7,r,7,1

@@ -1,0 +1,13 @@
+!Sugarcane Crop Parameters File
+
+! Project: <prj.nm>
+! Site:    <site.nm>
+! Sim.Det: <sim.det>
+
+!Crop Parameters
+!Id			            |--------------------PHOTOSYNTHESIS--------------------------|-----------------------------------DEVELOPMENT----------------------------------|--------------------------EXPANSION & PARTITIONING--------------|---------WATER RELATIONS---------|
+!                       |Layered Can|-------- Marin & Jones (2014) ----------|--RUE--|--------------------------------------------------------------------------------|----------------------------------------------------------------|---------------------------------|
+*<cv.id>		
+!Cultivar                Amax     Eff  PHTMAX  PARMAX    CCMP   CCMAX   CCEFF     RUE      TB  CHUSTK CHUPEAK  CHUDEC  CHUMAT  POPMAT POPPEAK  PHYLOC   MAXGL     SLA    MRDP  srlMAX  srlMIN       K    SGPF   DPERC  SUCMAX     SRL     MLA   Q10MR   KcMin   KcMax    SWSP    SWSE
+ <cv.nm> <amax> <eff> <phtmax> <parmax> <ccmp> <ccmax> <cceff> <rue> <tb> <tb0pho> <tb1pho> <tb2pho> <tbfpho> <tbper> <tbMax_per><chustk> <chupeak> <chudec> <chumat> <popmat> <poppeak> <ltthreshold> <tillochron> <tillerdeadrate> <nsenesleaf_effect> <fdeadlf> <phyloc> <maxgl> <sla> <rdm> <srlMax> <srlMin> <rootdrate> <shootgrowthrate> <mxrtw> <rssshape> <rtdvp_time> <rootleftfrac> <kdif> <sgpf> <midper> <dpercoeff> <sucmax> <max_lignin_fac> <pot_sug_res_fac> <srl> <mla> <q10> <kc_min> <eoratio> <rwuep1> <rwuep2> <t_max_ws_pho> <t_mid_ws_pho> <t_min_ws_pho> <t_max_ws_exp> <t_mid_ws_exp> <t_min_ws_exp> 
+ 

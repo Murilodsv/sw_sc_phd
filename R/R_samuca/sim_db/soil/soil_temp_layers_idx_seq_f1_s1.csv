@@ -1,0 +1,12 @@
+samuca_soil_code_var,obs_soil_code,depth,run_perf
+mulch,NA,NA,F
+Ts.1,TS2,5,T
+Ts.2,TS2,5,T
+Ts.3,TS3,20,T
+Ts.4,TS4,40,T
+Ts.5,TS4,40,F
+Ts.6,NA,NA,F
+Ts.7,NA,NA,F
+Ts.8,NA,NA,F
+tebot,NA,NA,F
+G,G,2.5,F
