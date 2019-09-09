@@ -706,13 +706,13 @@
           nheat = ifnd
 
 !   -     top boundary temperature
-          call rdsinr ('SwTopbHea',1,2,SwTopbHea)
+          call rdsinr ('SwTopbHea',1,3,SwTopbHea)
           if (swtopbhea .eq. 2) then
             call rdscha ('TSoilFile',tsoilfile)
           endif
 
 !   -     bottom boundary temperature
-          call rdsinr ('SwBotbHea',1,2,SwBotbHea)
+          call rdsinr ('SwBotbHea',1,3,SwBotbHea)
           if (SwBotbHea.eq.2) then
              call rdatim ('datet',dates,mabbc,ifnd)
 ! -     at least one date must be within simulation period

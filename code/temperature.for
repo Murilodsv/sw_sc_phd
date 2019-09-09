@@ -18,6 +18,11 @@
       real*8  theave(macp),heacap(macp),heacnd(macp),heacon(macp)
       real*8  heaconbot,qhbot
       real*8  apar, dzsnw, heaconsnw, Rosnw
+      
+      !--- SAMUCA IMPLEMENTATION:
+      real*8 sinld,dso,dsinbe,dsinb,dayl,cosld,qo,srad,croph
+      real*8 hrnc,dhrlai,alb_surface,rh_p
+      real*8 tbot_mean,tbot_imref,tbot_ddamp,tbot_ampli
 
       character messag*200
 
@@ -86,6 +91,25 @@
            if (heacon(1).lt.1.d-10) heacon(1) = 100.0d0
            apar = (0.5d0*heaconsnw*dz(1)) / (heacon(1)*dzsnw)
            TeTop = (Tsoil(1) + apar*Tav) / (1.d0+apar)
+           
+        elseif(swtopbhea .eq. 3)then              
+          !--- Energy balance equation (Monteith & Unsworth)
+                
+          !--- Compute Solar Radiation
+          call astro 
+     &   (logf,swscre,daynr,lat,dayl,daylp,sinld,cosld,dsinb,dsinbe,dso)
+        
+          Qo          = dso / 1.e6        ! MJ m-2 d-1
+          srad        = rad / 1.e6        ! MJ m-2 d-1
+          croph       = ch  / 1.e2        ! m
+          rh_p        = rh  * 1.e2        ! %
+          alb_surface = 0.14d0            ! 0-1 [soil surface albedo, below canopy]
+          hrnc        = 314.5d0           ! To estimate air heat conductance ~ LAI
+          dhrlai      = 177.8d0           ! To estimate air heat conductance ~ LAI          
+        
+          call SurfaceTemp_Mod(srad,Qo,tmx,tmn,alt,alb_surface,
+     & rh_p,lai,kdif,croph,hrnc,dhrlai,tetop)        
+
         else
            TeTop = Tav
         endif
@@ -96,6 +120,18 @@
         elseif (SwBotbHea.eq.2) then
 ! ---   bottom temperature is prescribed
            TeBot = afgen (tembtab,2*mabbc,t1900+dt)
+        elseif(SwBotbHea.eq.3)then
+
+        !--- Use sinoidal curve to predict bottom temp
+        tbot_mean     = 17.d0
+        tbot_ampli    = 6.d0
+        tbot_imref    = 365.d0
+        tbot_ddamp    = 350.d0       
+        
+        TeBot = tbot_mean + tbot_ampli*(sin(0.0172d0*
+     & (daynr-tbot_imref+91.0d0)+(-z(Numnod)*-1.d0)/tbot_ddamp)) 
+     & / exp(-z(Numnod)/tbot_ddamp)
+        
         endif
 
 ! --- save old temperature profile
@@ -143,7 +179,7 @@
            thoma(i) = - dt * heacon(i) / (dz(i) * disnod(i))
            thomb(i) = heacap(i) - thoma(i)
            thomf(i) = heacap(i) * tmpold(i) - (qhbot * dt)/dz(i)
-        elseif (SwBotbHea.eq.2) then
+        elseif (.not. SwBotbHea.eq.1) then
 ! ---   bottom temperature is prescribed
            heaconBot = heacnd(i)
            thoma(i)  = - dt * heacon(i) / (dz(i) * disnod(i))

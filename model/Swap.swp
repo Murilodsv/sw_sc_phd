@@ -671,14 +671,15 @@
 * End of table
 
 * Define top boundary condition: 
-  SwTopbHea = 1     ! 1 = use air temperature of meteo input file as top boundary
+  SwTopbHea = 3     ! 1 = use air temperature of meteo input file as top boundary
                     ! 2 = use measured top soil temperature as top boundary
+                    ! 3 = TeTop SAMUCA
 
 * If SwTopbHea = 2, specify name of input file with soil surface temperatures
   TSOILFILE = 'Haarweg' ! File name without extension .TSS, [A16]
 
 * Define bottom boundary condition: 
-  SwBotbHea = 2     ! 1 = no heat flux; 2 = prescribe bottom temperature
+  SwBotbHea = 2     ! 1 = no heat flux; 2 = prescribe bottom temperature; 3 = SAMUCA
 
 * If SwBotbHea = 2, specify a tabel with dates and temperatures at bottom boundary
 

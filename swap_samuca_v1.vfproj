@@ -72,6 +72,7 @@
 		<File RelativePath=".\code\Swap.for"/>
 		<File RelativePath=".\code\swapoutput.for"/>
 		<File RelativePath=".\code\temperature.for"/>
+		<File RelativePath=".\code\tetop_energy_balance.f90"/>
 		<File RelativePath=".\code\timecontrol.for"/>
 		<File RelativePath=".\code\totass_samuca.f90"/>
 		<File RelativePath=".\code\tridag.for"/>
