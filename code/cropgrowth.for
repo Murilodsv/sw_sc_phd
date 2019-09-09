@@ -3236,6 +3236,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       mulcheffect         = .false.   ! Mulch effect turned off for this version      
       co2                 = 380.d0      
       swcf                = 1
+      alphacrit           = 1.d0
       
       !--- SWAP Methods:
       swroottyp           = 1         ! Root water uptake type 1 = Feddes; 2 = Matric Flux 
@@ -4016,14 +4017,6 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                   sl       = sl + 1
               endif
           enddo
-          
-          !######## DEBUG       
-          
-          if(isnan(tsoil_lay(1)))then
-              write(*,*) 'debug'          
-          endif         
-          
-          !######## DEBUG
           
       if(mulcheffect)then
           !--- Mulch effect when mulch is present (skip the first layer temperature (mulch))
@@ -5897,8 +5890,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
             enddo
         endif
     
-      write(outd,'(1x,i4,1x,i3,1x,10f20.5)') das, dap, frac_li,
-     &  li, dtg, dtga
+      write(outd,'(1x,i4,1x,i3,1x,20f20.5)') das, dap, soiltemperature,
+     &  di, li, dtg, dtga
     
     
 111   format(     i2,         a1,        ! seqnow

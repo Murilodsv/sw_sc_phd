@@ -47,7 +47,7 @@
 !     save values of local variables
       save    flwarn,iwarn
 
-
+      
       if (fldaystart) then
          flwarn = .true.
          iwarn = 0
@@ -95,7 +95,7 @@
             qbot = qv(numnod+1)
             h(1) = gwlinp + disnod(1)*(qv(1)/kmean(1)+1.0d0)
             do i=2,numnod
-               h(i) = h(i-1) + disnod(i)*(qv(i)/kmean(i)+1.0d0)
+               h(i) = h(i-1) + disnod(i)*(qv(i)/kmean(i)+1.0d0)               
             end do
 
             if(SwKimpl.eq.1)then
@@ -367,10 +367,8 @@
 
 !<<<<<<< J a c o b i a n 
 
-
-
-! --- solve the tridiagonal matrix
-
+! --- solve the tridiagonal matrix         
+         
          call tridag(NN, dFdhU, dFdhM, dFdhL, F, difh, ierror)
 
          if(ierror.ne.0)then
@@ -414,7 +412,7 @@
                end do
             else
                do i = 1,NN
-                  h(i) = hold(i) - factor * difh(i)
+                  h(i) = hold(i) - factor * difh(i)                  
                end do
             end if
             do i = 1,NN

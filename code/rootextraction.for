@@ -79,9 +79,11 @@
           top = abs((z(node) + 0.5*dz(node)) / rd)
           bot = abs((z(node) - 0.5*dz(node)) / rd)
           qrot(node) = 
-     &             (afgen(cumdens,202,bot)-afgen(cumdens,202,top))* ptra
+     &             (afgen(cumdens,202,bot)-afgen(cumdens,202,top))* ptra  
 
         enddo
+        
+        
        
         
 !=============================================================================        
@@ -155,7 +157,7 @@
 ! ----    overall reduction
           qpotrot = qrot(node)
           qrot(node) = qrot(node)*alpwet*alpdry*alpsol*alpfrs
-          qrosum = qrot(node) + qrosum         
+          qrosum = qrot(node) + qrosum             
          
 ! ----    apportionment to different types stresses (cm)
           qred = qpotrot - qrot(node)
@@ -226,7 +228,7 @@
 
 200           continue
 
-              
+                            
 ! --    Compensated root water uptake according to Jarvis (1989)
         if (abs(alphacrit-1.0d0).ge.vsmall .and. 
      &                           abs(qrosum-ptra).ge.vsmall) then
@@ -242,8 +244,8 @@
             qrosum = ptra
           else
             do node = 1,noddrz
-              qrot(node) = qrot(node) / alphacrit
-            enddo
+              qrot(node) = qrot(node) / alphacrit              
+            enddo            
             factor = (ptra - qrosum / alphacrit) / (ptra - qrosum)
             qredwetsum = qredwetsum * factor
             qreddrysum = qreddrysum * factor
@@ -251,8 +253,7 @@
             qredfrssum = qredfrssum * factor
             qrosum = qrosum / alphacrit
           endif
-        endif
-
+      endif
 
       else if (swroottyp .eq. 2) then
 
