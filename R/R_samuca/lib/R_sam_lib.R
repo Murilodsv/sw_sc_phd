@@ -7,7 +7,8 @@
           "gridExtra",
           "gtable",
           "R.utils",
-          "gdata")# Plot cool charts 
+          "gdata",
+          "reshape2")# Plot cool charts 
   ipkg = pkg %in% rownames(installed.packages())
   sapply(pkg[!ipkg],function(x) install.packages(x))
   
@@ -19,4 +20,5 @@
   library(grid)
   library(R.utils)
   library(gdata)
+  library(reshape2)
 
