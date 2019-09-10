@@ -3235,8 +3235,6 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       usetsoil            = .true.      
       mulcheffect         = .false.   ! Mulch effect turned off for this version      
       co2                 = 380.d0      
-      swcf                = 1
-      alphacrit           = 1.d0
       
       !--- SWAP Methods:
       swroottyp           = 1         ! Root water uptake type 1 = Feddes; 2 = Matric Flux 
@@ -3244,8 +3242,20 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       swgc                = 1         ! Switch for simple crop: 1 = leaf area index is input; 2 = soil cover fraction is input
       swcf                = 1         ! Switch for simple crop: 1 = crop factor is input; 2 = crop height is input
       swinter             = 1         ! Switch for interception method: 0 = no interception; 1 = agricultural crops; 2 = trees and forests
+      alphacrit           = 1.d0      
+      
+      !--- Feddes h thresholds
+      hlim1  	= -0.1d0 	! Pressure head above which root water uptake stops (L)
+      hlim2l 	= -5.d0     ! Pressure head below which optimum water uptake starts for sub layer (L)
+      hlim2u 	= -5.d0 	! Pressure head below which optimum water uptake starts for top layer (L)
+      hlim3h 	= -790.d0   ! Pressure head below which water uptake reduction starts at high Tpot (L)
+      hlim3l 	= -1000.d0  ! Pressure head below which water uptake reduction starts at low Tpot (L)
+      hlim4  	= -15000.d0 ! Wilting point, no root water uptake at lower soil water pressure heads (L)
+      adcrh	= 0.d0 		! Level of high atmospheric demand (L/T)
+      adcrl	= 0.d0 		! Level of low atmospheric demand (L/T)
+      
       if (swcf.eq.1) then
-          !--- use standard values for ETref (FAO56)
+          !--- use standard values for ETref (FAO56) and employ Kc for ETc
           albedo = 0.23d0
           rsc = 70.0d0
           rsw = 0.0d0
@@ -3257,7 +3267,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       
       ch    =   0.d0      ! Crop Height [cm] for PenMon()
       kc    =   kc_min    ! Crop factor (-)
-      cf    =   kc        ! Crop factor for SWAP (-)
+      cf    =   kc        ! Crop factor for SWAP (-)      
+      kdir  =   kdif
       
         !--- Simulate Water Stress
         fl_potential      = potential_growth
