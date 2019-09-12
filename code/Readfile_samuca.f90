@@ -13,6 +13,7 @@ subroutine ReadFile_samuca(task,           &
     integer     n_real_host
     integer     n_inte_host
     integer ::  crop_iunit = 555
+    integer ::  mana_iunit = 556
     integer     task
     integer     ios
     integer     nhd
@@ -37,7 +38,7 @@ subroutine ReadFile_samuca(task,           &
     
     save
     
-    goto (10,20,30,40,50,60) task
+    goto (10,20,30,40,50,60,70) task
         
 10  continue   
     
@@ -59,52 +60,52 @@ subroutine ReadFile_samuca(task,           &
     
 20  continue
     
- !   !----------------------------!
- !   !--- Reading Control File ---!
- !   !----------------------------!
- !   
- !   open(ctrl,file=trim(pathwork)//'\Control\'//trim(ctrlfile(sn))//'.ctl',status='old',action='read',iostat=ios)
- !   call checkios(ios,1)
- !   
- !   !General information
- !   call readcha('Project Name',1,prjname,1,.true.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readcha('Authors',1,authors,1,.true.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readcha('Contact',1,contact,1,.true.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readcha('Site',1,site,1,.true.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readcha('Simulation details',1,simdet,1,.true.,.false.,ctrl,ctrlfile(sn),msg)
- !   
- !   !Simulation Period
- !   call readint('Simulation Period',1,sp_id,size(sp_id),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readint('Simulation Period',2,years,size(years),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readint('Simulation Period',3,doys,size(doys),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readint('Simulation Period',4,yeare,size(yeare),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readint('Simulation Period',5,doye,size(doye),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readlog('Simulation Period',6,flsequencial,size(flsequencial),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readint('Simulation Period',7,nseq,size(nseq),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readlog('Simulation Period',8,flreplicate,size(flreplicate),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readint('Simulation Period',9,nrep,size(nrep),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   
- !   !Fields
- !   call readint('Fields',1,fd_id,size(fd_id),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readcha('Fields',2,weathfile,size(weathfile),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readrea('Fields',3,lat,size(lat),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readrea('Fields',4,lon,size(lon),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readrea('Fields',5,alt,size(alt),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   
- !   !Soil
- !   call readint('Soil',1,so_id,size(so_id),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readcha('Soil',2,soilfile,size(soilfile),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readcha('Soil',3,soilprof,size(soilprof),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readrea('Soil',4,cn,size(cn),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readrea('Soil',5,albedo,size(albedo),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readrea('Soil',6,swcon,size(swcon),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   
- !   !Crops
- !   call readint('Crops',1,cr_id,size(cr_id),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readcha('Crops',2,cropfile,size(cropfile),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readcha('Crops',3,cultivar_id,size(cultivar_id),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   call readcha('Crops',4,cultivar,size(cultivar),.false.,.false.,ctrl,ctrlfile(sn),msg)
- !   
+    !----------------------------!
+    !--- Reading Control File ---!
+    !----------------------------!
+    
+    !open(ctrl,file=trim(pathwork)//'\Control\'//trim(ctrlfile(sn))//'.ctl',status='old',action='read',iostat=ios)
+    !call checkios(ios,1)
+    
+    !!General information
+    !call readcha('Project Name',1,prjname,1,.true.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readcha('Authors',1,authors,1,.true.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readcha('Contact',1,contact,1,.true.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readcha('Site',1,site,1,.true.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readcha('Simulation details',1,simdet,1,.true.,.false.,ctrl,ctrlfile(sn),msg)
+    
+    !!Simulation Period
+    !call readint('Simulation Period',1,sp_id,size(sp_id),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readint('Simulation Period',2,years,size(years),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readint('Simulation Period',3,doys,size(doys),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readint('Simulation Period',4,yeare,size(yeare),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readint('Simulation Period',5,doye,size(doye),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readlog('Simulation Period',6,flsequencial,size(flsequencial),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readint('Simulation Period',7,nseq,size(nseq),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readlog('Simulation Period',8,flreplicate,size(flreplicate),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readint('Simulation Period',9,nrep,size(nrep),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    
+    !!Fields
+    !call readint('Fields',1,fd_id,size(fd_id),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readcha('Fields',2,weathfile,size(weathfile),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readrea('Fields',3,lat,size(lat),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readrea('Fields',4,lon,size(lon),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readrea('Fields',5,alt,size(alt),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !
+    !!Soil
+    !call readint('Soil',1,so_id,size(so_id),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readcha('Soil',2,soilfile,size(soilfile),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readcha('Soil',3,soilprof,size(soilprof),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readrea('Soil',4,cn,size(cn),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readrea('Soil',5,albedo,size(albedo),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readrea('Soil',6,swcon,size(swcon),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    
+    !!Crops
+    !call readint('Crops',1,cr_id,size(cr_id),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readcha('Crops',2,cropfile,size(cropfile),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readcha('Crops',3,cultivar_id,size(cultivar_id),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    !call readcha('Crops',4,cultivar,size(cultivar),.false.,.false.,ctrl,ctrlfile(sn),msg)
+    
  !   !Planting
  !   call readint('Planting',1,pl_id,size(pl_id),.false.,.false.,ctrl,ctrlfile(sn),msg)   
  !   call readint('Planting',2,yearp,size(yearp),.false.,.false.,ctrl,ctrlfile(sn),msg)
@@ -432,7 +433,56 @@ subroutine ReadFile_samuca(task,           &
     !!--- Pass to crop global variables
     !extcoef = real_host(107)
 
-    close(crop_iunit)    
+    close(crop_iunit)
+    
+    return
+
+70  continue    
+    
+    !-------------------------------------!
+    !--- Management parameters reading ---!
+    !-------------------------------------!
+    
+    open(mana_iunit,file='Samuca.mng',status='old',action='read',iostat=ios)    
+    !call checkios(ios,1)
+    
+    !--- Read Integer parameters    
+    nhd  = 10           ! Number of lines of file header   
+    nf   = n_real_host  ! Number of Real parameters (72 previous)
+    ni   = n_inte_host  ! Number of Integer parameters
+    
+     read (mana_iunit, 119)   		        &
+        inte_host(1)  , ignore, 	& ! (I)
+        inte_host(2)  , ignore, 	& ! (I)
+        inte_host(3)  , ignore, 	& ! (I)
+        inte_host(4)  , ignore, 	& ! (I)
+        inte_host(5)  , ignore, 	& ! (I)
+        inte_host(6)  , ignore, 	& ! (I)
+        inte_host(7)  , ignore, 	& ! (I)
+        inte_host(8)  , ignore, 	& ! (I)
+        inte_host(9)
+    
+    read (mana_iunit, 120)                &
+        real_host(1)  , ignore, 	& ! (R)
+        real_host(2)  , ignore, 	& ! (R)
+        real_host(3)  , ignore, 	& ! (R)
+        real_host(4)  , ignore, 	& ! (R)
+        real_host(5)  , ignore, 	& ! (R)
+        real_host(6)  , ignore, 	& ! (R)
+        real_host(7)  , ignore, 	& ! (R)
+        real_host(8)  , ignore, 	& ! (R)
+        real_host(9)  , ignore, 	& ! (R)
+        real_host(10) , ignore, 	& ! (R)
+        real_host(11) , ignore, 	& ! (R)
+        real_host(12) , ignore, 	& ! (R)
+        real_host(13) , ignore, 	& ! (R)
+        real_host(14) , ignore, 	& ! (R)
+        real_host(15) , ignore, 	& ! (R)
+        real_host(16) , ignore, 	& ! (R)
+        real_host(17) , ignore, 	& ! (R)
+        real_host(19)
+    
+    close(mana_iunit)
     
     return
 

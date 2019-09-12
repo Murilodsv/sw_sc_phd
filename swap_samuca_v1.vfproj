@@ -76,6 +76,7 @@
 		<File RelativePath=".\code\timecontrol.for"/>
 		<File RelativePath=".\code\totass_samuca.f90"/>
 		<File RelativePath=".\code\tridag.for"/>
+		<File RelativePath=".\code\var_samuca.f90"/>
 		<File RelativePath=".\code\Variables.for"/>
 		<File RelativePath=".\code\water_stress_sugarcane.f90"/>
 		<File RelativePath=".\code\watstor.for"/></Filter>

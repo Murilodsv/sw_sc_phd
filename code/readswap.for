@@ -7,6 +7,8 @@
 !     Purpose            : read main input file .SWP
 ! ----------------------------------------------------------------------
       use variables
+      use var_samuca
+      
       implicit none
 
 !     PWB (11 feb 2009) changed type of posarg and numchar to standard
@@ -29,13 +31,13 @@
       real*8  hthr,help,term1
       real*8  headtab(matab),thetatab(matab),conductab(matab)
       real*8  dydx(matab),pondmxtb(mairg),datepmx(mairg)
-      real*8  real_host(2)
+      
       character*200 filenamesophy(maho)
       character swpfilnam*400,filnam*200,inifil*200,filtext*80,rufil*200
       character bbcfil*32,irgfil*32,swpfil*32,tsoilfile*32
       character tmp*11,messag*400
 
-      logical   toscr, flsat, rdinqr
+      logical   toscr, flsat, rdinqr,samrd
 
 
 !     pressure head where interpolation is used to calculate K from VG and ksatexm
@@ -274,6 +276,23 @@
         call rdfcha ('cropfil',cropfil,macrop,ifnd)
         call rdfinr ('croptype',1,4,croptype,macrop,ifnd)
       endif
+      
+      !--- Check if auxiliary files have to be read for SAMUCA
+      samrd = .false.
+      do i = 1, ifnd
+          if(.not. samrd .and. croptype(i) .eq. 4) then              
+              !--- read data from file: 'Samuca.mng':              
+              n_inte_host = 9     ! Number of integers
+              n_real_host = 19    ! Number of real              
+              call ReadFile_samuca(7,
+     &            n_inte_host,
+     &            inte_host,          
+     &            n_real_host,
+     &            real_host)
+              samrd = .true.              
+          endif          
+      enddo      
+      
       if (ifnd .eq. 0) then
         flbaresoil = .true.                      ! no cultivation -> bare soil
         flCultivate = .false.

@@ -2383,14 +2383,12 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         
       subroutine Samuca(task)
       
-      use Variables 
+      use Variables
+      use var_samuca
+      
 	implicit none
       
-      integer     n_inte_host                             ! Number of integer crop parameter to be read in 'Samuca.par'   called from ReadFile_samuca.f90
-      integer     n_real_host                             ! Number of real crop parameter to be read in 'Samuca.par'      called from ReadFile_samuca.f90
-      integer     inte_host(6)                            ! Array with integer crop parameters
-      real        real_host(108)                          ! Array with real crop parameters
-      
+            
       integer     icrop_ini
       integer     icrop_end
       integer     i
@@ -2918,7 +2916,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real 		SWFACP
       real 		SWFACF
       real 		SWFACE
-      real 		SRAD*8
+      !real 		SRAD*8
       integer 	NDWS
       integer 	NDEWS
       logical 	MULCHEFFECT
@@ -2941,12 +2939,12 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real  		KC
       integer  	DAS
       integer  	DAP
-      real*8      dso
-      real*8      dsinbe
-      real*8      dsinb
-      real*8      cosld
-      real*8      dayl
-      real*8      sinld
+      !real*8      dso
+      !real*8      dsinbe
+      !real*8      dsinb
+      !real*8      cosld
+      !real*8      dayl
+      !real*8      sinld
       real        tmed
       
       integer     outp        
@@ -3039,8 +3037,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !-------------------------------!
 
       !--- size of parameters arrays
-      n_inte_host = size(inte_host)
-      n_real_host = size(real_host)
+      n_inte_host = 6
+      n_real_host = 108
       
       !--- read from 'Samuca.par'
       call ReadFile_samuca(6,

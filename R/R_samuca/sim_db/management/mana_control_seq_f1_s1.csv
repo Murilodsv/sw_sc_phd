@@ -1,0 +1,33 @@
+find,rep,justify,width,type,digits,nsmall
+<prj.nm>,SEQ_F1_S1,l,50,c,0,0
+<site.nm>,Piracicaba - SP,l,50,c,0,0
+<sim.det>,Automaticaly created by R-Script,l,50,c,0,0
+<cv.nm>,RB867515,l,20,c,0,0
+<tillermet>,1,r,25,i,0,1
+<metpg>,2,r,25,i,0,1
+<swroottyp>,1,r,25,i,0,1
+<idev>,1,r,25,i,0,1
+<swgc>,1,r,25,i,0,1
+<swcf>,1,r,25,i,0,1
+<swinter>,1,r,25,i,0,1
+<usetsoil>,1,r,25,i,0,1
+<potential_growth>,1,r,25,i,0,1
+<plantdepth>,20,r,25,r,7,1
+<rowsp>,140,r,25,r,7,1
+<co2>,380,r,25,r,7,1
+<alphacrit>,1,r,25,r,7,1
+<hlim1>,-0.1,r,25,r,7,1
+<hlim2l>,-5,r,25,r,7,1
+<hlim2u>,-5,r,25,r,7,1
+<hlim3h>,-790,r,25,r,7,1
+<hlim3l>,-1000,r,25,r,7,1
+<hlim4>,-15000,r,25,r,7,1
+<adcrh>,0,r,25,r,7,1
+<adcrl>,0,r,25,r,7,1
+<alb_surface,0.14,r,25,r,7,1
+<hrnc>,314.5,r,25,r,7,1
+<dhrlai>,177.8,r,25,r,7,1
+<tbot_mean>,17,r,25,r,7,1
+<tbot_ampli>,6,r,25,r,7,1
+<tbot_imref>,365,r,25,r,7,1
+<tbot_ddamp>,350,r,25,r,7,1

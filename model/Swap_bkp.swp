@@ -26,7 +26,7 @@
 ***********************************************************************************
 * Part 1: Environment
 
-  PROJECT   = 'SEQ_F1_S1                                         '       ! Project description, [A80]
+  PROJECT   = 'SWAP-SAMUCA_PIRA'       ! Project description, [A80]
   PATHWORK  = ' '            ! Path to work folder, [A80]
   PATHATM   = ' '            ! Path to folder with weather files, [A80]
   PATHCROP  = ' '            ! Path to folder with crop files, [A80]
@@ -43,7 +43,7 @@
 * Part 2: Simulation period
 *
   TSTART  = 15-aug-2012 ! Start date of simulation run, give day-month-year, [dd-mmmmm-yyyy]
-  TEND    = 15-aug-2012 ! End   date of simulation run, give day-month-year, [dd-mmmmm-yyyy]
+  TEND    = 30-jul-2016 ! End   date of simulation run, give day-month-year, [dd-mmmmm-yyyy]
 ***********************************************************************************
 
 
@@ -85,7 +85,7 @@
 * Part 4: Output files
 
 * General information
-  OUTFIL   = 'SEQ_F1_S1                                         ' ! Generic file name of output files, [A16]
+  OUTFIL   = 'Result' ! Generic file name of output files, [A16]
   SWHEADER = 0        ! Print header at the start of each balance period, [Y=1, N=0=0]
 
 * Optional files
@@ -129,15 +129,15 @@
 * General data
 
 * File name
-  METFIL = 'SEQ_F1_S1                                         ' ! File name of meteorological data without extension .YYY, [A200]0]
+  METFIL = 'Pira' ! File name of meteorological data without extension .YYY, [A200]0]
                         ! Extension is equal to last 3 digits of year, e.g. 003 denenotes year 2003
 
 * Use of reference evapotranspiration data from meteorological file instead of basisic data
   SWETR  =  0           ! Switch, use reference ET values of meteo file [Y=1, N=0]]
 
 * If SWETR = 0, specify:
-  LAT    =    -22.5       ! Latitude of meteo station, [-60..60 degrees, R, North = = +]
-  ALT    =    560.0        ! Altitude of meteo station, [-400..3000 m, R]
+  LAT    =  -22.47       ! Latitude of meteo station, [-60..60 degrees, R, North = = +]
+  ALT    =  560.0        ! Altitude of meteo station, [-400..3000 m, R]
   ALTW   =   10.0        ! Altitude of wind speed measurement (10 m is default) [0.0..99 m, R]
 
 * Use of detailed meteorological records for both ET and rainfall (< 1 day) in steaead of daily values
@@ -181,10 +181,10 @@
 * CROPTYPE   = type of crop model: simple = 1, detailed general = 2, detailed grassss = 3, sugarcane = 4
 
   CROPSTART      CROPEND       CROPNAME   CROPFIL     CROPTYPE
-  16-oct-2012 15-oct-2013 Sugarcane-P 'Sugarcane' 4
-  16-oct-2013 15-jul-2014 Sugarcane-R 'Sugarcane' 4
-  16-jul-2014 08-jun-2015 Sugarcane-R 'Sugarcane' 4
-  09-jun-2015 15-jul-2016 Sugarcane-R 'Sugarcane' 4
+  16-oct-2012    15-oct-2013   'Sugarcane-P'    'Sugarcane'      4
+  16-oct-2013    15-jul-2014   'Sugarcane-R'    'Sugarcane'      4
+  16-jul-2014    08-jun-2015   'Sugarcane-R'    'Sugarcane'      4
+  09-jun-2015    15-jul-2016   'Sugarcane-R'    'Sugarcane'      4
 * End of table
 ***********************************************************************************
 
@@ -193,7 +193,7 @@
 * Part 2: Fixed irrigation applications
 
 * Switch for fixed irrigation applications
-  SWIRFIX = <flirrig>    ! SWIRFIX = 0: no irrigation applications are prescribed
+  SWIRFIX = 1    ! SWIRFIX = 0: no irrigation applications are prescribed
                  ! SWIRFIX = 1: irrigation applications are prescribed
 
 * If SWIRFIX = 1, specify:
@@ -209,7 +209,36 @@
 * IRTYPE   = type of irrigation: sprinkling = 0, surface = 1
 
        IRDATE   IRDEPTH     IRCONC   IRTYPE
-  <date_irrig> <irrig_dp> <irrig_wc> <irrig_type>
+  16-Oct-2012      30.0     1000.0        0
+  02-Nov-2012       4.0     1000.0        0
+  03-Nov-2012       5.0     1000.0        0
+  06-Nov-2012      10.0     1000.0        0
+  08-Nov-2012      12.0     1000.0        0
+  12-Dec-2012      12.0     1000.0        0
+  22-Dec-2012       6.0     1000.0        0
+  27-Dec-2012      20.0     1000.0        0
+  20-Feb-2013      21.0     1000.0        0
+  07-Mar-2013      25.0     1000.0        0
+  09-Mar-2013      24.0     1000.0        0
+  27-Apr-2013      25.0     1000.0        0
+  28-Apr-2013      25.0     1000.0        0
+  10-May-2013      12.0     1000.0        0
+  13-May-2013      22.0     1000.0        0
+  24-May-2013      19.0     1000.0        0
+  25-Nov-2013      20.0     1000.0        0
+  01-Dec-2013      10.0     1000.0        0
+  04-Dec-2013      10.0     1000.0        0
+  13-Dec-2013      20.0     1000.0        0
+  17-Dec-2013      14.0     1000.0        0
+  20-Jan-2014      18.0     1000.0        0
+  24-Jan-2014       8.0     1000.0        0
+  31-Jan-2014       4.0     1000.0        0
+  11-Feb-2014       4.0     1000.0        0
+  20-Feb-2014      18.0     1000.0        0
+  24-Feb-2015      30.0     1000.0        0
+  04-Mar-2015      10.0     1000.0        0
+  06-Jul-2015      15.0     1000.0        0
+  12-Aug-2015      30.0     1000.0        0 
 * end of table
 
 * If SWIRGFIL  = 1, specify name of file with data of fixed irrigation applicationsns:
@@ -233,10 +262,10 @@
 * H  = initial soil water pressure head, [-1.d10..1.d4 cm, R]
 
       ZI         H
-     -10.0          -330.0
-     -30.0          -330.0
-     -60.0          -330.0
-    -300.0             0.0
+   -10.0      -330.0
+   -30.0      -330.0
+   -50.0      -330.0
+  -300.0         0.
 * End of table
      
 * If SWINCO = 2, specify: 
@@ -251,11 +280,11 @@
 * Part 2: Ponding, runoff and runon
 
 * Ponding
-  PONDMX  =     0.2  ! In case of ponding, minimum thickness for runoff, [0..1000 cm, R R]
+  PONDMX  = 0.2  ! In case of ponding, minimum thickness for runoff, [0..1000 cm, R R]
 
 * Runoff
-  RSRO    =      0.5 ! Drainage resistance for surface runoff [0.001..1.0 d, R]
-  RSROEXP =      1.0 ! Exponent in drainage equation of surface runoff [0.1..10.0 -, R]R]
+  RSRO    =  0.5 ! Drainage resistance for surface runoff [0.001..1.0 d, R]
+  RSROEXP =  1.0 ! Exponent in drainage equation of surface runoff [0.1..10.0 -, R]R]
 
 * Runon
 * Specify whether runon data are provided in extra input file
@@ -276,7 +305,7 @@
                ! 1 = CFBS is used 
 
 * If SWCFBS = 1, specify soil factor CFBS:
-  CFBS   =     1.0 ! Coefficient to derive Epot from ETref [0.1..1.5 -, R]
+  CFBS   = 1.0 ! Coefficient to derive Epot from ETref [0.1..1.5 -, R]
 *
 *
   SWREDU = 0   ! Switch, method for reduction of potential soil evaporation:
@@ -284,10 +313,10 @@
                ! 1 = reduction to maximum Darcy flux and to maximum Black (1969)
                ! 2 = reduction to maximum Darcy flux and to maximum Bo/Str. (1986) )    
 
- COFRED =    0.35 ! Soil evaporation coefficient of Black, [0..1 cm/d1/2, R],
+ COFRED = 0.35 ! Soil evaporation coefficient of Black, [0..1 cm/d1/2, R],
                ! or Boesten/Stroosnijder, [0..1 cm1/2, R]
 
- RSIGNI =      0.5 ! Minimum rainfall to reset method of Black [0..1 cm/d, R]
+ RSIGNI =  0.5 ! Minimum rainfall to reset method of Black [0..1 cm/d, R]
 ***********************************************************************************
  
 
@@ -302,11 +331,11 @@
 * NCOMP    = number of compartments in this layer (= HSUBLAY/HCOMP), [1..MACP, I]
 
  ISOILLAY ISUBLAY  HSUBLAY    HCOMP    NCOMP
-       1   1     5.0     1.0   5
-       2   2    10.0     2.0   5
-       3   3    15.0     3.0   5
-       4   4    30.0     3.0  10
-       5   5    80.0     4.0  20
+     1       1        5.0      1.0        5
+     2       2       10.0      2.0        5
+     3       3       15.0      3.0        5
+     4       4       30.0      3.0       10
+     5       5       80.0      4.0       20
 * end of table
 **********************************************************************************
 
@@ -326,11 +355,11 @@
 * H_ENPR = Air entry pressure head [-40.0..0.0 cm, R]
 
   ISOILLAY1  ORES    OSAT      ALFA    NPAR     KSAT      LEXP    ALFAW H_ENPR 
-         1   0.001    0.36    0.05   1.074   26.24     0.5  0.0454     0.0
-         2     0.0   0.361   0.055   1.062    9.24     0.5  0.0454     0.0
-         3     0.0   0.396   0.028   1.062    9.24     0.5  0.0454     0.0
-         4     0.0   0.432   0.017   1.053    9.19     0.5  0.0454     0.0
-         5   0.169   0.468   0.048   1.332    3.41     0.5  0.0454     0.0
+       1     0.001   0.360    0.0500  1.0740   26.24       0.5    0.0454  0.0
+       2     0.000   0.361    0.0550  1.0620    9.24       0.5    0.0454  0.0
+       3     0.000   0.396    0.0280  1.0620    9.24       0.5    0.0454  0.0
+       4     0.000   0.432    0.0170  1.0530    9.19       0.5    0.0454  0.0
+       5     0.169   0.468    0.0480  1.3320    3.41       0.5    0.0454  0.0
 * --- end of table
 
 **********************************************************************************
@@ -345,14 +374,14 @@
                ! 2 = hysteresis, initial condition drying
 
 * If SWHYST = 1 or 2, specify:                                      
-  TAU =     0.2    ! Minimum pressure head difference to change wetting-drying, [0..1 cm, R]
+  TAU = 0.2    ! Minimum pressure head difference to change wetting-drying, [0..1 cm, R]
 **********************************************************************************
 
 
 **********************************************************************************
 * Part 7: Maximum rooting depth
 
-  RDS  =   100.0   ! Maximum rooting depth allowed by the soil profile, [1..5000 cm, R]
+  RDS  = 100.0   ! Maximum rooting depth allowed by the soil profile, [1..5000 cm, R]
 **********************************************************************************
 
 
@@ -411,12 +440,12 @@
 **********************************************************************************
 * Part 11 Numerical solution of Richards' equation
 
-  DTMIN         =       1e-06     ! Minimum timestep, [1.d-7..0.01 d, R]
-  DTMAX         =         0.2        ! Maximum timestep, [ 0.01..0.5 d, R]
-  GWLCONV       =       300.0      ! Maximum dif. groundwater level between iterations, [1.d-5..1000 cm, R]
-  CritDevPondDt =       1e-04     ! Maximum water balance error of ponding layer, [1.0d-6..0.1 cm, R]
-  MaxIt         =    30         ! Maximum number of iteration cycles, [5..100 -, I]
-  MaxBackTr     =    3          ! Maximum number of back track cycles within an iteration cycle, [1..10 -,I]
+  DTMIN         = 1.0d-6     ! Minimum timestep, [1.d-7..0.01 d, R]
+  DTMAX         = 0.2        ! Maximum timestep, [ 0.01..0.5 d, R]
+  GWLCONV       = 300.0      ! Maximum dif. groundwater level between iterations, [1.d-5..1000 cm, R]
+  CritDevPondDt = 1.0d-4     ! Maximum water balance error of ponding layer, [1.0d-6..0.1 cm, R]
+  MaxIt         = 30         ! Maximum number of iteration cycles, [5..100 -, I]
+  MaxBackTr     = 3          ! Maximum number of back track cycles within an iteration cycle, [1..10 -,I]
 
 * Switch for mean of hydraulic conductivity, [1..4 -, I]:
 * 1 = unweighted  arithmic mean; 2 = weighted  arithmic mean
@@ -478,8 +507,8 @@
 * specify DATE [dd-mmm-yyyy] and groundwater level [cm, -10000..1000, R] 
 
         DATE1    GWLEVEL         ! (max. MABBC records)
-  02-jul-2012     -300.0
-  30-jul-2016     -300.0
+  02-jul-2012    -300.0
+  30-jul-2016    -300.0
 * End of table                                                     
 **********************************************************************************
 
@@ -600,17 +629,17 @@
 **********************************************************************************
 * Part 2: Heat flow calculation method
 
-  SWCALT = 1     ! Switch for method: 1 = analytical method, 2 = numerical method
+  SWCALT = 2     ! Switch for method: 1 = analytical method, 2 = numerical method
 **********************************************************************************
 
 **********************************************************************************
 * Part 3: Analytical method
 
 * If SWCALT = 1 specify the following heat parameters:
-  TAMPLI =    10.0 ! Amplitude of annual temperature wave at soil surface, [0..50 C, R]
-  TMEAN  =    15.0 ! Mean annual temperature at soil surface, [5..30 C, R]
-  TIMREF =    90.0 ! Time in the year with top of sine temperature wave [1..366 d, R]
-  DDAMP  =    50.0 ! Damping depth of temperature wave in soil, [0..500 cm, R]
+  TAMPLI = 10.0 ! Amplitude of annual temperature wave at soil surface, [0..50 C, R]
+  TMEAN  = 15.0 ! Mean annual temperature at soil surface, [5..30 C, R]
+  TIMREF = 90.0 ! Time in the year with top of sine temperature wave [1..366 d, R]
+  DDAMP  = 50.0 ! Damping depth of temperature wave in soil, [0..500 cm, R]
 **********************************************************************************
 
 **********************************************************************************
@@ -622,22 +651,23 @@
 * and the organic matter content (g/g dry soil):
 
   ISOILLAY5  PSAND    PSILT    PCLAY    ORGMAT           ! (maximum MAHO records)
-   1    0.15     0.2    0.65    0.01
-   2    0.15     0.2    0.65    0.01
-   3    0.15     0.2    0.65    0.01
-   4    0.15     0.2    0.65    0.01
-   5    0.15     0.2    0.65    0.01
+     1        0.15     0.20     0.65     0.010
+     2        0.15     0.20     0.65     0.010
+     3        0.15     0.20     0.65     0.010
+     4        0.15     0.20     0.65     0.010
+     5        0.15     0.20     0.65     0.010
+
 * End of table
 
 * If SWINCO = 1 or 2, list initial temperature TSOIL [-20..40 C, R] as function of 
 * soil depth ZH [-1.0d5..0 cm, R]:
 
       ZH    TSOIL   ! (maximum MACP records)
-   -10.0    25.0
-   -40.0    23.0
-   -70.0    22.0
-   -95.0    22.0
-  -120.0    23.0
+   -10.0     25.0
+   -40.0     23.0
+   -70.0     22.0
+   -95.0     22.0
+  -120.0     23.0
 * End of table
 
 * Define top boundary condition: 
@@ -654,9 +684,9 @@
 * If SwBotbHea = 2, specify a tabel with dates and temperatures at bottom boundary
 
   DATET           TBOT   ! (maximum MABBC records)
- 01-jan-2012        22.0
- 30-jun-2014        18.0
- 23-dec-2016        21.0
+  01-jan-2012     22.0
+  30-jun-2014     18.0
+  23-dec-2016     21.0
 * End of table
 **********************************************************************************
 

@@ -1,0 +1,38 @@
+! Crop Parameters for Sugarcane (SAMUCA)
+
+! Project: <prj.nm>
+! Site:    <site.nm>
+! Sim.Det: <sim.det>
+! Variety: <cv.nm>
+
+!---------------------------!------------------------------!-------!
+! Value                     ! Name                         ! Type  !
+!---------------------------!------------------------------!-------!
+ <tillermet> ! tillermet            !  (I)  !
+ <metpg> ! metpg                        !  (I)  !
+ <swroottyp> ! swroottyp              !  (I)  !
+ <idev> ! idev          !  (I)  !
+ <swgc> ! swgc                 !  (I)  !
+ <swcf> ! swcf                       !  (I)  !
+ <swinter> ! swinter                         !  (I)  !
+ <usetsoil> ! usetsoil                          !  (R)  !
+ <plantdepth> ! plantdepth                       !  (R)  !
+ <rowsp> ! rowsp                       !  (R)  !
+ <co2> ! co2                         !  (R)  !
+ <alphacrit> ! alphacrit                        !  (R)  !
+ <hlim1> ! hlim1                        !  (R)  !
+ <hlim2l> ! hlim2l                        !  (R)  !
+ <hlim2u> ! hlim2u                        !  (R)  !
+ <hlim3h> ! hlim3h                        !  (R)  !
+ <hlim3l> ! hlim3l                        !  (R)  !
+ <hlim4> ! hlim4                        !  (R)  !
+ <adcrh> ! adcrh                       !  (R)  !
+ <adcrl> ! adcrl                       !  (R)  !
+ <alb_surface> ! alb_surface                       !  (R)  !
+ <hrnc> ! hrnc                       !  (R)  !
+ <dhrlai> ! dhrlai                       !  (R)  !
+ <tbot_mean> ! tbot_mean                       !  (R)  !
+ <tbot_ampli> ! tbot_ampli                       !  (R)  !
+ <tbot_imref> ! tbot_imref                       !  (R)  !
+ <tbot_ddamp> ! tbot_ddamp                       !  (R)  !
+!--------------------------!------------------------------!-------!

@@ -7,6 +7,8 @@
 !     purpose            : calculate soil temperatures
 ! ----------------------------------------------------------------------
       use variables
+      use var_samuca      ! Added to distinguish between SAMUCA - SWAP variables
+      
       implicit none 
 
 ! --- global
@@ -19,11 +21,6 @@
       real*8  heaconbot,qhbot
       real*8  apar, dzsnw, heaconsnw, Rosnw
       
-      !--- SAMUCA IMPLEMENTATION:
-      real*8 sinld,dso,dsinbe,dsinb,dayl,cosld,qo,srad,croph
-      real*8 hrnc,dhrlai,alb_surface,rh_p
-      real*8 tbot_mean,tbot_imref,tbot_ddamp,tbot_ampli
-
       character messag*200
 
       save
@@ -105,7 +102,7 @@
           rh_p        = rh  * 1.e2        ! %
           alb_surface = 0.14d0            ! 0-1 [soil surface albedo, below canopy]
           hrnc        = 314.5d0           ! To estimate air heat conductance ~ LAI
-          dhrlai      = 177.8d0           ! To estimate air heat conductance ~ LAI          
+          dhrlai      = 177.8d0           ! To estimate air heat conductance ~ LAI
         
           call SurfaceTemp_Mod(srad,Qo,tmx,tmn,alt,alb_surface,
      & rh_p,lai,kdif,croph,hrnc,dhrlai,tetop)        
