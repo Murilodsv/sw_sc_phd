@@ -34,7 +34,8 @@ get.rp.root = function(){
   }
 }
 wd.repo   = get.rp.root()
-wd.lib    = paste0(wd.repo,"/R/R/samuca/lib")
+wd.rsam   = paste0(wd.repo,"/R/R_samuca")
+wd.lib    = paste0(wd.repo,"/R/R_samuca/lib")
 wd.model  = paste0(wd.repo,"/model")
 wd.debug  = paste0(wd.repo,"/Debug")
 
@@ -42,12 +43,27 @@ wd.debug  = paste0(wd.repo,"/Debug")
 invisible(sapply(list.files(path = wd.lib,full.names = T),
                  function(x) source(x)))
 
+SC.set.fn      = paste0(wd.rsam,"/sim_db/sim_control_seq_f1_s1_SWAP.csv")
+SC.template.fn = paste0(wd.rsam,"/templates/swp_template.swp")
+SC.irrig.fn    = paste0(wd.rsam,"/sim_db/management/irri_control_seq_f1_s1.csv")
+SC.outpath     = wd.model
+SC.outfn       = "Swap"
+
 use.debug  = T
 samuca.exe = "swap_samuca_v1.exe"
 
 #-----------------------#
 #--- Run SWAP-SAMUCA ---#
 #-----------------------#
+
+#--- Create swap.swp
+SimControl.SWAP(SC.template.fn,
+                SC.set.fn,
+                SC.outpath,
+                SC.outfn,
+                SC.irrig.fn)
+
+
 if(use.debug){
   #--- Update .exe
   file.copy(paste0(wd.debug,"/",samuca.exe),

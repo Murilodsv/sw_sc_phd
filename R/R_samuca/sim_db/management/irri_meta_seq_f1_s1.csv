@@ -1,0 +1,5 @@
+find,justify,width,type,digits,nsmall
+date_irrig,r,11,c,0,0
+irrig_dp,r,7,r,1,1
+irrig_wc,r,7,r,1,1
+irrig_type,r,7,r,1,1

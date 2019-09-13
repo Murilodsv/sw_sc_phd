@@ -1,4 +1,4 @@
-<date_irrig>,<irrig_dp>,<irrig_wc>,<irrig_type>
+date_irrig,irrig_dp,irrig_wc,irrig_type
 16_oct_2012,30,1000,0
 02_nov_2012,4,1000,0
 03_nov_2012,5,1000,0

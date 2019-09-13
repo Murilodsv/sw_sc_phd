@@ -181,7 +181,7 @@
 * CROPTYPE   = type of crop model: simple = 1, detailed general = 2, detailed grassss = 3, sugarcane = 4
 
   CROPSTART      CROPEND       CROPNAME   CROPFIL     CROPTYPE
-  <date_inicrp> <date_endcrp> <crp_name> 'Sugarcane' <crp_type>
+  <date_inicrp> <date_endcrp> '<crp_name>' 'Sugarcane' <crp_type>
 * End of table
 ***********************************************************************************
 

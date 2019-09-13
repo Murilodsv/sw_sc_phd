@@ -18,8 +18,6 @@ rep.fun = function(rep,set){
   
   SC.set = set
   
-  
-  
   #--- Character Values
   rep.set     = set[set$type == "c",]
   rep.set$rep = as.character(rep.set$rep)
@@ -31,6 +29,11 @@ rep.fun = function(rep,set){
                width   = rep.set$width[rep.set$find == f],
                digits  = rep.set$digits[rep.set$find == f],
                nsmall  = rep.set$nsmall[rep.set$find == f])
+    
+    if(rep.set$nsmall[rep.set$find == f] == 0){
+      #--- trim string if nsmall is equalt to 0
+      r = trim(r)
+    }
     
     rep = gsub(f,r,rep)
   }
