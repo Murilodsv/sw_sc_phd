@@ -1,0 +1,7 @@
+* Project:       SEQ_F1_S1
+* File content:  ES0, ET0, EW0, Epot, Tpot, Tact and 4 Tact-stress values for wetness, drought, salinity and frost (cm/period)
+* File name:     SEQ_F1_S1.str
+* Model version: Swap 3.2.36
+* Generated at:  13-Sep-2019 16:51:53
+*
+       Date,Day,  Dcum,ESoilWet,Tcropdry,Tcropwet,    Epot,    Tpot,    Tact, Tredwet, Treddry, Tredsol, Tredfrs

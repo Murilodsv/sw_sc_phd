@@ -1,0 +1,10 @@
+* Project:       SEQ_F1_S1
+* File content:  irrigation data
+* File name:     SEQ_F1_S1.irg
+* Model version: Swap 3.2.36
+* Generated at:  13-Sep-2019 16:51:53
+*
+*      Crop name        Date   Day   Day  Irrigation     Solute
+*                             Crop   Cum          cm     mg/cm3
+*<=============><==========><====><====><==========><=========>
+       Crop name,       Date,  Day,  Day, Irrigation,    Solute

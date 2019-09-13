@@ -43,7 +43,7 @@
 * Part 2: Simulation period
 *
   TSTART  = <date_inisim> ! Start date of simulation run, give day-month-year, [dd-mmmmm-yyyy]
-  TEND    = <date_inisim> ! End   date of simulation run, give day-month-year, [dd-mmmmm-yyyy]
+  TEND    = <date_endsim> ! End   date of simulation run, give day-month-year, [dd-mmmmm-yyyy]
 ***********************************************************************************
 
 

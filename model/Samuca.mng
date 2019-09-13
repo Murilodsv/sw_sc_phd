@@ -1,38 +1,39 @@
 ! Crop Parameters for Sugarcane (SAMUCA)
 
-! Project: <prj.nm>
-! Site:    <site.nm>
-! Sim.Det: <sim.det>
-! Variety: <cv.nm>
+! Project: SEQ_F1_S1                                         
+! Site:    Piracicaba - SP                                   
+! Sim.Det: Automaticaly created by R-Script                  
+! Variety: RB867515            
 
 !---------------------------!------------------------------!-------!
 ! Value                     ! Name                         ! Type  !
 !---------------------------!------------------------------!-------!
- <tillermet> ! tillermet            !  (I)  !
- <metpg> ! metpg                        !  (I)  !
- <swroottyp> ! swroottyp              !  (I)  !
- <idev> ! idev          !  (I)  !
- <swgc> ! swgc                 !  (I)  !
- <swcf> ! swcf                       !  (I)  !
- <swinter> ! swinter                         !  (I)  !
- <usetsoil> ! usetsoil                          !  (R)  !
- <plantdepth> ! plantdepth                       !  (R)  !
- <rowsp> ! rowsp                       !  (R)  !
- <co2> ! co2                         !  (R)  !
- <alphacrit> ! alphacrit                        !  (R)  !
- <hlim1> ! hlim1                        !  (R)  !
- <hlim2l> ! hlim2l                        !  (R)  !
- <hlim2u> ! hlim2u                        !  (R)  !
- <hlim3h> ! hlim3h                        !  (R)  !
- <hlim3l> ! hlim3l                        !  (R)  !
- <hlim4> ! hlim4                        !  (R)  !
- <adcrh> ! adcrh                       !  (R)  !
- <adcrl> ! adcrl                       !  (R)  !
- <alb_surface> ! alb_surface                       !  (R)  !
- <hrnc> ! hrnc                       !  (R)  !
- <dhrlai> ! dhrlai                       !  (R)  !
- <tbot_mean> ! tbot_mean                       !  (R)  !
- <tbot_ampli> ! tbot_ampli                       !  (R)  !
- <tbot_imref> ! tbot_imref                       !  (R)  !
- <tbot_ddamp> ! tbot_ddamp                       !  (R)  !
+                         1 ! tillermet            !  (I)  !
+                         2 ! metpg                        !  (I)  !
+                         1 ! swroottyp              !  (I)  !
+                         1 ! idev          !  (I)  !
+                         1 ! swgc                 !  (I)  !
+                         1 ! swcf                       !  (I)  !
+                         1 ! swinter                         !  (I)  !
+                         1 ! usetsoil                          !  (I)  !
+                         1 ! potential_growth                       !  (I)  !
+                      20.0 ! plantdepth                       !  (R)  !
+                     140.0 ! rowsp                       !  (R)  !
+                     380.0 ! co2                         !  (R)  !
+                       1.0 ! alphacrit                        !  (R)  !
+                      -0.1 ! hlim1                        !  (R)  !
+                      -5.0 ! hlim2l                        !  (R)  !
+                      -5.0 ! hlim2u                        !  (R)  !
+                    -790.0 ! hlim3h                        !  (R)  !
+                   -1000.0 ! hlim3l                        !  (R)  !
+                  -15000.0 ! hlim4                        !  (R)  !
+                       0.0 ! adcrh                       !  (R)  !
+                       0.0 ! adcrl                       !  (R)  !
+                      0.14 ! alb_surface                       !  (R)  !
+                     314.5 ! hrnc                       !  (R)  !
+                     177.8 ! dhrlai                       !  (R)  !
+                      17.0 ! tbot_mean                       !  (R)  !
+                       6.0 ! tbot_ampli                       !  (R)  !
+                     365.0 ! tbot_imref                       !  (R)  !
+                     350.0 ! tbot_ddamp                       !  (R)  !
 !--------------------------!------------------------------!-------!

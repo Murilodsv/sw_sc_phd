@@ -16,8 +16,8 @@
  <swcf> ! swcf                       !  (I)  !
  <swinter> ! swinter                         !  (I)  !
  <usetsoil> ! usetsoil                          !  (I)  !
- <plantdepth> ! plantdepth                       !  (I)  !
  <potential_growth> ! potential_growth                       !  (I)  !
+ <plantdepth> ! plantdepth                       !  (R)  !
  <rowsp> ! rowsp                       !  (R)  !
  <co2> ! co2                         !  (R)  !
  <alphacrit> ! alphacrit                        !  (R)  !

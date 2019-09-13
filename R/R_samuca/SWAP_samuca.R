@@ -43,11 +43,7 @@ wd.debug  = paste0(wd.repo,"/Debug")
 invisible(sapply(list.files(path = wd.lib,full.names = T),
                  function(x) source(x)))
 
-SC.set.fn      = paste0(wd.rsam,"/sim_db/sim_control_seq_f1_s1_SWAP.csv")
-SC.template.fn = paste0(wd.rsam,"/templates/swp_template.swp")
-SC.irrig.fn    = paste0(wd.rsam,"/sim_db/management/irri_control_seq_f1_s1.csv")
-SC.outpath     = wd.model
-SC.outfn       = "Swap"
+
 
 use.debug  = T
 samuca.exe = "swap_samuca_v1.exe"
@@ -57,11 +53,41 @@ samuca.exe = "swap_samuca_v1.exe"
 #-----------------------#
 
 #--- Create swap.swp
+SC.set.fn      = paste0(wd.rsam,"/sim_db/sim_control_seq_f1_s1_SWAP.csv")
+SC.template.fn = paste0(wd.rsam,"/templates/swp_template.swp")
+SC.irrig.fn    = paste0(wd.rsam,"/sim_db/management/irri_control_seq_f1_s1.csv")
+SC.outpath     = wd.model
+SC.outfn       = "Swap"
+
 SimControl.SWAP(SC.template.fn,
                 SC.set.fn,
                 SC.outpath,
                 SC.outfn,
                 SC.irrig.fn)
+
+#--- Create Management
+SC.set.fn      = paste0(wd.rsam,"/sim_db/management/mana_control_seq_f1_s1.csv")
+SC.template.fn = paste0(wd.rsam,"/templates/mng_template.mng")
+SC.outpath     = wd.model
+SC.outfn       = "Samuca"
+
+SimMana(SC.template.fn,
+        SC.set.fn,
+        SC.outpath,
+        SC.outfn)
+
+#--- Create Meteorological
+SC.set.fn = paste0(wd.rsam,"/sim_db/weather/met_control_seq_f1_s1.csv")
+met.dt.fn = paste0(wd.rsam,"/sim_db/weather/met_data_f1.csv")
+SC.outpath = wd.model
+SC.outfn   = "SEQ_F1_S1"
+
+SimMet.SWAP(SC.set.fn,
+            met.dt.fn,
+            SC.outpath,
+            SC.outfn)
+
+
 
 
 if(use.debug){

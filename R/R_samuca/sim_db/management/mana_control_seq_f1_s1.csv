@@ -24,7 +24,7 @@ find,rep,justify,width,type,digits,nsmall
 <hlim4>,-15000,r,25,r,7,1
 <adcrh>,0,r,25,r,7,1
 <adcrl>,0,r,25,r,7,1
-<alb_surface,0.14,r,25,r,7,1
+<alb_surface>,0.14,r,25,r,7,1
 <hrnc>,314.5,r,25,r,7,1
 <dhrlai>,177.8,r,25,r,7,1
 <tbot_mean>,17,r,25,r,7,1
