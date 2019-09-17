@@ -11,15 +11,7 @@
 
 # Model Outputs
 model/Output/
-R/R_samuca/performance/results/*
-*/model/.Rhistory
-*.Rhistory
-model/*.OUT
-model/result.bal
-model/result*
-model/heatparam*
-model/soilphys*
-model/swap.ok
+
 
 
 
