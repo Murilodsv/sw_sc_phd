@@ -2,7 +2,7 @@
 * File content:  cumulative water balance components (cm)
 * File name:     SEQ_F1_S1.wba
 * Model version: Swap 3.2.36
-* Generated at:  17-Sep-2019 15:42:44
+* Generated at:  17-Sep-2019 17:02:24
 *
        Date,Day,  Dcum,Rain_g,Rain_n,Irr_g,Irr_n,  RunOn, RunOff,  Tpot,  Tact,  Epot,  Eact,   Drain,     Bot,   DStor,       Gwl,  Pond, Wbal,      Date2
 15-Aug-2012,228,     1,  0.00,  0.00,  0.0,  0.0,   0.00,   0.00,  0.00,  0.00,  0.53,  0.14,   0.000,   0.007,  -0.129,          ,  0.00, 0.00,15-Aug-2012

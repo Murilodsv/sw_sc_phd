@@ -2,7 +2,7 @@
 * File content:  water balance increments (cm/period)
 * File name:     SEQ_F1_S1.inc
 * Model version: Swap 3.2.36
-* Generated at:  17-Sep-2019 15:42:44
+* Generated at:  17-Sep-2019 17:02:24
 *
        Date,Day,  Dcum,    Rain,   Snow,   Irrig,  Interc,   Runon,  Runoff,    Tpot,    Tact,    Epot,    Eact, Drainage,  QBottom,      Gwl
 15-Aug-2012,228,     1,   0.000,   0.000,   0.000,   0.000,   0.000,   0.000,   0.000,   0.000,   0.531,   0.136,    0.000,    0.007,          

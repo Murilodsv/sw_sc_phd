@@ -2,7 +2,7 @@
 * File content:  overview of actual water and solute balance components
 * File name:     SEQ_F1_S1.bal
 * Model version: Swap 3.2.36
-* Generated at:  17-Sep-2019 15:42:44
+* Generated at:  17-Sep-2019 17:02:24
 
 Period             :  15-Aug-2012 until  31-Dec-2012
 Depth soil profile :  140.00 cm
