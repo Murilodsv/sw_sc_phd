@@ -480,6 +480,7 @@ subroutine ReadFile_samuca(task,           &
         real_host(15) , ignore, 	& ! (R)
         real_host(16) , ignore, 	& ! (R)
         real_host(17) , ignore, 	& ! (R)
+        real_host(18) , ignore, 	& ! (R)
         real_host(19)
     
     close(mana_iunit)

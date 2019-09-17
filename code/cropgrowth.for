@@ -2891,23 +2891,23 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       real		T_MAX_WS_TIL
       real		T_MID_WS_TIL
       real	    T_MIN_WS_TIL	
-      logical     POTENTIAL_GROWTH
-      integer     TILLERMET		
-      real 	    ROWSP			
+      !logical     POTENTIAL_GROWTH
+      !integer     TILLERMET		
+      !real 	    ROWSP			
       integer     SEQNOW			
       logical     RATOON			
       
       real        BOTTOM(maho)		
       real        DEP(maho)			
       logical     FLCROPALIVE	
-      real        PLANTDEPTH	      
+      !real        PLANTDEPTH	      
       
       real        SLTHICKNESS(maho)
       real        tsoil_lay(maho)
       real        SRL
       real        UPPER(maho)
       real        RLD(maho)
-      logical 	USETSOIL
+      !logical 	USETSOIL
       real 		TRWUP
       real 		TMIN
       real 		TMAX
@@ -2919,8 +2919,8 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       !real 		SRAD*8
       integer 	NDWS
       integer 	NDEWS
-      logical 	MULCHEFFECT
-      integer 	METPG
+      !logical 	MULCHEFFECT
+      !integer 	METPG
       real 		LI
       real 		LAT_SIM
       real 		EOP
@@ -2928,7 +2928,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       integer 	DOY
       real 		DILEAF
       real 		DI
-      real 		CO2
+      !real 		CO2
       integer  	YEAR				
       logical  	WRITEACTOUT
       integer  	WARN
@@ -3031,6 +3031,16 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       ! usetsoil
 
 1000  continue
+      
+      !--------------------------!
+      !--- Simulation Options ---!
+      !--------------------------!      
+      
+      !--- Get parameters from Samuca.mng called in readswap.for L.287      
+      writeactout         = .true.
+      writedetphoto       = .true.
+      writedcrop          = .true.
+      writehead           = .true.      
       
       !-------------------------------!
       !--- Reading crop parameters ---!
@@ -3196,12 +3206,12 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       i           = 1
       icrop_end   = 0
       do while(cropstart(i) .gt. 0.0001)
-          if(cropfil(i) .eq. 'Sugarcane') icrop_end = i
+          if(croptype(i) .eq. 4) icrop_end = i
           i = i + 1
       enddo      
       i           = 1
       do while(cropstart(i) .gt. 0.0001 .and. 
-     & .not. (cropfil(i) .eq. 'Sugarcane'))
+     & .not. (croptype(i) .eq. 4))
           i = i + 1
       enddo
       icrop_ini = i
@@ -3217,41 +3227,14 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
           if(icrop .eq. icrop_end) flclos_file =   .true. 
       endif      
       
-        !--------------------------!
-        !--- Simulation Options ---!
-        !--------------------------!
-      writeactout         = .true.
-      writedetphoto       = .true.
-      writedcrop          = .true.
-      writehead           = .true.
-      potential_growth    = .true.    ! Change it when water stress is reviewed
-      tillermet           = 1
-      metpg               = 2
-      ratoon              = .false.
-      plantdepth          = 20.d0
-      rowsp               = 140.d0
-      usetsoil            = .true.      
-      mulcheffect         = .false.   ! Mulch effect turned off for this version      
-      co2                 = 380.d0      
+      !--- Check if is a ratoon type
+       if(cropname(icrop) . eq. 'Sugarcane_R')then
+           ratoon = .true.
+       else
+           ratoon = .false.
+       endif       
       
-      !--- SWAP Methods:
-      swroottyp           = 1         ! Root water uptake type 1 = Feddes; 2 = Matric Flux 
-      idev 			    = 1         ! Switch for length of growth period in case of simple crop: 1 = fixed; 2 = depends on temperature sum
-      swgc                = 1         ! Switch for simple crop: 1 = leaf area index is input; 2 = soil cover fraction is input
-      swcf                = 1         ! Switch for simple crop: 1 = crop factor is input; 2 = crop height is input
-      swinter             = 1         ! Switch for interception method: 0 = no interception; 1 = agricultural crops; 2 = trees and forests
-      alphacrit           = 1.d0      
-      
-      !--- Feddes h thresholds
-      hlim1  	= -0.1d0 	! Pressure head above which root water uptake stops (L)
-      hlim2l 	= -5.d0     ! Pressure head below which optimum water uptake starts for sub layer (L)
-      hlim2u 	= -5.d0 	! Pressure head below which optimum water uptake starts for top layer (L)
-      hlim3h 	= -790.d0   ! Pressure head below which water uptake reduction starts at high Tpot (L)
-      hlim3l 	= -1000.d0  ! Pressure head below which water uptake reduction starts at low Tpot (L)
-      hlim4  	= -15000.d0 ! Wilting point, no root water uptake at lower soil water pressure heads (L)
-      adcrh	= 0.d0 		! Level of high atmospheric demand (L/T)
-      adcrl	= 0.d0 		! Level of low atmospheric demand (L/T)
-      
+      !--- Evapotranspiration setup
       if (swcf.eq.1) then
           !--- use standard values for ETref (FAO56) and employ Kc for ETc
           albedo = 0.23d0
@@ -3300,7 +3283,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         nstalks_planting    = 2.d0  !#
         ini_nstk            = 5. * 1. / (rowsp / 100.) ! plants m-2 - Assuming 5 emerged stems per 1 linear meter (20 cm between each other)
         tilleragefac        = 1.
-    
+       
         if(ratoon)then
         
         !-----------------!
@@ -3603,6 +3586,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       tmin    =   tmn      
       tmed    =   (tmax + tmin) / 2.d0
       eop     =   ptra      
+      trwup   =   tra
       doy     =   daynr
       das     =   daycum
       dap     =   daycrop
@@ -5866,7 +5850,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
                 !------------------------------------------!
                 !--- Initialize above ground conditions ---!
                 !------------------------------------------!
-		        shootdepth          = 0.d0
+                shootdepth          = 0.d0
                 phprof(n_ph,5)      = init_leaf_area                            ! Inital leaf area (cm2)
                 nstk                = ini_nstk                                  ! Initial Tillering
                 cropdstage          = 'Emergd'                                  ! Update Stage ID     

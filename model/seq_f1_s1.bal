@@ -2,16 +2,16 @@
 * File content:  overview of actual water and solute balance components
 * File name:     SEQ_F1_S1.bal
 * Model version: Swap 3.2.36
-* Generated at:  17-Sep-2019 13:01:38
+* Generated at:  17-Sep-2019 15:42:44
 
 Period             :  15-Aug-2012 until  31-Dec-2012
 Depth soil profile :  140.00 cm
 
             Water storage
-Final   :        59.58 cm
+Final   :        60.08 cm
 Initial :        44.98 cm
             =============
-Change           14.60 cm
+Change           15.10 cm
 
 
 Water balance components (cm)
@@ -19,21 +19,21 @@ Water balance components (cm)
 In                           Out
 =========================    ============================
 Rain + snow    :    40.05    Interception      :     0.00
-Runon          :     0.00    Runoff            :     0.28
-Irrigation     :     9.90    Transpiration     :     0.00
-Bottom flux    :   -13.64    Soil evaporation  :    21.43
+Runon          :     0.00    Runoff            :     0.27
+Irrigation     :     9.90    Transpiration     :     0.18
+Bottom flux    :   -14.36    Soil evaporation  :    20.04
                              Crack flux        :     0.00
 =========================    ============================
-Sum            :    36.31    Sum               :    21.71
+Sum            :    35.59    Sum               :    20.49
 
 Period             :  01-Jan-2013 until  31-Dec-2013
 Depth soil profile :  140.00 cm
 
             Water storage
-Final   :        57.02 cm
-Initial :        59.58 cm
+Final   :        56.35 cm
+Initial :        60.08 cm
             =============
-Change           -2.56 cm
+Change           -3.73 cm
 
 
 Water balance components (cm)
@@ -41,21 +41,21 @@ Water balance components (cm)
 In                           Out
 =========================    ============================
 Rain + snow    :   120.72    Interception      :     0.00
-Runon          :     0.00    Runoff            :     4.29
-Irrigation     :    46.70    Transpiration     :    34.34
-Bottom flux    :   -76.82    Soil evaporation  :    54.53
+Runon          :     0.00    Runoff            :     6.06
+Irrigation     :    46.70    Transpiration     :    99.24
+Bottom flux    :   -45.15    Soil evaporation  :    20.70
                              Crack flux        :     0.00
 =========================    ============================
-Sum            :    90.60    Sum               :    93.16
+Sum            :   122.27    Sum               :   126.00
 
 Period             :  01-Jan-2014 until  31-Dec-2014
 Depth soil profile :  140.00 cm
 
             Water storage
-Final   :        59.40 cm
-Initial :        57.02 cm
+Final   :        52.48 cm
+Initial :        56.35 cm
             =============
-Change            2.39 cm
+Change           -3.87 cm
 
 
 Water balance components (cm)
@@ -63,21 +63,21 @@ Water balance components (cm)
 In                           Out
 =========================    ============================
 Rain + snow    :    87.62    Interception      :     0.00
-Runon          :     0.00    Runoff            :     1.65
-Irrigation     :     9.90    Transpiration     :     2.09
-Bottom flux    :   -41.80    Soil evaporation  :    49.60
+Runon          :     0.00    Runoff            :     1.39
+Irrigation     :     9.90    Transpiration     :    86.63
+Bottom flux    :    -1.67    Soil evaporation  :    11.70
                              Crack flux        :     0.00
 =========================    ============================
-Sum            :    55.72    Sum               :    53.34
+Sum            :    95.85    Sum               :    99.72
 
 Period             :  01-Jan-2015 until  31-Dec-2015
 Depth soil profile :  140.00 cm
 
             Water storage
-Final   :        55.95 cm
-Initial :        59.40 cm
+Final   :        49.98 cm
+Initial :        52.48 cm
             =============
-Change           -3.46 cm
+Change           -2.50 cm
 
 
 Water balance components (cm)
@@ -85,21 +85,21 @@ Water balance components (cm)
 In                           Out
 =========================    ============================
 Rain + snow    :   124.45    Interception      :     0.00
-Runon          :     0.00    Runoff            :     3.17
-Irrigation     :    16.50    Transpiration     :     0.07
-Bottom flux    :   -84.46    Soil evaporation  :    56.70
+Runon          :     0.00    Runoff            :     3.00
+Irrigation     :    16.50    Transpiration     :   103.97
+Bottom flux    :   -26.45    Soil evaporation  :    10.03
                              Crack flux        :     0.00
 =========================    ============================
-Sum            :    56.49    Sum               :    59.95
+Sum            :   114.50    Sum               :   117.00
 
 Period             :  01-Jan-2016 until  30-Jul-2016
 Depth soil profile :  140.00 cm
 
             Water storage
-Final   :        47.61 cm
-Initial :        55.95 cm
+Final   :        45.39 cm
+Initial :        49.98 cm
             =============
-Change           -8.33 cm
+Change           -4.59 cm
 
 
 Water balance components (cm)
@@ -107,9 +107,9 @@ Water balance components (cm)
 In                           Out
 =========================    ============================
 Rain + snow    :    80.91    Interception      :     0.00
-Runon          :     0.00    Runoff            :     1.61
-Irrigation     :     0.00    Transpiration     :     7.65
-Bottom flux    :   -56.88    Soil evaporation  :    23.10
+Runon          :     0.00    Runoff            :     2.09
+Irrigation     :     0.00    Transpiration     :    57.12
+Bottom flux    :   -24.99    Soil evaporation  :     1.31
                              Crack flux        :     0.00
 =========================    ============================
-Sum            :    24.03    Sum               :    32.36
+Sum            :    55.92    Sum               :    60.51

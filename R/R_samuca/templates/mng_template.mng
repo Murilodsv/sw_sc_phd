@@ -8,11 +8,11 @@
 !---------------------------!------------------------------!-------!
 ! Value                     ! Name                         ! Type  !
 !---------------------------!------------------------------!-------!
- <tillermet> ! tillermet            !  (I)  !
- <metpg> ! metpg                        !  (I)  !
- <swroottyp> ! swroottyp              !  (I)  !
- <idev> ! idev          !  (I)  !
- <swgc> ! swgc                 !  (I)  !
+ <tillermet> ! tillermet                     !  (I)  !
+ <metpg> ! metpg                         !  (I)  !
+ <swroottyp> ! swroottyp                     !  (I)  !
+ <idev> ! idev                          !  (I)  !
+ <swgc> ! swgc                          !  (I)  !
  <swcf> ! swcf                       !  (I)  !
  <swinter> ! swinter                         !  (I)  !
  <usetsoil> ! usetsoil                          !  (I)  !
@@ -34,6 +34,6 @@
  <dhrlai> ! dhrlai                       !  (R)  !
  <tbot_mean> ! tbot_mean                       !  (R)  !
  <tbot_ampli> ! tbot_ampli                       !  (R)  !
- <tbot_imref> ! tbot_imref                       !  (R)  !
+ <tbot_imref> ! tbot_imref                    !  (R)  !
  <tbot_ddamp> ! tbot_ddamp                       !  (R)  !
 !--------------------------!------------------------------!-------!

@@ -10,7 +10,7 @@
 *.sln.docstates
 
 # Model Outputs
-model/Output/*
+model/Output/
 R/R_samuca/performance/results/*
 */model/.Rhistory
 *.Rhistory

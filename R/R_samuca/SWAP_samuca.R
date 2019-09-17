@@ -43,8 +43,6 @@ wd.debug  = paste0(wd.repo,"/Debug")
 invisible(sapply(list.files(path = wd.lib,full.names = T),
                  function(x) source(x)))
 
-
-
 use.debug  = T
 samuca.exe = "swap_samuca_v1.exe"
 
@@ -97,11 +95,11 @@ setwd(wd.model)
 system(samuca.exe)
 
 #--- Output names
-plan.out.fn = paste0(wd.model,"/Plant_SWAP-SAMUCA_PIRA.out")
-atmo.out.fn = paste0(wd.model,"/result.wba")
-soil.out.fn = paste0(wd.model,"/result.vap")
-stre.out.fn = paste0(wd.model,"/result.str")
-incr.out.fn = paste0(wd.model,"/result.inc")
+plan.out.fn = paste0(wd.model,"/Plant_",SC.outfn,".out")
+atmo.out.fn = paste0(wd.model,"/",SC.outfn,".wba")
+soil.out.fn = paste0(wd.model,"/",SC.outfn,".vap")
+stre.out.fn = paste0(wd.model,"/",SC.outfn,".str")
+incr.out.fn = paste0(wd.model,"/",SC.outfn,".inc")
 
 #--- Read outputs
 plan.out = read.plan.SWAP.out(plan.out.fn)

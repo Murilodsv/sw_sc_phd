@@ -3,7 +3,7 @@ find,rep,justify,width,type,digits,nsmall
 <site.nm>,Piracicaba - SP,l,50,c,0,0
 <sim.det>,Automaticaly created by R-Script,l,50,c,0,0
 <cv.nm>,RB867515,l,20,c,0,0
-<tillermet>,1,r,25,i,0,1
+<tillermet>,2,r,25,i,0,1
 <metpg>,2,r,25,i,0,1
 <swroottyp>,1,r,25,i,0,1
 <idev>,1,r,25,i,0,1
@@ -11,7 +11,7 @@ find,rep,justify,width,type,digits,nsmall
 <swcf>,1,r,25,i,0,1
 <swinter>,1,r,25,i,0,1
 <usetsoil>,1,r,25,i,0,1
-<potential_growth>,1,r,25,i,0,1
+<potential_growth>,0,r,25,i,0,1
 <plantdepth>,20,r,25,r,7,1
 <rowsp>,140,r,25,r,7,1
 <co2>,380,r,25,r,7,1

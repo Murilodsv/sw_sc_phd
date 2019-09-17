@@ -7,9 +7,15 @@
       save      
       
       !--- Soil Temperature Coefficients
-      real*8 sinld,dso,dsinbe,dsinb,dayl,cosld,qo,srad,croph
-      real*8 hrnc,dhrlai,alb_surface,rh_p
-      real*8 tbot_mean,tbot_imref,tbot_ddamp,tbot_ampli
+      real*8    sinld,dso,dsinbe,dsinb,dayl,cosld,qo,srad,croph
+      real*8    hrnc,dhrlai,alb_surface,rh_p
+      real*8    tbot_mean,tbot_imref,tbot_ddamp,tbot_ampli
+      
+      !--- Management 
+      real      plantdepth, rowsp
+      real      co2
+      integer   tillermet, metpg      
+      logical   mulcheffect, usetsoil, potential_growth              
       
       !--- i/o arrays
       integer     n_inte_host                             ! Number of integer crop parameter to be read in Samuca files   called from ReadFile_samuca.f90

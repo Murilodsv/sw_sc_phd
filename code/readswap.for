@@ -289,7 +289,59 @@
      &            inte_host,          
      &            n_real_host,
      &            real_host)
-              samrd = .true.              
+              
+              !--- Pass to global variables
+              tillermet           = inte_host(1)
+              metpg               = inte_host(2)      
+              swroottyp           = inte_host(3)         ! Root water uptake type 1 = Feddes; 2 = Matric Flux 
+              idev 			    = inte_host(4)         ! Switch for length of growth period in case of simple crop: 1 = fixed; 2 = depends on temperature sum
+              swgc                = inte_host(5)         ! Switch for simple crop: 1 = leaf area index is input; 2 = soil cover fraction is input
+              swcf                = inte_host(6)         ! Switch for simple crop: 1 = crop factor is input; 2 = crop height is input
+              swinter             = inte_host(7)         ! Switch for interception method: 0 = no interception; 1 = agricultural crops; 2 = trees and forests
+      
+              !--- Use Soil Temperature?
+              if(inte_host(8) .eq. 1)then
+                  usetsoil = .true.
+              else
+                  usetsoil = .false.
+              endif
+      
+              !--- Potential Growth?
+              if(inte_host(9) .eq. 1)then
+                  potential_growth = .true.
+              else
+                  potential_growth = .false.
+              endif
+      
+              !--- Mulch effect turned off for this version
+              mulcheffect = .false.         
+      
+              !--- Get real parameters
+              plantdepth  = real_host(1)
+              rowsp       = real_host(2)
+              co2         = real_host(3)
+              alphacrit   = real_host(4)
+      
+              !--- Feddes h thresholds
+              hlim1  	    = real_host(5) 	    ! Pressure head above which root water uptake stops (L)
+              hlim2l 	    = real_host(6)      ! Pressure head below which optimum water uptake starts for sub layer (L)
+              hlim2u 	    = real_host(7) 	    ! Pressure head below which optimum water uptake starts for top layer (L)
+              hlim3h 	    = real_host(8)      ! Pressure head below which water uptake reduction starts at high Tpot (L)
+              hlim3l 	    = real_host(9)      ! Pressure head below which water uptake reduction starts at low Tpot (L)
+              hlim4  	    = real_host(10)     ! Wilting point, no root water uptake at lower soil water pressure heads (L)
+              adcrh	    = real_host(11)     ! Level of high atmospheric demand (L/T)
+              adcrl	    = real_host(12)     ! Level of low atmospheric demand (L/T)
+              
+              !--- Soil Temperature
+              alb_surface = real_host(13)
+              hrnc        = real_host(14)
+              dhrlai      = real_host(15)
+              tbot_mean   = real_host(16)
+              tbot_ampli  = real_host(17) 
+              tbot_imref  = real_host(18)
+              tbot_ddamp  = real_host(19)
+              
+              samrd = .true.
           endif          
       enddo      
       

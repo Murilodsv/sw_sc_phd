@@ -586,7 +586,7 @@
 **********************************************************************************
 * Part 2: Heat flow calculation method
 
-  SWCALT = <swhea>     ! Switch for method: 1 = analytical method, 2 = numerical method
+  SWCALT = <swcalt>     ! Switch for method: 1 = analytical method, 2 = numerical method
 **********************************************************************************
 
 **********************************************************************************
