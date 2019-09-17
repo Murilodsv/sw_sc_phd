@@ -112,6 +112,9 @@ SimControl.SWAP  = function(SC.template.fn,
     }
   }
   
+  #--- time this file was created
+  rep.temp = gsub("<time_now>",paste0(Sys.time()),rep.temp)
+  
   # write Simulation Control File -------------------------------------------
   write(rep.temp,file = paste0(SC.outpath,"\\",SC.outfn,".swp"))
   

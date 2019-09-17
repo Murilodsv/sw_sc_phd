@@ -2,9 +2,47 @@
 * File content:  irrigation data
 * File name:     SEQ_F1_S1.irg
 * Model version: Swap 3.2.36
-* Generated at:  13-Sep-2019 16:51:53
+* Generated at:  17-Sep-2019 13:01:38
 *
 *      Crop name        Date   Day   Day  Irrigation     Solute
 *                             Crop   Cum          cm     mg/cm3
 *<=============><==========><====><====><==========><=========>
        Crop name,       Date,  Day,  Day, Irrigation,    Solute
+Sugarcane_P     ,16-Oct-2012,   1,    63,       3.0,  0.100E+04
+Sugarcane_P     ,02-Nov-2012,  18,    80,       0.4,  0.100E+04
+Sugarcane_P     ,03-Nov-2012,  19,    81,       0.5,  0.100E+04
+Sugarcane_P     ,06-Nov-2012,  22,    84,       1.0,  0.100E+04
+Sugarcane_P     ,08-Nov-2012,  24,    86,       1.2,  0.100E+04
+Sugarcane_P     ,12-Dec-2012,  58,   120,       1.2,  0.100E+04
+Sugarcane_P     ,22-Dec-2012,  68,   130,       0.6,  0.100E+04
+Sugarcane_P     ,27-Dec-2012,  73,   135,       2.0,  0.100E+04
+Sugarcane_P     ,20-Feb-2013, 128,   190,       2.1,  0.100E+04
+Sugarcane_P     ,07-Mar-2013, 143,   205,       2.5,  0.100E+04
+Sugarcane_P     ,09-Mar-2013, 145,   207,       2.4,  0.100E+04
+Sugarcane_P     ,27-Apr-2013, 194,   256,       2.5,  0.100E+04
+Sugarcane_P     ,28-Apr-2013, 195,   257,       2.5,  0.100E+04
+Sugarcane_P     ,10-May-2013, 207,   269,       1.2,  0.100E+04
+Sugarcane_P     ,13-May-2013, 210,   272,       2.2,  0.100E+04
+Sugarcane_P     ,24-May-2013, 221,   283,       1.9,  0.100E+04
+Sugarcane_P     ,06-Jul-2013, 264,   326,       3.0,  0.100E+04
+Sugarcane_P     ,04-Aug-2013, 293,   355,       4.0,  0.100E+04
+Sugarcane_P     ,19-Aug-2013, 308,   370,       4.0,  0.100E+04
+Sugarcane_P     ,31-Aug-2013, 320,   382,       4.0,  0.100E+04
+Sugarcane_P     ,08-Sep-2013, 328,   390,       4.0,  0.100E+04
+Sugarcane_P     ,10-Oct-2013, 360,   422,       3.0,  0.100E+04
+Sugarcane_R     ,25-Nov-2013,  41,   468,       2.0,  0.100E+04
+Sugarcane_R     ,01-Dec-2013,  47,   474,       1.0,  0.100E+04
+Sugarcane_R     ,04-Dec-2013,  50,   477,       1.0,  0.100E+04
+Sugarcane_R     ,13-Dec-2013,  59,   486,       2.0,  0.100E+04
+Sugarcane_R     ,17-Dec-2013,  63,   490,       1.4,  0.100E+04
+Sugarcane_R     ,11-Feb-2014, 119,   546,       0.4,  0.100E+04
+Sugarcane_R     ,20-Feb-2014, 128,   555,       0.5,  0.100E+04
+Sugarcane_R     ,29-Mar-2014, 165,   592,       2.0,  0.100E+04
+Sugarcane_R     ,16-Jun-2014, 244,   671,       4.0,  0.100E+04
+Sugarcane_R     ,08-Oct-2014,  85,   785,       3.0,  0.100E+04
+Sugarcane_R     ,24-Feb-2015, 224,   924,       3.0,  0.100E+04
+Sugarcane_R     ,04-Mar-2015, 232,   932,       1.0,  0.100E+04
+Sugarcane_R     ,20-Apr-2015, 279,   979,       4.0,  0.100E+04
+Sugarcane_R     ,20-May-2015, 309,  1009,       4.0,  0.100E+04
+Sugarcane_R     ,06-Jul-2015,  28,  1056,       1.5,  0.100E+04
+Sugarcane_R     ,12-Aug-2015,  65,  1093,       3.0,  0.100E+04

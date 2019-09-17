@@ -88,8 +88,6 @@ SimMet.SWAP(SC.set.fn,
             SC.outfn)
 
 
-
-
 if(use.debug){
   #--- Update .exe
   file.copy(paste0(wd.debug,"/",samuca.exe),

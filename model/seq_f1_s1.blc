@@ -2,4 +2,154 @@
 * File content:  detailed overview of water balance components (cm)
 * File name:     SEQ_F1_S1.blc
 * Model version: Swap 3.2.36
-* Generated at:  13-Sep-2019 16:51:53
+* Generated at:  17-Sep-2019 13:01:38
+
+Period             :  15-Aug-2012 until  31-Dec-2012
+Depth soil profile :  140.00 cm
+=================================================+=================================================
+INPUT                                            | OUTPUT
+                   PLANT    SNOW    POND    SOIL |                   PLANT    SNOW    POND    SOIL
+=================================================+=================================================
+Initially Present           0.00    0.00   44.98 | Finally present            0.00    0.00   59.58
+Gross Rainfall     40.05                         |
+Nett Rainfall               0.00   40.05         | Nett Rainfall     40.05
+Gross Irrigation    9.90                         |
+Nett Irrigation                     9.90         | Nett Irrigation    9.90
+                                                 | Interception       0.00
+Snowfall                    0.00                 |
+Snowmelt                            0.00         | Snowmelt                   0.00
+                                                 | Sublimation                0.00
+                                                 | Plant Transpiration                        0.00
+                                                 | Soil Evaporation                  21.43
+Runon                               0.00         | Runoff                             0.28
+Inundation                          0.00         |
+Infiltr. Soil Surf.                        37.21 | Infiltr. Soil Surf.               37.21
+Exfiltr. Soil Surf.                 8.97         | Exfiltr. Soil Surf.                        8.97
+Upward seepage                              0.19 | Downward seepage                          13.83
+=================================================+=================================================
+Sum                49.95    0.00   58.92   82.38 | Sum               49.95    0.00   58.92   82.38
+=================================================+=================================================
+Storage Change              0.00    0.00   14.60
+Balance Deviation   0.00    0.00   -0.00   -0.00
+===================================================================================================
+
+
+Period             :  01-Jan-2013 until  31-Dec-2013
+Depth soil profile :  140.00 cm
+=================================================+=================================================
+INPUT                                            | OUTPUT
+                   PLANT    SNOW    POND    SOIL |                   PLANT    SNOW    POND    SOIL
+=================================================+=================================================
+Initially Present           0.00    0.00   59.58 | Finally present            0.00    0.00   57.02
+Gross Rainfall    120.72                         |
+Nett Rainfall               0.00  120.72         | Nett Rainfall    120.72
+Gross Irrigation   46.70                         |
+Nett Irrigation                    46.70         | Nett Irrigation   46.70
+                                                 | Interception       0.00
+Snowfall                    0.00                 |
+Snowmelt                            0.00         | Snowmelt                   0.00
+                                                 | Sublimation                0.00
+                                                 | Plant Transpiration                       34.34
+                                                 | Soil Evaporation                  54.53
+Runon                               0.00         | Runoff                             4.29
+Inundation                          0.00         |
+Infiltr. Soil Surf.                       136.94 | Infiltr. Soil Surf.              136.94
+Exfiltr. Soil Surf.                28.33         | Exfiltr. Soil Surf.                       28.33
+Upward seepage                              0.00 | Downward seepage                          76.82
+=================================================+=================================================
+Sum               167.42    0.00  195.75  196.51 | Sum              167.42    0.00  195.75  196.51
+=================================================+=================================================
+Storage Change              0.00    0.00   -2.56
+Balance Deviation   0.00    0.00    0.00    0.00
+===================================================================================================
+
+
+Period             :  01-Jan-2014 until  31-Dec-2014
+Depth soil profile :  140.00 cm
+=================================================+=================================================
+INPUT                                            | OUTPUT
+                   PLANT    SNOW    POND    SOIL |                   PLANT    SNOW    POND    SOIL
+=================================================+=================================================
+Initially Present           0.00    0.00   57.02 | Finally present            0.00    0.00   59.40
+Gross Rainfall     87.62                         |
+Nett Rainfall               0.00   87.62         | Nett Rainfall     87.62
+Gross Irrigation    9.90                         |
+Nett Irrigation                     9.90         | Nett Irrigation    9.90
+                                                 | Interception       0.00
+Snowfall                    0.00                 |
+Snowmelt                            0.00         | Snowmelt                   0.00
+                                                 | Sublimation                0.00
+                                                 | Plant Transpiration                        2.09
+                                                 | Soil Evaporation                  49.60
+Runon                               0.00         | Runoff                             1.65
+Inundation                          0.00         |
+Infiltr. Soil Surf.                        71.57 | Infiltr. Soil Surf.               71.57
+Exfiltr. Soil Surf.                25.30         | Exfiltr. Soil Surf.                       25.30
+Upward seepage                              0.00 | Downward seepage                          41.80
+=================================================+=================================================
+Sum                97.52    0.00  122.82  128.58 | Sum               97.52    0.00  122.82  128.58
+=================================================+=================================================
+Storage Change              0.00    0.00    2.39
+Balance Deviation   0.00    0.00   -0.00   -0.00
+===================================================================================================
+
+
+Period             :  01-Jan-2015 until  31-Dec-2015
+Depth soil profile :  140.00 cm
+=================================================+=================================================
+INPUT                                            | OUTPUT
+                   PLANT    SNOW    POND    SOIL |                   PLANT    SNOW    POND    SOIL
+=================================================+=================================================
+Initially Present           0.00    0.00   59.40 | Finally present            0.00    0.00   55.95
+Gross Rainfall    124.45                         |
+Nett Rainfall               0.00  124.45         | Nett Rainfall    124.45
+Gross Irrigation   16.50                         |
+Nett Irrigation                    16.50         | Nett Irrigation   16.50
+                                                 | Interception       0.00
+Snowfall                    0.00                 |
+Snowmelt                            0.00         | Snowmelt                   0.00
+                                                 | Sublimation                0.00
+                                                 | Plant Transpiration                        0.07
+                                                 | Soil Evaporation                  56.70
+Runon                               0.00         | Runoff                             3.17
+Inundation                          0.00         |
+Infiltr. Soil Surf.                       109.00 | Infiltr. Soil Surf.              109.00
+Exfiltr. Soil Surf.                27.92         | Exfiltr. Soil Surf.                       27.92
+Upward seepage                              0.00 | Downward seepage                          84.46
+=================================================+=================================================
+Sum               140.95    0.00  168.87  168.40 | Sum              140.95    0.00  168.87  168.40
+=================================================+=================================================
+Storage Change              0.00    0.00   -3.46
+Balance Deviation   0.00    0.00    0.00    0.00
+===================================================================================================
+
+
+Period             :  01-Jan-2016 until  30-Jul-2016
+Depth soil profile :  140.00 cm
+=================================================+=================================================
+INPUT                                            | OUTPUT
+                   PLANT    SNOW    POND    SOIL |                   PLANT    SNOW    POND    SOIL
+=================================================+=================================================
+Initially Present           0.00    0.00   55.95 | Finally present            0.00    0.00   47.61
+Gross Rainfall     80.91                         |
+Nett Rainfall               0.00   80.91         | Nett Rainfall     80.91
+Gross Irrigation    0.00                         |
+Nett Irrigation                     0.00         | Nett Irrigation    0.00
+                                                 | Interception       0.00
+Snowfall                    0.00                 |
+Snowmelt                            0.00         | Snowmelt                   0.00
+                                                 | Sublimation                0.00
+                                                 | Plant Transpiration                        7.65
+                                                 | Soil Evaporation                  23.10
+Runon                               0.00         | Runoff                             1.61
+Inundation                          0.00         |
+Infiltr. Soil Surf.                        67.57 | Infiltr. Soil Surf.               67.57
+Exfiltr. Soil Surf.                11.37         | Exfiltr. Soil Surf.                       11.37
+Upward seepage                              0.00 | Downward seepage                          56.88
+=================================================+=================================================
+Sum                80.91    0.00   92.28  123.51 | Sum               80.91    0.00   92.28  123.51
+=================================================+=================================================
+Storage Change              0.00    0.00   -8.33
+Balance Deviation   0.00    0.00    0.00   -0.00
+===================================================================================================
+
