@@ -21,12 +21,12 @@
                      140.0 ! rowsp                       !  (R)  !
                      380.0 ! co2                         !  (R)  !
                        1.0 ! alphacrit                        !  (R)  !
-                      -0.1 ! hlim1                        !  (R)  !
-                      -5.0 ! hlim2l                        !  (R)  !
-                      -5.0 ! hlim2u                        !  (R)  !
-                    -790.0 ! hlim3h                        !  (R)  !
-                   -1000.0 ! hlim3l                        !  (R)  !
-                  -15000.0 ! hlim4                        !  (R)  !
+                -0.3583762 ! hlim1                        !  (R)  !
+                 -3.455057 ! hlim2l                        !  (R)  !
+                   -3.6132 ! hlim2u                        !  (R)  !
+                 -788.7621 ! hlim3h                        !  (R)  !
+                 -1001.211 ! hlim3l                        !  (R)  !
+                 -13874.89 ! hlim4                        !  (R)  !
                        0.0 ! adcrh                       !  (R)  !
                        0.0 ! adcrl                       !  (R)  !
                       0.14 ! alb_surface                       !  (R)  !
