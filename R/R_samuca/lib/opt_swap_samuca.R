@@ -119,12 +119,12 @@ opt.swap.samuca = function(new.par){
     for(f in l.par.files){
       
       #--- open and replace new parameter values
-      rep.par = read.csv(f,as.is = T)
+      rep.par = read.csv(paste0(wd.repo,f),as.is = T)
       rep.par$rep[rep.par$find %in% p.df$find[p.df$file == f]] = 
         as.character(p.df$value[p.df$find %in% p.df$find[p.df$file == f]])
       
       #--- rewrite parameters file
-      write.csv(rep.par, file = f,row.names = F)
+      write.csv(rep.par, file = paste0(wd.repo,f),row.names = F)
     }
     
     #--- Run the model
