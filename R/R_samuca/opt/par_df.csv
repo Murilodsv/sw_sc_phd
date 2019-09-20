@@ -1,7 +1,14 @@
-find,ini_value,value,min,max,cond,file,opt
-<hlim1>,-0.1,-0.1,-50,5,<hlim1> >= <hlim2l>,/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,F
-<hlim2l>,-5,-5,-330,5,<hlim2l> >= <hlim2u>,/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,F
-<hlim2u>,-5,-5,-330,5,<hlim2u> >= <hlim3h>,/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,F
-<hlim3h>,-790,-790,-15000,-330,<hlim3h> >= <hlim3l>,/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,T
-<hlim3l>,-1000,-1000,-15000,-330,<hlim3l> >= <hlim4>,/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,T
-<hlim4>,-15000,-15000,-15000,-10000,NA,/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,F
+find,seq,ini_value,value,min,max,cond,file,opt
+<hlim1>,NA,-0.1,-0.1,-50,5,<hlim1> >= <hlim2l>,/R/R_samuca/sim_db/management/mana_control_seq_f1_s2.csv,F
+<hlim2l>,NA,-5,-5,-330,5,<hlim2l> >= <hlim2u>,/R/R_samuca/sim_db/management/mana_control_seq_f1_s2.csv,F
+<hlim2u>,NA,-5,-5,-330,5,<hlim2u> >= <hlim3h>,/R/R_samuca/sim_db/management/mana_control_seq_f1_s2.csv,F
+<hlim3h>,NA,-790,-790,-15000,-330,<hlim3h> >= <hlim3l>,/R/R_samuca/sim_db/management/mana_control_seq_f1_s2.csv,T
+<hlim3l>,NA,-1000,-1000,-15000,-330,NA,/R/R_samuca/sim_db/management/mana_control_seq_f1_s2.csv,T
+<hlim4>,NA,-15000,-15000,-15000,-10000,NA,/R/R_samuca/sim_db/management/mana_control_seq_f1_s2.csv,F
+<adcrh>,NA,0.6,0.6,0.2,1.1,<adcrh> >= <adcrl>,/R/R_samuca/sim_db/management/mana_control_seq_f1_s2.csv,T
+<adcrl>,NA,0.2,0.2,0,0.6,NA,/R/R_samuca/sim_db/management/mana_control_seq_f1_s2.csv,T
+<ksat>,1,40.8,40.8,1.02,99,NA,/R/R_samuca/sim_db/sim_control_seq_f1_s2_SWAP.csv,T
+<ksat>,2,24.24,24.24,1.02,99,NA,/R/R_samuca/sim_db/sim_control_seq_f1_s2_SWAP.csv,T
+<ksat>,3,11.76,11.76,1.02,99,NA,/R/R_samuca/sim_db/sim_control_seq_f1_s2_SWAP.csv,T
+<ksat>,4,5.04,5.04,1.02,99,NA,/R/R_samuca/sim_db/sim_control_seq_f1_s2_SWAP.csv,T
+<ksat>,5,5.04,5.04,1.02,99,NA,/R/R_samuca/sim_db/sim_control_seq_f1_s2_SWAP.csv,T

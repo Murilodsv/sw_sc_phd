@@ -1,0 +1,6 @@
+target_var_obs,target_var_obs_sub_name,target_var_obs_sub_value,target_df_sim,target_var_sim,target_var_sim_sub_name,target_var_sim_sub_value
+swface,NA,NA,plan,swface,NA,NA
+swfacp,NA,NA,plan,swfacp,NA,NA
+swc,sub_var,-10,soil,wcontent,depth,-11
+swc,sub_var,-30,soil,wcontent,depth,-30
+swc,sub_var,-60,soil,wcontent,depth,-60

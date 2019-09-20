@@ -1,0 +1,5 @@
+find,rep,justify,width,type,digits,nsmall
+<prj.nm>,SEQ_F1_S2,l,50,c,0,0
+<site.nm>,Piracicaba - SP,l,50,c,0,0
+<sim.det>,Automaticaly created by R-Script,l,50,c,0,0
+<lat>,-22.7,r,8,r,3,1

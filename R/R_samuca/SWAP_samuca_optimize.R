@@ -42,7 +42,7 @@ wd.debug  = paste0(wd.repo,"/Debug")
 #--- Load Source Files (~/bin) 
 invisible(sapply(list.files(path = wd.lib,full.names = T),
                  function(x) source(x)))
-use.debug  = T
+use.debug  = F
 samuca.exe = "swap_samuca_v1.exe"
 if(use.debug){
   #--- Update .exe
@@ -53,10 +53,9 @@ if(use.debug){
 #------------------------#
 #--- GLOBAL VARIABLES ---#
 #------------------------#
-sim.id          = "SEQ_F1_S1"
-target.sim.df   = "plan"
-target.var      = c("swface","swfacp")
-obs.data        = read.csv(paste0(wd.rsam,"/opt/target_data.csv")) 
+sim.id          = "SEQ_F1_S2"
+target.ctrl     = read.csv(paste0(wd.rsam,"/opt/target_control.csv"), as.is = T)
+obs.data        = read.csv(paste0(wd.rsam,"/opt/target_data.csv"), as.is = T) 
 p.df.opt        = read.csv(paste0(wd.rsam,"/opt/par_df.csv"), as.is = T)
 index.obj       = "ef"
 index.obj.cor   = 1
@@ -101,7 +100,7 @@ opt.surf = optim(ini.par.scaled,
                  opt.swap.samuca,
                  gr = NULL,
                  method = "SANN",
-                 control = list(maxit = 20000, temp = 1))
+                 control = list(maxit = 5000, temp = 1))
 
 #--- Improve optimization
 opt.res = optim(opt.surf$par,
@@ -118,6 +117,12 @@ opt.sim.res = opt.swap.samuca(opt.par)
 
 #--- Unscale best set of parameters
 opt.par = p.df$min + opt.par.scaled * (p.df$max - p.df$min)
+
+opt.par.df = data.frame(par.name = p.df$find,
+                        par.opt  = opt.par)
+
+write.csv(opt.par.df, file = paste0(wd.rsam,"/opt/opt_result_",sim.id,".csv"),
+          row.names = F)
 
 #--- Scatter plot
 axis.lim = c(min(opt.sim.res$sim.obs$obs,opt.sim.res$sim.obs$sim) * (1 - 0.1),
@@ -154,7 +159,7 @@ gg.opt.tc = ggplot(tc.df, aes(x = das, y = as.numeric(value), fill = var, colour
 get.obj.fun = F
 
 #--- running with different set of parameters to force water stress
-opt.sim.res = opt.swap.samuca(c(0,0))
+opt.sim.res = opt.swap.samuca(rep(0.5,length(p.df$find)))
 
 #--- Scatter plot
 axis.lim = c(min(opt.sim.res$sim.obs$obs,opt.sim.res$sim.obs$sim) * (1 - 0.1),
@@ -176,7 +181,10 @@ gg.opt.sct = ggplot(opt.sim.res$sim.obs, aes(x = obs, y = sim, fill = var)) +
 gg.opt.sct
 
 #--- time-course
-tc.df = melt(opt.sim.res$sim.obs, id.vars = c("year","doy","das","dap","var"))
+tc.df = melt(opt.sim.res$sim.obs, id.vars = c("year","doy","das","dap","var","sub_var"))
+
+#--- convert sub_var to unique var
+tc.df$var[!is.na(tc.df$sub_var)] = paste0(tc.df$var[!is.na(tc.df$sub_var)],"_",tc.df$sub_var[!is.na(tc.df$sub_var)])
 
 gg.opt.tc = ggplot(tc.df, aes(x = das, y = as.numeric(value), fill = var, colour = var)) + 
   geom_line(data = tc.df[tc.df$variable == "sim",]) + 
@@ -184,9 +192,9 @@ gg.opt.tc = ggplot(tc.df, aes(x = das, y = as.numeric(value), fill = var, colour
              shape = 21,
              colour = "black",
              size =2) + 
-  scale_y_continuous(limits=axis.lim) + 
   ylab("Variables") + xlab("Time-Course") + 
-  theme_bw() + facet_wrap(.~var, scales = "free")
+  theme_bw() + facet_wrap(var~., scales = "free",
+                          nrow = 3)
 
 gg.opt.tc
 
@@ -215,6 +223,3 @@ str.v = c("Tredwet","Treddry","Tredsol","Tredfrs")
 ggplot(str.red.df[str.red.df$variable %in% str.v,], aes(x = das, y = value, colour = variable)) + 
   geom_line() + 
   theme_bw() + facet_wrap(.~variable)
- 
-
-str.red.df[str.red.df$variable == "Treddry",][450:500,]

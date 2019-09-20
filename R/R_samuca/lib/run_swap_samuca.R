@@ -43,6 +43,8 @@ run.swap.samuca = function(SC.set.ctrl.fn,
                SC.outpath,
                SC.outfn)
   
+  message(paste0("File Samuca.par created for: ",sim.id))
+  
   #--- Create Meteorological files
   SC.outfn   = sim.id
   

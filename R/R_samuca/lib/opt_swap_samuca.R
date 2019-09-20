@@ -118,10 +118,39 @@ opt.swap.samuca = function(new.par){
     l.par.files = unique(p.df$file)
     for(f in l.par.files){
       
-      #--- open and replace new parameter values
-      rep.par = read.csv(paste0(wd.repo,f),as.is = T)
-      rep.par$rep[rep.par$find %in% p.df$find[p.df$file == f]] = 
-        as.character(p.df$value[p.df$find %in% p.df$find[p.df$file == f]])
+      l.seq   = p.df$seq[p.df$file == f]
+      has.seq = any(!is.na(l.seq))
+      
+      if(has.seq){
+        
+        #--- open and replace new parameter values
+        rep.par = read.csv(paste0(wd.repo,f),as.is = T)
+        
+        #--- Check if are only sequential parameters or not
+        only.seq = !any(is.na(l.seq))
+        
+        if(only.seq){
+          
+          #--- replace only for sequential parameters
+          for(s in l.seq){
+            rep.par$rep[rep.par$find %in% p.df$find[p.df$file == f] & 
+                          rep.par$seq == s] = 
+              as.character(p.df$value[p.df$find %in% p.df$find[p.df$file == f] & 
+                                        p.df$seq == s])
+          }
+          
+        }else{
+          
+          stop("Please provide sequential id in p.df file when the parameter file has one")
+          
+        }
+        
+      }else{
+        #--- open and replace new parameter values
+        rep.par = read.csv(paste0(wd.repo,f),as.is = T)
+        rep.par$rep[rep.par$find %in% p.df$find[p.df$file == f]] = 
+          as.character(p.df$value[p.df$find %in% p.df$find[p.df$file == f]])
+      }
       
       #--- rewrite parameters file
       write.csv(rep.par, file = paste0(wd.repo,f),row.names = F)
@@ -139,14 +168,36 @@ opt.swap.samuca = function(new.par){
                                     SC.outpath)
     
     #--- extract target results
-    for(v in target.var){
-      sim.results = sim.results.l[[target.sim.df]]
-      target.res.df.v = sim.results[,c("year","doy",v)]
-      colnames(target.res.df.v) = c("year","doy","sim")
-      target.res.df.v$sim.id = sim.id
-      target.res.df.v$var = v
+    for(v in 1:length(target.ctrl$target_var_obs)){
       
-      if(v == target.var[1]){
+      #--- get target variable info
+      target_var_obs            = target.ctrl$target_var_obs[v]
+      target_var_obs_sub_name   = target.ctrl$target_var_obs_sub_name[v]
+      target_var_obs_sub_value  = target.ctrl$target_var_obs_sub_value[v]
+      target_df_sim             = target.ctrl$target_df_sim[v]
+      target_var_sim            = target.ctrl$target_var_sim[v]
+      target_var_sim_sub_name   = target.ctrl$target_var_sim_sub_name[v]
+      target_var_sim_sub_value  = target.ctrl$target_var_sim_sub_value[v]
+      
+      #--- Retrieve simulation df
+      sim.results   = sim.results.l[[target_df_sim]]
+      
+      #--- check whether it has sub_types (e.g. layers, leaves, tillers ...)
+      if(!is.na(target_var_obs_sub_name)){
+        
+        #--- filter only for sub_types
+        sim.results = sim.results[sim.results[,target_var_sim_sub_name] == target_var_sim_sub_value,]
+      }
+      
+      target.res.df.v = sim.results[,c("year","doy",target_var_sim)]
+      colnames(target.res.df.v)     = c("year","doy","sim")
+      target.res.df.v$sim.id        = sim.id
+      target.res.df.v$var_orig      = target_var_sim
+      target.res.df.v$sub_var_orig  = target_var_sim_sub_value
+      target.res.df.v$var           = target_var_obs
+      target.res.df.v$sub_var       = target_var_obs_sub_value
+      
+      if(v == 1){
         target.res.df = target.res.df.v
       }else{
         target.res.df = rbind(target.res.df,target.res.df.v)
@@ -157,7 +208,7 @@ opt.swap.samuca = function(new.par){
     #--- merge with observed data
     comp.df = obs.data
     colnames(comp.df)[colnames(comp.df) == "value"] = "obs"
-    sim.obs = merge(comp.df,target.res.df, by = c("year","doy","var"))
+    sim.obs = merge(comp.df,target.res.df, by = c("year","doy","var","sub_var"))
     
     #--- Compute objective function
     perf = mperf(sim = sim.obs$sim,
@@ -203,6 +254,15 @@ opt.swap.samuca = function(new.par){
       p.names = gsub("<","",p.names)
       p.names = gsub(">","",p.names)
       colnames(surf.df) = c("it","objective","sim.id",p.names)
+      
+      l.seq.col = unique(p.names[!is.na(p.df$seq)])
+      
+      for(cn in l.seq.col){
+        colnames(surf.df)[colnames(surf.df) == cn] = paste0(colnames(surf.df)[colnames(surf.df) == cn],"_seq",
+                                                            seq(1,length(colnames(surf.df)[colnames(surf.df) == cn])))
+        
+      }
+      
       
       if(it == 1){
         write.csv(surf.df, file = surf.df.fn,
