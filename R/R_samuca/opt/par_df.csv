@@ -2,6 +2,6 @@ find,ini_value,value,min,max,cond,file,opt
 <hlim1>,-0.1,-0.1,-200,0,<hlim1> >= <hlim2l>,D:/Murilo/sw_sc/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,F
 <hlim2l>,-5,-5,-330,0,<hlim2l> >= <hlim2u>,D:/Murilo/sw_sc/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,F
 <hlim2u>,-5,-5,-330,0,<hlim2u> >= <hlim3h>,D:/Murilo/sw_sc/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,F
-<hlim3h>,-790,-790,-15000,-330,<hlim3h> >= <hlim3l>,D:/Murilo/sw_sc/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,T
-<hlim3l>,-1000,-1000,-15000,-330,<hlim3l> >= <hlim4>,D:/Murilo/sw_sc/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,T
-<hlim4>,-15000,-15000,-17000,-8000,NA,D:/Murilo/sw_sc/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,F
+<hlim3h>,-790,-790,-10000000,-330,<hlim3h> >= <hlim3l>,D:/Murilo/sw_sc/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,T
+<hlim3l>,-1000,-1000,-10000000,-330,<hlim3l> >= <hlim4>,D:/Murilo/sw_sc/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,T
+<hlim4>,-15000,-15000,-20000000,-8000,NA,D:/Murilo/sw_sc/R/R_samuca/sim_db/management/mana_control_seq_f1_s1.csv,F

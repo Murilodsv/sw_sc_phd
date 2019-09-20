@@ -1,7 +1,7 @@
 ***********************************************************************************
 * Filename: Swap.swp                                                   
 * Contents: Main input data
-* Generated at: 2019-09-20 12:50:22                                                                   
+* Generated at: 2019-09-20 15:26:35                                                                   
 ***********************************************************************************
 * Comment area:
 *
@@ -340,11 +340,11 @@
 * NCOMP    = number of compartments in this layer (= HSUBLAY/HCOMP), [1..MACP, I]
 
  ISOILLAY ISUBLAY  HSUBLAY    HCOMP    NCOMP
-       1   1     5.0     1.0   5
+       1   1    10.0     2.0   5
        2   1    10.0     2.0   5
-       3   2    30.0     3.0  10
-       4   3    45.0     3.0  15
-       5   1    30.0     3.0  10
+       3   2    20.0     4.0   5
+       4   3    40.0     8.0   5
+       5   1    40.0     8.0   5
 * end of table
 **********************************************************************************
 
@@ -449,10 +449,10 @@
 **********************************************************************************
 * Part 11 Numerical solution of Richards' equation
 
-  DTMIN         =       1e-06     ! Minimum timestep, [1.d-7..0.01 d, R]
+  DTMIN         =    0.000001     ! Minimum timestep, [1.d-7..0.01 d, R]
   DTMAX         =         0.2        ! Maximum timestep, [ 0.01..0.5 d, R]
   GWLCONV       =       300.0      ! Maximum dif. groundwater level between iterations, [1.d-5..1000 cm, R]
-  CritDevPondDt =       1e-04     ! Maximum water balance error of ponding layer, [1.0d-6..0.1 cm, R]
+  CritDevPondDt =      0.0001     ! Maximum water balance error of ponding layer, [1.0d-6..0.1 cm, R]
   MaxIt         =    30         ! Maximum number of iteration cycles, [5..100 -, I]
   MaxBackTr     =    3          ! Maximum number of back track cycles within an iteration cycle, [1..10 -,I]
 

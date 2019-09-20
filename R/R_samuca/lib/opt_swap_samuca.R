@@ -51,6 +51,9 @@ opt.swap.samuca = function(new.par){
   #--- run.swap.samuca()
   #-----------------------------------------------------------#
   
+  #--- prevent scientific notation
+  options(scipen=999)
+  
   #--- Read iteration control
   opt.df  = read.csv(opt.df.fn, as.is = T)
   it      = opt.df$it[length(opt.df$it)]

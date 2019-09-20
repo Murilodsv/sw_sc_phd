@@ -154,7 +154,7 @@ gg.opt.tc = ggplot(tc.df, aes(x = das, y = as.numeric(value), fill = var, colour
 get.obj.fun = F
 
 #--- running with different set of parameters to force water stress
-opt.sim.res = opt.swap.samuca(c(1,1))
+opt.sim.res = opt.swap.samuca(c(0,0))
 
 #--- Scatter plot
 axis.lim = c(min(opt.sim.res$sim.obs$obs,opt.sim.res$sim.obs$sim) * (1 - 0.1),
@@ -188,12 +188,15 @@ gg.opt.tc = ggplot(tc.df, aes(x = das, y = as.numeric(value), fill = var, colour
   ylab("Variables") + xlab("Time-Course") + 
   theme_bw() + facet_wrap(.~var, scales = "free")
 
+gg.opt.tc
+
 #--- pressure head
 h.df = opt.sim.res$sim.results$soil
-h.df = h.df[h.df$depth %in% c(-4.5,-14,-31.5,-62),]
+h.df = h.df[h.df$depth %in% c(-5,-15,-30,-60),]
 
 ggplot(h.df, aes(y = phead, x = das)) + 
-  geom_line() + facet_wrap(.~depth, scales = "free") + theme_bw()
+  geom_line() + facet_wrap(.~depth, scales = "free") + 
+  scale_y_continuous() + theme_bw()
 
 #--- transpiration
 et.df = opt.sim.res$sim.results$incr
@@ -202,3 +205,16 @@ et.df = melt(et.df[,c("das","Tact","Tpot")], id.vars = c("das"))
 ggplot(et.df, aes(x = das, y = value, colour = variable)) + 
   geom_line() + 
   theme_bw()
+
+#--- Stress
+str.red.df = opt.sim.res$sim.results$stre
+str.red.df = melt(str.red.df, id.vars = c("date","year","doy","das"))
+
+str.v = c("Tredwet","Treddry","Tredsol","Tredfrs")
+
+ggplot(str.red.df[str.red.df$variable %in% str.v,], aes(x = das, y = value, colour = variable)) + 
+  geom_line() + 
+  theme_bw() + facet_wrap(.~variable)
+ 
+
+str.red.df[str.red.df$variable == "Treddry",][450:500,]
