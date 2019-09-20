@@ -128,6 +128,7 @@ opt.swap.samuca = function(new.par){
     sim.results.l = run.swap.samuca(SC.set.ctrl.fn,
                                     SC.set.irri.fn,
                                     SC.set.mana.fn,
+                                    SC.set.crop.fn,
                                     SC.set.mete.fn,
                                     met.dt.fn,
                                     samuca.exe,

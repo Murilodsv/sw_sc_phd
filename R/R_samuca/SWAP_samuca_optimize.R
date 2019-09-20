@@ -70,6 +70,7 @@ log.file        = paste0(wd.rsam,"/log_",sim.id,".txt")
 SC.outpath      = wd.model
 SC.set.ctrl.fn  = paste0(wd.rsam,"/sim_db/sim_control_",sim.id,"_SWAP.csv")
 SC.set.mana.fn  = paste0(wd.rsam,"/sim_db/management/mana_control_",sim.id,".csv")
+SC.set.crop.fn  = paste0(wd.rsam,"/sim_db/crop/crop_control_",sim.id,".csv")
 SC.set.mete.fn  = paste0(wd.rsam,"/sim_db/weather/met_control_",sim.id,".csv")
 SC.set.irri.fn  = paste0(wd.rsam,"/sim_db/management/irri_control_",sim.id,".csv")
 met.dt.fn       = paste0(wd.rsam,"/sim_db/weather/met_data_f1.csv")

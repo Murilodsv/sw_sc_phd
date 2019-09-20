@@ -4,6 +4,7 @@
 run.swap.samuca = function(SC.set.ctrl.fn,
                            SC.set.irri.fn,
                            SC.set.mana.fn,
+                           SC.set.crop.fn,
                            SC.set.mete.fn,
                            met.dt.fn,
                            samuca.exe,
@@ -32,6 +33,15 @@ run.swap.samuca = function(SC.set.ctrl.fn,
           SC.outfn)
   
   message(paste0("File Samuca.mng created for: ",sim.id))
+  
+  #--- Create Crop Parameters file
+  SC.template.fn = paste0(wd.rsam,"/templates/crp_template.par")
+  SC.outfn       = "Samuca"
+  
+  SimCrop.swap(SC.template.fn,
+               SC.set.crop.fn,
+               SC.outpath,
+               SC.outfn)
   
   #--- Create Meteorological files
   SC.outfn   = sim.id

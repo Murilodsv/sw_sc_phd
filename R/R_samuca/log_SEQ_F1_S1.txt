@@ -54877,3 +54877,374 @@ find value min max cond
 <hlim3h> -11625.164259896 -15000 -330 <hlim3h> >= <hlim3l>
 <hlim3l> -9063.53400767562 -15000 -330 <hlim3l> >= <hlim4>
  
+Log Message at 2019-09-20 10:08:52
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> 631 -15000 -330
+ 
+Log Message at 2019-09-20 10:08:52
+One or more parameters value(s) do not match requirements provided in 'cond':
+ 
+find value min max cond
+<hlim3h> -790 -15000 -330 <hlim3h> >= <hlim3l>
+<hlim3l> 421 -15000 -330 <hlim3l> >= <hlim4>
+ 
+Log Message at 2019-09-20 10:08:52
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3l> 421 -15000 -330
+ 
+Log Message at 2019-09-20 10:08:52
+One or more parameters value(s) do not match requirements provided in 'cond':
+ 
+find value min max cond
+<hlim3h> -2211 -15000 -330 <hlim3h> >= <hlim3l>
+<hlim3l> 421 -15000 -330 <hlim3l> >= <hlim4>
+ 
+Log Message at 2019-09-20 10:08:52
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3l> 421 -15000 -330
+ 
+Log Message at 2019-09-20 10:08:52
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -79.4999999999982 -15000 -330
+ 
+Log Message at 2019-09-20 10:08:52
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -79.4999999999982 -15000 -330
+ 
+Log Message at 2019-09-20 10:08:52
+One or more parameters value(s) do not match requirements provided in 'cond':
+ 
+find value min max cond
+<hlim3h> -790 -15000 -330 <hlim3h> >= <hlim3l>
+<hlim3l> -289.499999999998 -15000 -330 <hlim3l> >= <hlim4>
+ 
+Log Message at 2019-09-20 10:08:52
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3l> -289.499999999998 -15000 -330
+ 
+Log Message at 2019-09-20 10:08:52
+One or more parameters value(s) do not match requirements provided in 'cond':
+ 
+find value min max cond
+<hlim3h> -1500.5 -15000 -330 <hlim3h> >= <hlim3l>
+<hlim3l> -289.500000000002 -15000 -330 <hlim3l> >= <hlim4>
+ 
+Log Message at 2019-09-20 10:08:52
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3l> -289.500000000002 -15000 -330
+ 
+Log Message at 2019-09-20 10:09:24
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -79.4999999999982 -15000 -330
+ 
+Log Message at 2019-09-20 10:09:56
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -257.125000000002 -15000 -330
+ 
+Log Message at 2019-09-20 10:10:18
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -257.125000000002 -15000 -330
+ 
+Log Message at 2019-09-20 10:10:40
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -257.125000000002 -15000 -330
+ 
+Log Message at 2019-09-20 10:10:51
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -301.531249999998 -15000 -330
+ 
+Log Message at 2019-09-20 10:11:23
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -323.734374999996 -15000 -330
+ 
+Log Message at 2019-09-20 10:17:19
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -7687410 -15000 -330
+<hlim3l> -17619000 -15000 -330
+ 
+Log Message at 2019-09-20 10:19:29
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> 814.26 -15000 -330
+ 
+Log Message at 2019-09-20 10:19:29
+One or more parameters value(s) do not match requirements provided in 'cond':
+ 
+find value min max cond
+<hlim3h> -623.4 -15000 -330 <hlim3h> >= <hlim3l>
+<hlim3l> 80.7600000000002 -15000 -330 <hlim3l> >= <hlim4>
+ 
+Log Message at 2019-09-20 10:19:29
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3l> 80.7600000000002 -15000 -330
+ 
+Log Message at 2019-09-20 10:19:29
+One or more parameters value(s) do not match requirements provided in 'cond':
+ 
+find value min max cond
+<hlim3h> -2061.06 -15000 -330 <hlim3h> >= <hlim3l>
+<hlim3l> 80.7600000000002 -15000 -330 <hlim3l> >= <hlim4>
+ 
+Log Message at 2019-09-20 10:19:29
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3l> 80.7600000000002 -15000 -330
+ 
+Log Message at 2019-09-20 10:19:29
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> 95.4299999999985 -15000 -330
+ 
+Log Message at 2019-09-20 10:19:29
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> 95.4299999999985 -15000 -330
+ 
+Log Message at 2019-09-20 10:19:39
+One or more parameters value(s) do not match requirements provided in 'cond':
+ 
+find value min max cond
+<hlim3h> -1342.23 -15000 -330 <hlim3h> >= <hlim3l>
+<hlim3l> -638.069999999998 -15000 -330 <hlim3l> >= <hlim4>
+ 
+Log Message at 2019-09-20 10:19:39
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -263.985000000001 -15000 -330
+ 
+Log Message at 2019-09-20 10:19:40
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -263.985000000001 -15000 -330
+ 
+Log Message at 2019-09-20 10:20:23
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -263.985000000001 -15000 -330
+ 
+Log Message at 2019-09-20 10:20:46
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -263.985000000004 -15000 -330
+ 
+Log Message at 2019-09-20 10:21:30
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -263.985000000004 -15000 -330
+ 
+Log Message at 2019-09-20 10:21:52
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -263.985000000004 -15000 -330
+ 
+Log Message at 2019-09-20 10:22:24
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -308.911875000003 -15000 -330
+ 
+Log Message at 2019-09-20 10:23:10
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -308.911875000003 -15000 -330
+ 
+Log Message at 2019-09-20 10:23:31
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -308.911875000003 -15000 -330
+ 
+Log Message at 2019-09-20 10:24:04
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -320.143593750005 -15000 -330
+ 
+Log Message at 2019-09-20 10:24:36
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -325.759453125003 -15000 -330
+ 
+Log Message at 2019-09-20 10:24:47
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -328.567382812502 -15000 -330
+ 
+Log Message at 2019-09-20 10:25:21
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -329.971347656254 -15000 -330
+ 
+Log Message at 2019-09-20 10:40:29
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> 814.26 -15000 -330
+ 
+Log Message at 2019-09-20 10:40:30
+One or more parameters value(s) do not match requirements provided in 'cond':
+ 
+find value min max cond
+<hlim3h> -623.4 -15000 -330 <hlim3h> >= <hlim3l>
+<hlim3l> 80.7600000000002 -15000 -330 <hlim3l> >= <hlim4>
+ 
+Log Message at 2019-09-20 10:40:30
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3l> 80.7600000000002 -15000 -330
+ 
+Log Message at 2019-09-20 10:40:30
+One or more parameters value(s) do not match requirements provided in 'cond':
+ 
+find value min max cond
+<hlim3h> -2061.06 -15000 -330 <hlim3h> >= <hlim3l>
+<hlim3l> 80.7600000000002 -15000 -330 <hlim3l> >= <hlim4>
+ 
+Log Message at 2019-09-20 10:40:30
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3l> 80.7600000000002 -15000 -330
+ 
+Log Message at 2019-09-20 10:40:30
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> 95.4299999999985 -15000 -330
+ 
+Log Message at 2019-09-20 10:40:30
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> 95.4299999999985 -15000 -330
+ 
+Log Message at 2019-09-20 10:40:40
+One or more parameters value(s) do not match requirements provided in 'cond':
+ 
+find value min max cond
+<hlim3h> -1342.23 -15000 -330 <hlim3h> >= <hlim3l>
+<hlim3l> -638.069999999998 -15000 -330 <hlim3l> >= <hlim4>
+ 
+Log Message at 2019-09-20 10:40:40
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -263.985000000001 -15000 -330
+ 
+Log Message at 2019-09-20 10:40:40
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -263.985000000001 -15000 -330
+ 
+Log Message at 2019-09-20 10:41:23
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -263.985000000001 -15000 -330
+ 
+Log Message at 2019-09-20 10:41:45
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -263.985000000004 -15000 -330
+ 
+Log Message at 2019-09-20 10:42:28
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -263.985000000004 -15000 -330
+ 
+Log Message at 2019-09-20 10:42:50
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -263.985000000004 -15000 -330
+ 
+Log Message at 2019-09-20 10:43:23
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -308.911875000003 -15000 -330
+ 
+Log Message at 2019-09-20 10:44:07
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -308.911875000003 -15000 -330
+ 
+Log Message at 2019-09-20 10:44:29
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -308.911875000003 -15000 -330
+ 
+Log Message at 2019-09-20 10:45:01
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -320.143593750005 -15000 -330
+ 
+Log Message at 2019-09-20 10:45:33
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -325.759453125003 -15000 -330
+ 
+Log Message at 2019-09-20 10:45:45
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -328.567382812502 -15000 -330
+ 
+Log Message at 2019-09-20 10:46:17
+One or more parameters value(s) are out of max-min bounds:
+ 
+find value min max
+<hlim3h> -329.971347656254 -15000 -330
+ 

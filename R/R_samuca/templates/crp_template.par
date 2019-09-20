@@ -1,0 +1,126 @@
+! Crop Parameters for Sugarcane (SAMUCA)
+
+! Project: <prj.nm>
+! Site:    <site.nm>
+! Sim.Det: <sim.det>
+! Variety: <cv.nm>
+
+!---------------------------!------------------------------!-------!
+! Value                     ! Name                         ! Type  !
+!---------------------------!------------------------------!-------!
+ <nsenesleaf_effect> ! nsenesleaf_effect            !  (I)  !
+ <maxgl> ! maxgl                        !  (I)  !
+ <n_lf_max_ini_la> ! n_lf_max_ini_la              !  (I)  !
+ <n_lf_when_stk_emerg> ! n_lf_when_stk_emerg          !  (I)  !
+ <n_lf_it_form> ! n_lf_it_form                 !  (I)  !
+ <maxdgl> ! maxdgl                       !  (I)  !
+ <amax> ! amax                         !  (R)  !
+ <eff> ! eff                          !  (R)  !
+ <phtmax> ! phtmax                       !  (R)  !
+ <parmax> ! parmax                       !  (R)  !
+ <ccmp> ! ccmp                         !  (R)  !
+ <ccmax> ! ccmax                        !  (R)  !
+ <cceff> ! cceff                        !  (R)  !
+ <rue> ! rue                          !  (R)  !
+ <tb> ! tb                           !  (R)  !
+ <tb0pho> ! tb0pho                       !  (R)  !
+ <tb1pho> ! tb1pho                       !  (R)  !
+ <tb2pho> ! tb2pho                       !  (R)  !
+ <tbfpho> ! tbfpho                       !  (R)  !
+ <tbper> ! tbper                        !  (R)  !
+ <tbMax_per> ! tbMax_per                    !  (R)  !
+ <chustk> ! chustk                       !  (R)  !
+ <chupeak> ! chupeak                      !  (R)  !
+ <chudec> ! chudec                       !  (R)  !
+ <chumat> ! chumat                       !  (R)  !
+ <popmat> ! popmat                       !  (R)  !
+ <poppeak> ! poppeak                      !  (R)  !
+ <ltthreshold> ! ltthreshold                  !  (R)  !
+ <tillochron> ! tillochron                   !  (R)  !
+ <fdeadlf> ! fdeadlf                      !  (R)  !
+ <phyllochron> ! phyllochron                  !  (R)  !
+ <sla> ! sla                          !  (R)  !
+ <rdm> ! rdm                          !  (R)  !
+ <srlMax> ! srlMax                       !  (R)  !
+ <srlMin> ! srlMin                       !  (R)  !
+ <rootdrate> ! rootdrate                    !  (R)  !
+ <max_rt_dw> ! max_rt_dw                    !  (R)  !
+ <end_tt_rt_growth> ! end_tt_rt_growth             !  (R)  !
+ <rootleftfrac> ! rootleftfrac                 !  (R)  !
+ <kdif> ! kdif                         !  (R)  !
+ <dpercoeff> ! dpercoeff                    !  (R)  !
+ <mla> ! mla                          !  (R)  !
+ <kc_min> ! kc_min                       !  (R)  !
+ <eoratio> ! eoratio                      !  (R)  !
+ <rwuep1> ! rwuep1                       !  (R)  !
+ <rwuep2> ! rwuep2                       !  (R)  !
+ <t_max_ws_pho> ! t_max_ws_pho                 !  (R)  !
+ <t_mid_ws_pho> ! t_mid_ws_pho                 !  (R)  !
+ <t_min_ws_pho> ! t_min_ws_pho                 !  (R)  !
+ <t_max_ws_exp> ! t_max_ws_exp                 !  (R)  !
+ <t_mid_ws_exp> ! t_mid_ws_exp                 !  (R)  !
+ <t_min_ws_exp> ! t_min_ws_exp                 !  (R)  !
+ <plastochron> ! plastochron                  !  (R)  !
+ <frac_suc_BG> ! frac_suc_BG                  !  (R)  !
+ <frac_hex_BG> ! frac_hex_BG                  !  (R)  !
+ <init_leaf_area> ! init_leaf_area               !  (R)  !
+ <max_ini_la> ! max_ini_la                   !  (R)  !
+ <cr_source_sink_ratio_ruse> ! cr_source_sink_ratio_ruse    !  (R)  !
+ <init_plantdepth_ratoon> ! init_plantdepth_ratoon       !  (R)  !
+ <maxlai_eo> ! maxlai_eo                    !  (R)  !
+ <gresp> ! gresp                        !  (R)  !
+ <kmr_leaf> ! kmr_leaf                     !  (R)  !
+ <kmr_stem> ! kmr_stem                     !  (R)  !
+ <kmr_root> ! kmr_root                     !  (R)  !
+ <kmr_stor> ! kmr_stor                     !  (R)  !
+ <q10_leaf> ! q10_leaf                     !  (R)  !
+ <q10_stem> ! q10_stem                     !  (R)  !
+ <q10_root> ! q10_root                     !  (R)  !
+ <q10_stor> ! q10_stor                     !  (R)  !
+ <tref_mr> ! tref_mr                      !  (R)  !
+ <tbm> ! tbm                          !  (R)  !
+ <threshews> ! threshews                    !  (R)  !
+ <dshootext_BG_rate> ! dshootext_BG_rate            !  (R)  !
+ <mid_tt_rt_growth> ! mid_tt_rt_growth             !  (R)  !
+ <it_struc_tb_ini> ! it_struc_tb_ini              !  (R)  !
+ <it_struc_to1> ! it_struc_to1                 !  (R)  !
+ <it_struc_to2> ! it_struc_to2                 !  (R)  !
+ <it_struc_tb_end> ! it_struc_tb_end              !  (R)  !
+ <max_it_dw> ! max_it_dw                    !  (R)  !
+ <mid_tt_it_growth> ! mid_tt_it_growth             !  (R)  !
+ <end_tt_it_growth> ! end_tt_it_growth             !  (R)  !
+ <mid_tt_lf_growth> ! mid_tt_lf_growth             !  (R)  !
+ <end_tt_lf_growth> ! end_tt_lf_growth             !  (R)  !
+ <it_struc_pfac_max> ! it_struc_pfac_max            !  (R)  !
+ <it_struc_pfac_min> ! it_struc_pfac_min            !  (R)  !
+ <it_struc_pfac_tb> ! it_struc_pfac_tb             !  (R)  !
+ <it_struc_pfac_tm> ! it_struc_pfac_tm             !  (R)  !
+ <it_struc_pfac_te> ! it_struc_pfac_te             !  (R)  !
+ <it_struc_pfac_delta> ! it_struc_pfac_delta          !  (R)  !
+ <it_struc_pfac_temp_max_red> ! it_struc_pfac_temp_max_red   !  (R)  !
+ <it_struc_pfac_wate_max_red> ! it_struc_pfac_wate_max_red   !  (R)  !
+ <max_it_dw_BG> ! max_it_dw_BG                 !  (R)  !
+ <suc_min> ! suc_min                      !  (R)  !
+ <max_per_it> ! max_per_it                   !  (R)  !
+ <tilleragefac_adjust> ! tilleragefac_adjust          !  (R)  !
+ <dswat_ddws> ! dswat_ddws                   !  (R)  !
+ <dswat_dsuc> ! dswat_dsuc                   !  (R)  !
+ <rootshape> ! rootshape                    !  (R)  !
+ <hex_min> ! hex_min                      !  (R)  !
+ <suc_acc_ini> ! suc_acc_ini                  !  (R)  !
+ <suc_frac_rate_ts> ! suc_frac_rate_ts             !  (R)  !
+ <swcon1> ! swcon1                       !  (R)  !
+ <swcon2> ! swcon2                       !  (R)  !
+ <swcon3> ! swcon3                       !  (R)  !
+ <rwumax> ! rwumax                       !  (R)  !
+ <pormin> ! pormin                       !  (R)  !
+ <tt_chumat_lt> ! tt_chumat_lt                 !  (R)  !
+ <res_used_emerg_fac> ! res_used_emerg_fac           !  (R)  !
+ <agefactor_fac_amax> ! agefactor_fac_amax           !  (R)  !
+ <agefactor_fac_rue> ! agefactor_fac_rue            !  (R)  !
+ <agefactor_fac_per> ! agefactor_fac_per            !  (R)  !
+ <c_scattering> ! c_scattering                 !  (R)  !
+ <k> ! k                            !  (R)  !
+ <root_front_size> ! root_front_size              !  (R)  !
+!--------------------------!------------------------------!-------!
+
