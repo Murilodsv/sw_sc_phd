@@ -2,7 +2,7 @@
 * File content:  soil heat conductivity and capacity
 * File name:     heatparam.csv
 * Model version: Swap 3.2.36
-* Generated at:  18-Sep-2019 17:14:32
+* Generated at:  20-Sep-2019 09:47:58
 layer, theta,heacap(J/cm3/K),heacnd(J/cm/K/d)
    1, 0.00100,   0.15E+01,   0.14E+04
    1, 0.01895,   0.16E+01,   0.14E+04

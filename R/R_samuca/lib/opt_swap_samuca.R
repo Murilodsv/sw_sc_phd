@@ -26,6 +26,7 @@ opt.swap.samuca = function(new.par){
   #--- SC.set.mete.fn   - SWAP-SAMUCA meteorological file
   #--- SC.set.irri.fn   - SWAP-SAMUCA irrigation file
   #--- met.dt.fn        - SWAP-SAMUCA meteorological data file
+  #--- index.obj.cor    - Correction factor to objective function
   #--- penalty.fac      - objective fun penalty when out of bounds
   #--- index.obj        - Index used as objective function (from mperf())
   #--- target.sim.df    - Name of list element where target sim results are
@@ -34,6 +35,7 @@ opt.swap.samuca = function(new.par){
   #--- p.df             - data.frame with parameters control
   #--- plot.perf        - flag to plot progress of objective
   #--- save.surf        - flag to save objective response surface
+  #--- get.obj.fun      - flag to return objective function or model results
   
   #--- Note: to initizalize save the iteration control file for it = 0
   #--- example:
@@ -61,7 +63,9 @@ opt.swap.samuca = function(new.par){
   #--------------------------------#
   #--- Update set of parameters ---#
   #--------------------------------#
-  p.df$value = new.par  
+  
+  #--- Unscaled parameters
+  p.df$value = p.df$min + new.par * (p.df$max - p.df$min)  
   
   if(ini.run){
     
@@ -82,24 +86,30 @@ opt.swap.samuca = function(new.par){
     #-----------------------------------------------#
     #--- Parameters are out bounds or conditions ---#
     #-----------------------------------------------#
-    
-    #--- compute penalty
-    if(exists("last.objective.fun")){
-      penalty = last.objective.fun * penalty.fac
+    if(penalize.obj){
+      #--- compute penalty
+      if(exists("last.objective.fun")){
+        penalty = last.objective.fun * penalty.fac
+      }else{
+        message("Warning: Error in parameter set at first step.")
+        message(paste0("Warning: Penalty of ",penalty.fac," was employed."))
+        penalty = penalty.fac
+      }
+      
+      #--- Penalize objective
+      objective.fun = penalty
     }else{
-      message("Warning: Error in parameter set at first step.")
-      message(paste0("Warning: Penalty of ",penalty.fac," was employed."))
-      penalty = penalty.fac
+      #--- return NA
+      objective.fun = NA
     }
-    
-    #--- Penalize objective
-    objective.fun = penalty
     
   }else{
     
     #-------------------------#
     #--- Parameters are OK ---#
     #-------------------------#
+    message("Iteration Parameters:")
+    print(p.df[,c("find","value")])
     
     #--- Update control files
     l.par.files = unique(p.df$file)
@@ -154,6 +164,10 @@ opt.swap.samuca = function(new.par){
     #--- extract objective index value
     objective.fun = perf[,index.obj]
     
+    #--- Correction factor
+    #--- In case of otmizing 0-1 indexes (e.g r2, NSE, d) set index.obj.cor = 1
+    objective.fun = index.obj.cor - objective.fun
+    
     #--- Update iteration control and flags
     it = it + 1
     if(ini.run){ini.run = F}
@@ -167,7 +181,8 @@ opt.swap.samuca = function(new.par){
     if(plot.perf){
       
       plot(ggplot(opt.df, aes(x = it, y = objective)) + 
-             geom_line(colour = "blue") +
+             geom_line(colour = "blue",
+                       size = 1.5) +
              ylab("Objective Fucntion") + 
              xlab("Iteration") +
              theme_bw())
@@ -179,7 +194,7 @@ opt.swap.samuca = function(new.par){
       surf.df = data.frame(it  = it,
                            objective = objective.fun,
                            sim.id = sim.id,
-                           t(new.par))
+                           t(p.df$value))
       p.names = p.df$find
       p.names = gsub("<","",p.names)
       p.names = gsub(">","",p.names)
@@ -201,5 +216,13 @@ opt.swap.samuca = function(new.par){
     }
   }
   
-  return(objective.fun)
+  if(get.obj.fun){
+    #--- return objective result
+    return(objective.fun)
+  }else{
+    #--- return simulation results for comparison
+    return(list(sim.results = sim.results.l,
+                sim.obs = sim.obs))
+  }
+  
 }

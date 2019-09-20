@@ -2,7 +2,7 @@
 * File content:  soil physical parameters
 * File name:     SoilPhysParam.csv
 * Model version: Swap 3.2.36
-* Generated at:  18-Sep-2019 17:14:32
+* Generated at:  20-Sep-2019 09:47:58
 layer,head(cm),theta(cm3.cm3),C(cm-1),RelSat(-),k(cm.d-1)
          1,  0.0000000E+00,  3.6000000E-01,  4.4721360E-11,  1.0000000E+00,  2.6240000E+01
          1, -1.0000000E-07,  3.6000000E-01,  7.0461122E-04,  1.0000000E+00,  2.6240000E+01

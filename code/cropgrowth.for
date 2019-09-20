@@ -2963,6 +2963,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       logical     flemerged
       logical     flinit_file
       logical     flclos_file
+      logical     flprompt_msg
       real        depth*8                                         ! Dynamic variable for cumdens
       real        rootdis(202)                                    ! Dynamic array for cumdens
       real        soma                                            ! Dynamic variable for cumdens
@@ -3041,6 +3042,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       writedetphoto       = .true.
       writedcrop          = .true.
       writehead           = .true.      
+      flprompt_msg        = .false.
       
       !-------------------------------!
       !--- Reading crop parameters ---!
@@ -3585,7 +3587,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       tmax    =   tmx
       tmin    =   tmn      
       tmed    =   (tmax + tmin) / 2.d0
-      eop     =   ptra      
+      eop     =   ptra * 10.d0      
       trwup   =   tra
       doy     =   daynr
       das     =   daycum
@@ -5107,23 +5109,27 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
      & supply_used_dw_it_AG .gt. 0.d0) dsug_corr_fac_AG   = 
      & supply_used_dw_it_AG / (dstr_it_AG + dsug_it_AG)
         
-        !--- Check carbon balance discrepancy
+        !--- Check carbon balance discrepancy        
         c_check_tol = 0.10
         if(abs(1.d0 - dsug_corr_fac_BG) .gt. c_check_tol)then
+            if(flprompt_msg)then
             write(warn,*) 'More than 10% Carbon Balance Discrepancy'//
      & ' on Internode Below Ground Sugar/Structural Partitioning'//
      & ' at DAS: ',das,
      & 'Discrepancy of ', abs(1.d0 - dsug_corr_fac_BG) * 100.d0,
      &  '% was corrected.'
+            endif
         endif
         
         c_check_tol = 0.10
         if(abs(1.d0 - dsug_corr_fac_AG) .gt. c_check_tol)then
+            if(flprompt_msg)then
             write(warn,*) 'More than 10% Carbon Balance Discrepancy'//
      & ' on Internode Above Ground Sugar/Structural Partitioning'//
      & ' at DAS: ',das,
      & 'Discrepancy of ', abs(1.d0 - dsug_corr_fac_AG) * 100.d0,
      &  '% was corrected.'
+            endif
         endif  
         
         !--- Correct to meet carbon balance
@@ -5413,20 +5419,24 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         !--- Check carbon balance discrepancy
         c_check_tol = 0.10d0
         if(abs(1.d0 - dsug_corr_fac_BG) .gt. c_check_tol)then
+            if(flprompt_msg)then
             write(warn,*) 'More than 10% Carbon Balance Discrepancy'//
      & ' on Internode Below Ground Sugar/Structural Partitioning'//
      & ' at DAS: ',das, 
      & 'Discrepancy of ', abs(1.d0 - dsug_corr_fac_BG) * 100.d0,
      &  '% was corrected.'
+            endif
         endif
         
         c_check_tol = 0.10d0
         if(abs(1.d0 - dsug_corr_fac_AG) .gt. c_check_tol)then
+            if(flprompt_msg)then
             write(warn,*) 'More than 10% Carbon Balance Discrepancy'//
      & ' on Internode Above Ground Sugar/Structural Partitioning'//
      & ' at DAS: ',das, 
      & 'Discrepancy of ', abs(1.d0 - dsug_corr_fac_AG) * 100.d0,
      &  '% was corrected.'
+            endif
         endif        
     
         suc_it_AG   =   suc_it_AG	*	dsug_corr_fac_AG
