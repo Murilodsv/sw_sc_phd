@@ -113,7 +113,7 @@ opt.par.scaled = opt.res$par
 
 #--- Run with best set of parameters
 get.obj.fun = F
-opt.sim.res = opt.swap.samuca(opt.par)
+opt.sim.res = opt.swap.samuca(opt.par.scaled)
 
 #--- Unscale best set of parameters
 opt.par = p.df$min + opt.par.scaled * (p.df$max - p.df$min)
