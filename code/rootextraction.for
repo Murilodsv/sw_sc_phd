@@ -152,15 +152,7 @@
 ! ----    reduction due to frost conditions
           if (swfrost.eq.1.and.tsoil(node).lt.0.0d0) then
             alpfrs = 0.0d0
-          endif
-
-          if(alpwet .lt. 1.d0)then
-              write(*,*) 'debug'
-          endif
-          
-          if(alpdry .lt. 1.d0)then
-              write(*,*) 'debug'
-          endif
+          endif          
           
 ! ----    overall reduction
           qpotrot = qrot(node)

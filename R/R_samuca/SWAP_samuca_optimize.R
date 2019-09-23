@@ -42,7 +42,7 @@ wd.debug  = paste0(wd.repo,"/Debug")
 #--- Load Source Files (~/bin) 
 invisible(sapply(list.files(path = wd.lib,full.names = T),
                  function(x) source(x)))
-use.debug  = F
+use.debug  = T
 samuca.exe = "swap_samuca_v1.exe"
 if(use.debug){
   #--- Update .exe
@@ -159,7 +159,7 @@ gg.opt.tc = ggplot(tc.df, aes(x = das, y = as.numeric(value), fill = var, colour
 get.obj.fun = F
 
 #--- running with different set of parameters to force water stress
-opt.sim.res = opt.swap.samuca(rep(0.5,length(p.df$find)))
+opt.sim.res = opt.swap.samuca(ini.par.scaled)
 
 #--- Scatter plot
 axis.lim = c(min(opt.sim.res$sim.obs$obs,opt.sim.res$sim.obs$sim) * (1 - 0.1),
@@ -223,3 +223,29 @@ str.v = c("Tredwet","Treddry","Tredsol","Tredfrs")
 ggplot(str.red.df[str.red.df$variable %in% str.v,], aes(x = das, y = value, colour = variable)) + 
   geom_line() + 
   theme_bw() + facet_wrap(.~variable)
+
+#--- Root extraction
+soil.res = opt.sim.res$sim.results$soil
+
+l.das = seq(120,330,30)
+
+ggplot(soil.res[soil.res$das %in% l.das,], aes(x = depth, y = rootext, fill = as.factor(das))) + 
+  geom_point(size = 3, shape = 21) + theme_bw()
+
+root.dens = opt.sim.res$sim.results$dsoi
+
+ggplot(root.dens[root.dens$das %in% l.das,], aes(x = dp, y = rld, fill = as.factor(das))) + 
+  geom_point(shape =21, size = 2) + 
+  theme_bw()
+
+#--- cumdens
+cumdens.df = read.csv("D:/Murilo/sw_sc/model/Root_cumdens_SEQ_F1_S2.out",
+                      as.is = T,
+                      header = F,
+                      col.names = c("seqnow","year","doy","das","dap","rd","fden","cumd"))
+
+ggplot(cumdens.df[cumdens.df$das %in% l.das,], aes(x = fden, y = cumd, colour = as.factor(das))) + 
+  geom_line() + 
+  theme_bw()
+
+

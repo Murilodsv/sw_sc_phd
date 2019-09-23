@@ -2949,13 +2949,16 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       
       integer     outp        
       integer     outd
+      integer     outds
       integer     outdph
       integer     outdpa
       integer     outpfac
-      integer     outstres                
+      integer     outstres   
+      integer     outcumd
       logical     writedetphoto 
       logical     writedcrop    
       logical     writehead     
+      logical     writecumdens
       real        dw_it_ag
       real        nstk
       real        diac
@@ -2964,6 +2967,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       logical     flinit_file
       logical     flclos_file
       logical     flprompt_msg
+      logical     detailedsoil
       real        depth*8                                         ! Dynamic variable for cumdens
       real        rootdis(202)                                    ! Dynamic array for cumdens
       real        soma                                            ! Dynamic variable for cumdens
@@ -3041,7 +3045,9 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
       writeactout         = .true.
       writedetphoto       = .true.
       writedcrop          = .true.
-      writehead           = .true.      
+      writehead           = .true.    
+      writecumdens        = .true.
+      detailedsoil        = .true.
       flprompt_msg        = .false.
       
       !-------------------------------!
@@ -3534,7 +3540,7 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         res_used_emerg      = 0.d0
         
         !--- Roots cumulative density (Required by SWAP)        
-        call root_cumdens(numlay,rld,upper,bottom,cumdens)        
+        call root_cumdens(numlay,rld,upper,bottom,cumdens)
         
         !--------------------!
         !--- Output files ---!
@@ -3542,11 +3548,13 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
 
         !--- File i/o units
         outp        =   901
-        outd        =   902
+        outd        =   902        
         outdph      =   903
         outdpa      =   904
         outpfac     =   905
         outstres    =   906
+        outds       =   907
+        outcumd     =   908
         
         if(flinit_file)then
         !--- open output files
@@ -3557,10 +3565,14 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
      &                    outdph,         
      &                    outdpa,         
      &                    outpfac,        
-     &                    outstres,       
+     &                    outstres,
+     &                    outds,
+     &                    outcumd,
      &                    writedetphoto,  
      &                    writedcrop,     
-     &                    writehead)
+     &                    writehead,
+     &                    detailedsoil,
+     &                    writecumdens)
         endif
             
 	return      
@@ -6085,6 +6097,69 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
         !--- Roots cumulative density (Required by SWAP)        
         call root_cumdens(numlay,rld,upper,bottom,cumdens)    
         
+        !--- write RLD and cumdens        
+      if(detailedsoil)then
+         do sl = 1, numlay
+             write(outds,51)
+     &           seqnow,                    ',',    
+     &           year,                      ',',    
+     &           doy,                       ',',    
+     &           das,                       ',',     
+     &           dap,                       ',',         
+     &           rd,                        ',',    
+     &           rld(sl),                   ',',    
+     &           bottom(sl),                ',',    
+     &           slthickness(sl),           ',',    
+     &           sl
+
+              
+51    format( i2,     a1,     ! seqnow
+     &        i4,     a1,     ! year
+     &        i3,     a1,     ! doy
+     &        i4,     a1,     ! das
+     &        i4,     a1,     ! dap              
+     &        f10.5,   a1,    ! rd
+     &        f10.5,   a1,    ! rld              
+     &        f10.5,   a1,    ! dp
+     &        f10.5,   a1,    ! slthickness
+     &        i3,     a1,     ! sl
+     &        a28,    a1,     ! description
+     &        a10,    a1,     ! units
+     &        f10.5)          ! Layer variable
+
+         enddo         
+      endif
+      
+      if(writecumdens)then
+          do sl = 2, 202, 2
+             write(outcumd,52)
+     &           seqnow,                    ',',    
+     &           year,                      ',',    
+     &           doy,                       ',',    
+     &           das,                       ',',     
+     &           dap,                       ',',         
+     &           rd,                        ',',
+     &           cumdens(sl - 1),           ',',
+     &           cumdens(sl)
+              
+52    format( i2,     a1,     ! seqnow
+     &        i4,     a1,     ! year
+     &        i3,     a1,     ! doy
+     &        i4,     a1,     ! das
+     &        i4,     a1,     ! dap              
+     &        f10.5,   a1,    ! rd
+     &        f10.5,   a1,    ! cumdens              
+     &        f10.5,   a1,    ! cumdens
+     &        f10.5,   a1,    ! slthickness
+     &        i3,     a1,     ! sl
+     &        a28,    a1,     ! description
+     &        a10,    a1,     ! units
+     &        f10.5)          ! Layer variable
+
+         enddo
+      endif
+      
+        
         if(flclos_file .and. flCropEnd)then
         !--- close output files
         call output_samuca(  3,           
@@ -6094,10 +6169,14 @@ d    &  komma,gwrt,komma,gwst,komma,drrt,komma,drlv,komma,drst
      &                    outdph,         
      &                    outdpa,         
      &                    outpfac,        
-     &                    outstres,       
+     &                    outstres, 
+     &                    outds,
+     &                    outcumd,
      &                    writedetphoto,  
      &                    writedcrop,     
-     &                    writehead)
+     &                    writehead,
+     &                    detailedsoil,
+     &                    writecumdens)
         endif
         
       return

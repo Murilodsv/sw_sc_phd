@@ -169,4 +169,22 @@ read.stre.SWAP.out = function(fn){
 }
 
 
-
+read.dsoi.SWAP.out = function(fn){
+  
+  #-------------------------
+  #--- Read Soil outputs ---
+  #-------------------------
+  # fn        Path\\filename (Plant.out)
+  #--------------------------
+  
+  if(missing(fn)){stop("No filename passed to function read.plant.out")}
+  
+  #--- Read as table
+  out.df = read.csv(file = fn,
+                    as.is = T)
+  
+  colnames(out.df) = c("seqnow","year","doy","das","dap","rd","rld","dp","slthickness","sl")
+  
+  return(out.df)
+  
+}

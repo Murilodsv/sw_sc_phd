@@ -1,14 +1,18 @@
 ﻿subroutine output_samuca(  task,           &
                     project,        &
                     outp,           &
-                    outd,           &
+                    outd,           &                    
                     outdph,         &
                     outdpa,         &
                     outpfac,        &
                     outstres,       &
+                    outds,          &
+                    outcumd,        &
                     writedetphoto,  &
                     writedcrop,     &
-                    writehead)
+                    writehead,      &
+                    detailedsoil,   &
+                    writecumdens)
     
     !use Variables
     implicit none
@@ -19,14 +23,18 @@
     
     integer     outp
     integer     outd
+    integer     outds
     integer     outdph    
     integer     outdpa
     integer     outpfac
     integer     outstres
+    integer     outcumd
     
     logical     writedetphoto
     logical     writedcrop
     logical     writehead
+    logical     detailedsoil
+    logical     writecumdens
     
     character project*80         ! Name of project
     
@@ -90,6 +98,18 @@
     !--- Stress factors (SAMUCA)
     open (outstres,     file='Stress_factors_'//trim(project)//'.OUT',status='REPLACE', action='WRITE')
     if(writehead)then
+        !--- to be developed...
+    endif
+    
+    !--- Detailed Soil
+    open (outds,     file='Detailed_Soil_'//trim(project)//'.OUT',status='REPLACE', action='WRITE')
+    if(writehead)then
+        !--- to be developed...
+    endif
+    
+    open (outcumd,   file='Root_cumdens_'//trim(project)//'.OUT',status='REPLACE', action='WRITE')
+     if(writehead)then
+        !--- to be developed...
     endif
     
         !--------------------!
@@ -125,8 +145,10 @@
     close(outstres)    
     
     !--- Detailed outputs    
-    if(writedetphoto) close(outdph)
-    if(writedcrop)    close(outdpa)    
+    if(writedetphoto)   close(outdph)
+    if(writedcrop)      close(outdpa)    
+    if(detailedsoil)    close(outds)
+    if(writecumdens)    close(outcumd)
     
     return
     

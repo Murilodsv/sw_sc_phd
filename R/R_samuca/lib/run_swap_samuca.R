@@ -76,6 +76,7 @@ run.swap.samuca = function(SC.set.ctrl.fn,
   soil.out.fn = paste0(wd.model,"/",SC.outfn,".vap")
   stre.out.fn = paste0(wd.model,"/",SC.outfn,".str")
   incr.out.fn = paste0(wd.model,"/",SC.outfn,".inc")
+  dsoi.out.fn = paste0(wd.model,"/Detailed_Soil_",SC.outfn,".out")
   
   #--- Read outputs
   plan.out = read.plan.SWAP.out(plan.out.fn)
@@ -83,6 +84,7 @@ run.swap.samuca = function(SC.set.ctrl.fn,
   soil.out = read.soil.SWAP.out(soil.out.fn)
   stre.out = read.stre.SWAP.out(stre.out.fn)
   incr.out = read.incr.SWAP.out(incr.out.fn)
+  dsoi.out = read.dsoi.SWAP.out(dsoi.out.fn)
   
   #--- Evapotranspiration
   incr.out$et.pot = incr.out$Tpot + incr.out$Epot
@@ -92,7 +94,8 @@ run.swap.samuca = function(SC.set.ctrl.fn,
               atmo = atmo.out,
               soil = soil.out,
               stre = stre.out,
-              incr = incr.out))
+              incr = incr.out,
+              dsoi = dsoi.out))
   
 }
 
