@@ -88,7 +88,7 @@ ggplot(grav.df.m, aes(x = theta, y = SF)) +
   scale_colour_manual(values= c("#3498DB","#CB4335")) + 
   scale_y_continuous(limits = c(0,1.1), breaks = seq(0,1,0.25)) + 
   scale_x_continuous(limits = c(0,60), expand = c(0.01,0.01)) + 
-  ylab("SF (0-1)") + xlab(bquote('SWC ('*cm^3~cm^-3*')')) + 
+  ylab("Scaled Frequency (0-1)") + xlab(bquote('Soil Water Content (%)')) + #*cm^3~cm^-3*')')) + 
   theme(panel.border = element_rect(colour = "black", fill=NA, size=0.5),
         panel.background = NULL,
         legend.position="none",
@@ -106,7 +106,7 @@ gg.fdr.calib
 
 ggsave(paste0(wd.repo,"/doc/excel/fdr_calib.png"), 
        plot = gg.fdr.calib, width = 5, height = 4,
-       dpi = 700)
+       dpi = 500)
 
 
 
