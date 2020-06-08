@@ -133,21 +133,29 @@ incr.df = melt(incr.out,
                measure.vars = incr.var)
 
 #--- soil
+soil.dp.vec = c(-10,-30,-60,-90,-120)
 
-soil.dp.vec = c(-10,-14.0,-31.5,-62,-90,-130)
+soil.df = 
+  get_data_dsoil(soil.out,
+                 d.nm       = 'depth',
+                 dsoil.vec  = soil.dp.vec,
+                 exact.match= F,
+                 max.dif    = 10)
 
-soil.df           = soil.out
+
 soil.df$value     = soil.df$wcontent
 soil.df$variable  = as.factor(soil.df$depth)
 
-soil.df = soil.df[soil.df$depth %in% soil.dp.vec,]
-
 #--- temperature
-temp.df           = soil.out
+temp.df = 
+  get_data_dsoil(soil.out,
+                 d.nm       = 'depth',
+                 dsoil.vec  = soil.dp.vec,
+                 exact.match= F,
+                 max.dif    = 10)
+
 temp.df$value     = temp.df$temp
 temp.df$variable  = as.factor(temp.df$depth)
-
-temp.df = temp.df[temp.df$depth %in% soil.dp.vec,]
 
 #--- ggplot function
 gg.fun = function(df){
