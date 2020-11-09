@@ -26,7 +26,7 @@ r.samuca.perf.fun.swap = function(analysis.id,
 #------------------------------------------------------------------
 
 #--- Running Parameters
-fl.plan.soil= T
+fl.perf.plan= T
 fl.perf.soil= T
 fl.perf.temp= T
 fl.perf.atmo= T
@@ -219,7 +219,7 @@ for(f in fields.seq){
     
     #--- Plant outputs performance
     has.plan.dt = F
-    if(fl.plan.soil){
+    if(fl.perf.plan){
       
       if(any(obs.data.plan$M_ID %in% m.id)){
         
@@ -266,18 +266,20 @@ for(f in fields.seq){
         obs.f = obs.data.soil[obs.data.soil$M_ID %in% m.id,]
         #soil.dp.ly = soil.ctl[soil.ctl$find == "<dp>",c("rep","layer")]
         
-        perf.soil.seq.df = perf.soil.seq.swap(obs.f,
-                                         sim.ctl,
-                                         soil.ctl,
-                                         sim.obs.idx,
-                                         soil.sim,
-                                         field.id = f,
-                                         seque.id = s,
-                                         meta.perf,
-                                         sim.id,
-                                         wd.core,
-                                         save.plots,
-                                         analysis.id)
+        perf.soil.seq.df = perf.soil.seq.swap(obs.f		=	obs.f,
+                                              sim.ctl		=	sim.ctl,
+                                              soil.ctl	=	soil.ctl,
+                                              sim.obs.idx	=	sim.obs.idx,
+                                              soil.sim	=	soil.sim,
+                                              field.id	=	f,
+                                              seque.id	=	s,
+                                              meta.perf	=	meta.perf,
+                                              sim.id		=	sim.id,
+                                              wd.core		=	wd.core,
+                                              save.plots	=	save.plots,
+                                              analysis.id	=	analysis.id)
+        
+        
         #--- Bind results in a single df
         if(init.soil){
           #--- Create performance df
@@ -433,7 +435,7 @@ for(s in 1:n.sites.nonseq){
   
   #--- Plant outputs performance
   has.plan.dt = F
-  if(fl.plan.soil){
+  if(fl.perf.plan){
     
     if(any(obs.data.plan$M_ID %in% m.id)){
       

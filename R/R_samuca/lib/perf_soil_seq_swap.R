@@ -103,6 +103,14 @@ perf.soil.seq.swap = function(obs.f,
     #--- observed depths
     soil.dp.vec = sim.obs.slayers.perf$depth * -1
     
+    #--- pass data to sim.df.all and create necessary columns
+    sim.df.all = soil.sim
+    sim.df.all$upper = sim.df.all$top
+    
+    #--- drop NAs
+    sim.df.all = sim.df.all[!is.na(sim.df.all$bottom),]
+    sim.df.all = sim.df.all[!is.na(sim.df.all$upper),]
+    
     match_soil_layer_by_mid = F
     if(match_soil_layer_by_mid){
       
@@ -125,7 +133,7 @@ perf.soil.seq.swap = function(obs.f,
       for(d in soil.dp.vec){
         
         #--- filter 
-        f = (d <= sim.df.all$bottom) & (d > sim.df.all$upper)
+        f = (d >= sim.df.all$bottom) & (d < sim.df.all$upper)
         f.df = sim.df.all[f,]
         
         #--- tag with the required depth
