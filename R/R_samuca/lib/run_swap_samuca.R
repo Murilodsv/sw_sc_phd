@@ -9,22 +9,24 @@ run.swap.samuca = function(SC.set.ctrl.fn,
                            met.dt.fn,
                            samuca.exe,
                            sim.id,
-                           SC.outpath){
+                           SC.outpath,
+                           wd.core,
+                           wd.model){
   
   #--- Create swap.swp
-  SC.template.fn = paste0(wd.rsam,"/templates/swp_template.swp")
+  SC.template.fn = paste0(wd.core,"/templates/swp_template.swp")
   SC.outfn       = "Swap"
   
-  SimControl.SWAP(SC.template.fn,
-                  SC.set.ctrl.fn,
-                  SC.outpath,
-                  SC.outfn,
-                  SC.set.irri.fn)
-  
+  SimControl.SWAP(SC.template.fn = SC.template.fn,
+                  SC.set.fn      = SC.set.ctrl.fn,
+                  SC.outpath     = SC.outpath,
+                  SC.outfn       = SC.outfn,
+                  SC.irrig.fn    = SC.set.irri.fn)
+
   message(paste0("File Swap.swp created for: ",sim.id))
   
   #--- Create Management
-  SC.template.fn = paste0(wd.rsam,"/templates/mng_template.mng")
+  SC.template.fn = paste0(wd.core,"/templates/mng_template.mng")
   SC.outfn       = "Samuca"
   
   SimMana(SC.template.fn,
@@ -35,7 +37,7 @@ run.swap.samuca = function(SC.set.ctrl.fn,
   message(paste0("File Samuca.mng created for: ",sim.id))
   
   #--- Create Crop Parameters file
-  SC.template.fn = paste0(wd.rsam,"/templates/crp_template.par")
+  SC.template.fn = paste0(wd.core,"/templates/crp_template.par")
   SC.outfn       = "Samuca"
   
   SimCrop.swap(SC.template.fn,
@@ -48,7 +50,7 @@ run.swap.samuca = function(SC.set.ctrl.fn,
   #--- Create Meteorological files
   SC.outfn   = sim.id
   
-  SimMet.SWAP(SC.set.mete.fn,
+  SimMet.SWAP(SC.set.fn = SC.set.mete.fn,
               met.dt.fn,
               SC.outpath,
               SC.outfn)
@@ -63,12 +65,22 @@ run.swap.samuca = function(SC.set.ctrl.fn,
   
   orig.wd = getwd()
   setwd(wd.model)
+  
+  #--- Run SWAP-SAMUCA
   system(samuca.exe)
+  
+  #--- Check if simulations were successfull
+  if(!file.exists('swap.ok')){
+    stop('Something went wrong in SWAP simulations.\n --- Simulation Aborted ---')
+  }
+  
   setwd(orig.wd)
   
   #--------------------#
   #--- Read outputs ---#
   #--------------------#
+  
+  
   
   #--- Output names
   plan.out.fn = paste0(wd.model,"/Plant_",SC.outfn,".out")
@@ -87,8 +99,8 @@ run.swap.samuca = function(SC.set.ctrl.fn,
   dsoi.out = read.dsoi.SWAP.out(dsoi.out.fn)
   
   #--- Evapotranspiration
-  incr.out$et.pot = incr.out$Tpot + incr.out$Epot
-  incr.out$et.act = incr.out$Tact + incr.out$Eact
+  incr.out$et.pot = (incr.out$Tpot + incr.out$Epot) * 10 # mm/day
+  incr.out$et.act = (incr.out$Tact + incr.out$Eact) * 10 # mm/day
   
   return(list(plan = plan.out,
               atmo = atmo.out,

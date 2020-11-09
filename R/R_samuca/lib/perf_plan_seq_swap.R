@@ -214,7 +214,7 @@ perf.plan.seq.swap = function(obs.f,
     }
     
     #--- create results_perf if not there yet
-    dir.create(paste0(wd.core,"\\results_perf"), showWarnings = F)
+    #dir.create(paste0(wd.core,"\\results_perf"), showWarnings = F)
     
     #--- Save ggplot to .png file?
     if(save.plots){

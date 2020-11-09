@@ -45,6 +45,9 @@ invisible(sapply(list.files(path = wd.lib,full.names = T),
 
 use.debug  = T
 samuca.exe = "swap_samuca_v1.exe"
+soil.dp.vec = c(-10,-30,-60,-90,-120)
+
+
 
 #-----------------------#
 #--- Run SWAP-SAMUCA ---#
@@ -56,6 +59,8 @@ SC.template.fn = paste0(wd.rsam,"/templates/swp_template.swp")
 SC.irrig.fn    = paste0(wd.rsam,"/sim_db/management/irri_control_seq_f1_s1.csv")
 SC.outpath     = wd.model
 SC.outfn       = "Swap"
+
+SC.set.fn.ctl = SC.set.fn
 
 SimControl.SWAP(SC.template.fn,
                 SC.set.fn,
@@ -69,6 +74,8 @@ SC.template.fn = paste0(wd.rsam,"/templates/mng_template.mng")
 SC.outpath     = wd.model
 SC.outfn       = "Samuca"
 
+SC.set.fn.mana = SC.set.fn
+
 SimMana(SC.template.fn,
         SC.set.fn,
         SC.outpath,
@@ -79,6 +86,8 @@ SC.set.fn = paste0(wd.rsam,"/sim_db/weather/met_control_seq_f1_s1.csv")
 met.dt.fn = paste0(wd.rsam,"/sim_db/weather/met_data_f1.csv")
 SC.outpath = wd.model
 SC.outfn   = "SEQ_F1_S1"
+
+SC.set.fn.met = SC.set.fn
 
 SimMet.SWAP(SC.set.fn,
             met.dt.fn,
@@ -112,9 +121,24 @@ incr.out = read.incr.SWAP.out(incr.out.fn)
 incr.out$et.pot = incr.out$Tpot + incr.out$Epot
 incr.out$et.act = incr.out$Tact + incr.out$Eact
 
-#--------------------#
-#--- Prepare data ---#
-#--------------------#
+
+SC.set.fn.crop = paste0(wd.rsam,"/sim_db/crop/crop_control_seq_f1_s1.csv")
+sim.id = 'SEQ_F1_S1'
+
+
+# run.swap.samuca(SC.set.ctrl.fn = SC.set.fn.ctl,
+#                 SC.set.irri.fn = SC.irrig.fn,
+#                 SC.set.mana.fn = SC.set.fn.mana,
+#                 SC.set.crop.fn = SC.set.fn.crop,
+#                 SC.set.mete.fn = SC.set.fn.met,
+#                 met.dt.fn = met.dt.fn,
+#                 samuca.exe,
+#                 sim.id,
+#                 SC.outpath)
+
+#---------------------------------#
+#--- Prepare data for the plot ---#
+#---------------------------------#
 
 #--- plant
 id.vec   = c("das","year","doy","sim.id")
@@ -133,8 +157,6 @@ incr.df = melt(incr.out,
                measure.vars = incr.var)
 
 #--- soil
-soil.dp.vec = c(-10,-30,-60,-90,-120)
-
 soil.df = 
   get_data_dsoil(soil.out,
                  d.nm       = 'depth',

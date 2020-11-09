@@ -1,9 +1,9 @@
 samuca_soil_code_var,obs_soil_code,depth,run_perf
 swc1,swc,10,T
-swc2,swc,20,F
+swc2,swc,20,T
 swc3,swc,30,T
-swc4,swc,40,F
+swc4,swc,40,T
 swc5,swc,60,T
-swc6,swc,70,F
-swc7,swc,90,F
-swc8,swc,100,F
+swc6,swc,70,T
+swc7,swc,90,T
+swc8,swc,100,T

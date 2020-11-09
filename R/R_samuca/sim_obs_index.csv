@@ -1,0 +1,32 @@
+class,subclass,description,label_var,units,obs_db_code,samuca_sim_Rcode
+plant,biomass,Aerial Dry Weight,Aerial Dry Mass,ton/ha,aerial_dw,
+plant,biomass,Aerial Fresh Weight,Aerial Frech Mass,ton/ha,aerial_fw,
+plant,biomass,Stalk Dry Weight,Stalk Dry Mass,ton/ha,stalk_dw,dw.st
+plant,biomass,Sucrose Dry Weight,Sucrose Dry Mass,ton/ha,suc_w,dw.su
+plant,biomass,Stalk Fresh Weight,Fresh Cane,ton/ha,stalk_fw,fw.st
+plant,biomass,Top Parts Dry Weight,Tops Dry Mass,ton/ha,tops_dw,
+plant,biomass,Top Parts Fresh Weight,Tops Fresh Mass,ton/ha,tops_fw,
+plant,biomass,Leaf Dry Weight,Leaf Dry Mass,ton/ha,leaf_dw,dw.lv
+plant,biomass,Leaf Fresh Weight,Leaf Fresh Mass,ton/ha,leaf_fw,
+plant,morphology,Number of Green Leaves per Stalk,n° Green Leaf,#/stalk,n_gleaf,
+plant,morphology,Number of Developed Green Leaves per Stalk,n° Dev. Green Leaf,#/stalk,ndev_gleaf,n.gl
+plant,morphology,Tillers Population,Stem Population,#/m2,till,till
+plant,morphology,Leaf Area Index of Developed Green Leaves,LAI,m2/m2,lai_dev_gleaf,lai
+plant,morphology,Leaf Area,LA,cm2/leaf,la_gleaf,
+plant,composition,Sucrose Content in Fresh Stalks,POL,%[stalk fresh],suc_stk_fresh,pol
+plant,morphology,Stalks Height,Stalk Height,m,stalk_h,p.ht
+plant,morphology,Stalk Diameter,Stalk Diameter,cm,stalk_d,
+plant,morphology,Green Leaf Length,Leaf Length,cm,gleaf_len,
+plant,morphology,Green Leaf Width,Leaf Width,cm,gleaf_wid,
+plant,morphology,Leaf Angle 1,Leaf Angle 1,degree,gleaf_ang1,
+plant,morphology,Leaf Angle 2,Leaf Angle 2,degree,gleaf_ang2,
+plant,morphology,Leaf Angle 3,Leaf Angle 3,degree,gleaf_ang3,
+plant,morphology,Tillers Population in a single row,Stem Population,#/row,till_row,
+plant,morphology,Leaf Area Index of Green Leaves,LAI,m2/m2,lai_gleaf,lai
+plant,composition,Sucrose Content in Stalks Substrates,POL,%[juice],suc_stk_substrates,
+soil_water,water,Soil Water Content,SWC,cm3/cm3,swc,swc
+soil_temperature,temperature,soil temperature,Soil Temperature,°C,stemp,ts
+atmosphere,water demand,evapotranspiration,Evapotranspiration,mm/day,et,et.act
+atmosphere,water demand,soil evaporation,Soil Surface Evaporation,mm/day,eva,eva
+atmosphere,water demand,total evapotranspiration,Total ET,mm,et_acc,et.act.acc
+atmosphere,water demand,potential evapotranspiration,Potential Evapotranspiration,mm/day,etp,pet

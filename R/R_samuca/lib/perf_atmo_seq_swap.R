@@ -1,10 +1,10 @@
 #--- R SAMUCA
-#--- MDSV - Jan/2019
+#--- MDSV - Feb/2019
 
-perf.plan.seq.swap = function(obs.f,
+perf.atmo.seq.swap = function(obs.f,
                          sim.ctl,
                          sim.obs.idx,
-                         plan.sim,
+                         atmo.sim,
                          field.id,
                          seque.id,
                          meta.perf,
@@ -15,7 +15,7 @@ perf.plan.seq.swap = function(obs.f,
   
   #---------------------------------------------------------------
   #----------------- Compute model performance -------------------
-  #--- Compute SAMUCA performance in simulate plant variables ----
+  #--- Compute SAMUCA performance in simulate atmosphere variables 
   #--- SEQUENTIAL MODE: Only works for sequential simulations, 
   #--- e.g. same treatment/field for more than one season
   #---------------------------------------------------------------
@@ -43,12 +43,12 @@ perf.plan.seq.swap = function(obs.f,
   #---------------------------------------------------------------
   
   #--- Check input data
-  fnm = "perf.plan.seq"
+  fnm = "perf.atmo.seq"
   
   miss.wrn(obs.f       ,fnm)
   miss.wrn(sim.ctl     ,fnm)
   miss.wrn(sim.obs.idx ,fnm)
-  miss.wrn(plan.sim    ,fnm)
+  miss.wrn(atmo.sim    ,fnm)
   miss.wrn(field.id    ,fnm)
   miss.wrn(seque.id    ,fnm)
   miss.wrn(meta.perf   ,fnm)
@@ -80,7 +80,7 @@ perf.plan.seq.swap = function(obs.f,
     s.id    = obs.s.df$samuca_sim_Rcode[o]
     
     #--- extract simulated data
-    sim.df  = plan.sim[,c("year","doy","das","dap",s.id)]
+    sim.df  = atmo.sim[,c("year","doy","das","dap",s.id)]
     colnames(sim.df) = c("year","doy","das","dap","val")
     
     #--- Indexers
@@ -97,7 +97,18 @@ perf.plan.seq.swap = function(obs.f,
     sim.df$M_ID    = add.id.seq(meta.perf[meta.perf$Field_ID == field.id & meta.perf$seq_ID == seque.id,],sim.df)
     
     #--- extract observed avg data
-    obs.df  = obs.f[obs.f$meas_ID == o.id & obs.f$type == "avg",c("year","doy","das","dap","value")]
+    if(!any(obs.f$meas_ID == o.id & obs.f$type == "avg")){
+      
+      #--- aggregate
+      obs.df.agg  = aggregate(value ~ M_ID + meas_ID + type + year + doy + dap + das,data = obs.f, mean) 
+      obs.df.agg$type = "avg"
+      
+      obs.df  = obs.df.agg[obs.df.agg$meas_ID == o.id & obs.df.agg$type == "avg",c("year","doy","das","dap","value")]  
+    }else{
+      obs.df  = obs.f[obs.f$meas_ID == o.id & obs.f$type == "avg",c("year","doy","das","dap","value")]  
+    }
+    
+    
     colnames(obs.df) = c("year","doy","das","dap","val")
     
     #--- Check for duplicated values involuntary provided
@@ -182,13 +193,13 @@ perf.plan.seq.swap = function(obs.f,
       
       #--- locate on ggplot
       xfac   = -0.10
-      xinner = 0.01
+      xinner = 0.09
       
       x.min = (xlim[2] - xlim[1]) * (1-xfac) - (xlim[2] - xlim[1]) * xinner
       x.max = x.min + (xlim[2] - xlim[1]) * (xfac)
       
       yfac   = 0.15
-      yinner = 0.85
+      yinner = -0.0
       
       y.min = (ylim[2] - ylim[1]) * (1-yfac) - (ylim[2] - ylim[1]) * yinner
       y.max = y.min + (ylim[2] - ylim[1]) * (yfac)
@@ -212,9 +223,6 @@ perf.plan.seq.swap = function(obs.f,
       
       dap.sim = dap.sim + annotation_custom(tab.perf,xmin=x.min, xmax=x.max, ymin=y.min, ymax=y.max)
     }
-    
-    #--- create results_perf if not there yet
-    dir.create(paste0(wd.core,"\\results_perf"), showWarnings = F)
     
     #--- Save ggplot to .png file?
     if(save.plots){

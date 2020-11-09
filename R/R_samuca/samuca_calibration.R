@@ -8,10 +8,10 @@ if(!exists("laptop")){
 
 if(laptop){
   
-  wd.core     = "C:\\Murilo\\samuca\\R\\R_samuca"
-  wd.model    = "C:\\Murilo\\samuca\\model"
-  wd.repo     = "C:/Murilo/samuca"
-  debug.path  = "C:\\Murilo\\samuca\\samuca_vs_proj\\Debug"
+  wd.core     = "C:/Murilo/swap_samuca/swap_samuca/sw_sc/R/R_samuca"
+  wd.model    = "C:/Murilo/swap_samuca/swap_samuca/sw_sc/model"
+  wd.repo     = "C:/Murilo/swap_samuca/swap_samuca/sw_sc"
+  debug.path  = "C:/Murilo/swap_samuca/swap_samuca/sw_sc/Debug"
   
 }else{
   
@@ -21,7 +21,7 @@ if(laptop){
   debug.path  = "D:\\Murilo\\samuca\\samuca\\samuca_vs_proj\\Debug"
 }
 
-wd.out = paste0(wd.core,"\\results_perf\\samuca_paper")
+wd.out = paste0(wd.core,"\\results_perf")
 
 #--- Load Source Files (~/bin) 
 invisible(sapply(list.files(path = paste0(wd.core,"\\lib\\"),full.names = T),
@@ -32,13 +32,13 @@ library(ggpubr)
 #--- Calibration ---#
 #-------------------#
 
-l.id        = c("pira_swb_standalone")
-m.fn        = c("meta_sugar_db_swb_standalone_calibration.csv")
+l.id        = c("pira_swap_samuca")
+m.fn        = c("meta_sugar_db_swap_samuca.csv")
 nl          = 4 
 n.run       = 1
 plot.screen = T
 use.debug   = T
-samuca.exe  = "samuca_vs_proj.exe"
+samuca.exe  = "swap_samuca_v1.exe"
 scatter.plot= T
 
 #--- ggplot options
@@ -68,14 +68,14 @@ for(r in 1:n.run){
   #--- SAMUCA performance ---#
   #--------------------------#
   
-  run.sam.perf = r.samuca.perf.fun(l.id[r],
-                                   wd.core,
-                                   wd.model,
-                                   use.debug,
-                                   debug.path,
-                                   samuca.exe,
-                                   m.fn[r],
-                                   T)
+  run.sam.perf = r.samuca.perf.fun.swap(analysis.id = l.id[r],
+                                   wd.core     = wd.core,
+                                   wd.model    = wd.model,
+                                   use.debug   = use.debug,
+                                   debug.path  = debug.path,
+                                   samuca.exe  = samuca.exe,
+                                   obs.meta.fn = m.fn[r],
+                                   standalone.swb = F)
   
   #--------------------#
   #--- Plot Results ---#
