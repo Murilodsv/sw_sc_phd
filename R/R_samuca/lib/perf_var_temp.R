@@ -154,6 +154,9 @@ perf.var.temp = function(perf.dt,
       x.lab = paste0("Observed ", sl, " (",sim.obs.idx$units[sim.obs.idx$obs_db_code == var],")")
       ll = ll # same as for all data to keep same range within axis
       
+      #--- check if mperf coul generate a/b coeffs
+      if(is.null(perf.var.res$a)){perf.var.res$a = NA; perf.var.res$b = NA}
+      
       Legend = perf.var[,var.plot]
       gg.perf = ggplot(perf.var,aes(x = obs, y = sim, shape = Legend)) + 
         scale_shape_manual(values=1:length(unique(Legend))) + 
