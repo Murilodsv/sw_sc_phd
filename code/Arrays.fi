@@ -1,9 +1,10 @@
 ! File VersionID:
-!   $Id: Arrays.fi 203 2011-10-20 12:00:27Z kroes006 $
+!   $Id: arrays.fi 277 2016-01-28 20:48:55Z kroes006 $
 ! ----------------------------------------------------------------------
       INTEGER    MACP, MADR, MAHO, MAIRG, MABBC, MAOWL, MAWLP, MAWLS
       INTEGER    MACROP, MAOUT, MASCALE, MADM, MAMP, MADAY, MAGRS, MRAIN
-      INTEGER    MASTEQ, MATAB, MAYRS, NMETFILE, MAMTE
+      INTEGER    MASTEQ, MATAB, MATABENTRIES, MAYRS, NMETFILE, MAMTE
+      INTEGER    MASME
 ! --- maximum number of years in the simulation period
       PARAMETER  (MAYRS = 200)
 ! --- maximum number of crops
@@ -17,9 +18,9 @@
 ! --- maximum number of growth stages
       PARAMETER  (MAGRS = 366)
 ! --- maximum number of horizons
-      PARAMETER  (MAHO = 200)
+      PARAMETER  (MAHO = 1000)
 ! --- maximum number of time-dependent values for bottom boundary conditions
-      PARAMETER  (MABBC = 20*366)
+      PARAMETER  (MABBC = MADAY)
 ! --- maximum number of scaling factors
       PARAMETER  (MASCALE = 100)
 ! --- maximum number of rainfall records in case of detailed rainfall
@@ -30,8 +31,12 @@
       PARAMETER  (MAOUT = 3000)
 ! --- maximum number of Open Water Levels (basic drainage routine)
       PARAMETER  (MAOWL = 10*366)
+! --- maximum number of soil management events
+      PARAMETER  (MASME = 1000)
 ! --- maximum number of data pairs in input tables for soil hydraulica relations
       PARAMETER  (MATAB = 1000)
+! --- maximum number of data pairs in input tables for soil hydraulica relations
+      PARAMETER  (MATABENTRIES = 10000)
 ! --- maximum number of water levels prim. system (ext. dr.)
       PARAMETER  (MAWLP = 10*366)
 ! --- maximum number of water levels sec. system (ext. dr.)

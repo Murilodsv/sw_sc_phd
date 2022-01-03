@@ -8,7 +8,7 @@
       LOGICAL TOSCR, TOLOG
       INTEGER UNLOG
       REAL CUR_V
-      PARAMETER (CUR_V=4.21)
+      PARAMETER (CUR_V=4.27)
 
 *     desired output
       CALL MESSINQ (TOSCR, TOLOG, UNLOG)

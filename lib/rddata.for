@@ -24,13 +24,14 @@
       INTEGER IUNREP,IULR,INR,ITR,IRREP,PNTRNX,ILR
       INTEGER IUNDAT,IULD,IND,ITD,IRDAT,PNTDNX,ILD
       INTEGER INSETS,ISLOC,IPP,IRCHK,IDUM,IPS
-      CHARACTER RFIL*80,DFIL*80,REPTMP*80,DATTMP*80,INQNAM*512
+      CHARACTER RFIL*512,DFIL*512,REPTMP*512,DATTMP*512,FNAMWEXT*512
+      CHARACTER INQNAM*512
       DIMENSION IRCHK(ILNREP)
       LOGICAL LOGR,REPL,LOGD,INIDAT
 
 *     filename list
       INTEGER INLIST,INFILS
-      CHARACTER*80 FILLIS,TMPLIS
+      CHARACTER*512 FILLIS,TMPLIS
       DIMENSION FILLIS(INFDEC),TMPLIS(INFDEC)
 
 *     rerun file buffer
@@ -40,8 +41,8 @@
       DOUBLE PRECISION RDBUF(0:ILBUF/IRL-1)
 
 *     other local variables
-      INTEGER JLD, JLQ
-      INTEGER I,J,IEL,N,ISX,ILX,IMES,IWN,IREC,ILTMP,IRECL
+      INTEGER JLD, JLQ, IDir1, IDir2, IDir3, IDir
+      INTEGER I,IP,J,IEL,N,ISX,ILX,IMES,IWN,IREC,ILTMP,IRECL
       INTEGER NDEC,NELMT,IXL,IT1,IT2,IWAR,IVT,IV1,IV2,IVL,IVP,IPN
       INTEGER IUL,ISTREC,ILA,ILT,ILW,IPNT,IREP,IXLMAX,ITMP1
       DOUBLE PRECISION AD
@@ -339,6 +340,33 @@
 *        position of last part of filename for logfile output
          IPS = MAX (ILD-11,1)
 
+*        get name without extion
+         IP = ILD
+         DO
+            IF (DFIL(IP:IP) == '.') THEN
+               FNAMWEXT = DFIL(1:IP-1)
+               EXIT
+            END IF
+            IP = IP - 1
+            IF (IP == 0) THEN
+               FNAMWEXT = DFIL
+               EXIT
+            END IF
+         END DO
+*        remove path to get only the name of the file in the temporary
+         IDir1 = INDEX(FNAMWEXT,':',BACK=.true.) ! :  search
+         IDir2 = INDEX(FNAMWEXT,'/',BACK=.true.) ! /  search
+         IDir3 = INDEX(FNAMWEXT,'\',BACK=.true.) ! '\ search
+         IDir  = max(IDir1, IDir2, IDir3)
+         if (IDir > 0) then
+            IP = len_trim(FNAMWEXT)
+            if (IP > IDir) then
+               FNAMWEXT = FNAMWEXT(IDir+1:IP)
+            else
+               FNAMWEXT = ' '
+            end if
+         end if
+
 *        file name in list ?
          INLIST = IFINDC (FILLIS,INFDEC,1,INFILS,DFIL)
 
@@ -352,8 +380,9 @@
             PARSE = .TRUE.
 
 *           build tmp filename
-            DATTMP = 'RD$'
-            ITMP1 = 3
+            DATTMP = FNAMWEXT
+            ITMP1  = LEN_TRIM(FNAMWEXT)
+            CALL ADDSTR (DATTMP,ITMP1,'RD$')
             CALL ADDINF (DATTMP,ITMP1,INFILS,'I5.5')
             CALL ADDSTR (DATTMP,ITMP1,'.TMP')
             TMPLIS(INFILS) = DATTMP
@@ -363,7 +392,7 @@
             PARSE = .TRUE.
 
 *           default tmp file name
-            DATTMP = 'RD$00000.TMP'
+            DATTMP = 'RD$'//TRIM(FNAMWEXT)//'00000.TMP'
 
 *           filename not in list, but list is full
             IF (.NOT.GIVEN.AND.ITASK.EQ.3) THEN
@@ -727,7 +756,9 @@ C                      write (*,*) rx(i)
 *                          double precision real or date_time
                            DO 404 I=IEL+1,IEL+IREP
                               DX(I) = RDBUF(IWN)
+C                              write (*,*) DX(i)
 404                        CONTINUE
+C                           read (*,*)
                            FOUND   = ON
                         ELSE IF (VARTYP.EQ.'L') THEN
 *                          logical
@@ -1082,9 +1113,9 @@ C                      write (*,*) rx(i)
             RECORD(ISTREC+1) =
      $       WHAT(1:ILW)//' from file '//DFIL(1:ILD)
             RECORD(ISTREC+2) =
-     $       'into '//ASKED(IVT)(1:ILA)//TARGET(1:ILT)//LXNM31(1:ILX)
-            IF (.NOT.SINGLE) WRITE (RECORD(4),'(A,I5,A)')
-     $       '(with declared length',NDEC,') :'
+     $       'into '//ASKED(IVT)(1:ILA)//TARGET(1:ILT)//trim(LXNM31)
+            IF (.NOT.SINGLE) WRITE (RECORD(4),'(A,I6,A)')
+     $       '(with declared length ',NDEC,') :'
             IF (TOSCR) WRITE (*,'(4(/,1X,A))') RECORD
             IF (LOGF) WRITE (IUL,'(6(/,1X,A))')
      $       'INPUT ERROR','===========',RECORD

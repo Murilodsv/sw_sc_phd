@@ -5,7 +5,7 @@
       CHARACTER*(*) FILE_NAME
 
 **    Local variables
-      CHARACTER*132 FILE_NAME_L
+      CHARACTER*512 FILE_NAME_L
       LOGICAL THERE
       INTEGER IL
       SAVE

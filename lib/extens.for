@@ -1,3 +1,4 @@
+*KR jan 2014: Result no longer in Uppercase
       SUBROUTINE EXTENS (FILEIN,NEWEXT,ICHECK,FILEOU)
       IMPLICIT NONE
 
@@ -7,8 +8,8 @@
 
 **    local variables + function called
       INTEGER I,ILEXT1,ILEXT2,ILFIL,IP,LOUT,IS
-      CHARACTER*1 OLD,NEW,CHR
-      CHARACTER*132 FILBUF
+      CHARACTER*1 OLD,NEW,CHR,NewUC
+      CHARACTER*512 FILBUF
       LOGICAL CHECK, HAAK, FOUND
       SAVE
 
@@ -52,14 +53,14 @@
       GOTO 10
       END IF
 
-*     check and set output name in uppercase
+*     check and set output name
       IF (IP.GT.132) THEN
          CALL MESSWRT ('Input file name',FILEIN)
          CALL FATALERR ('EXTENS','input filename too long')
       END IF
       FILBUF = ' '
       IF (IP.GE.2) FILBUF = FILEIN(1:IP-1)
-      CALL UPPERC (FILBUF)
+*KR   CALL UPPERC (FILBUF)
 *     set point
       IF (ILEXT2.GT.0) FILBUF(IP:IP) = '.'
 
@@ -74,14 +75,15 @@
 
 *        get character new extension and put into output
          NEW = NEWEXT(I-IP+IS-1:I-IP+IS-1)
-         CALL UPPERC (NEW)
+         NewUC = NEW
+         CALL UPPERC (NewUC)
          FILBUF(I:I) = NEW
 
          IF (CHECK) THEN
 *           get character old extension for comparison
             OLD = FILEIN(I:I)
             CALL UPPERC (OLD)
-            IF (OLD.NE.NEW) CHECK=.FALSE.
+            IF (OLD.NE.NewUC) CHECK=.FALSE.
          END IF
 20    CONTINUE
 
