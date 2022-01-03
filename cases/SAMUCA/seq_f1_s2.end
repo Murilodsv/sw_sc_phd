@@ -1,0 +1,155 @@
+* Project:       SEQ_F1_S2
+* File content:  final state variables
+* File name:     SEQ_F1_S2.end
+* Model version: Swap 4.0.1
+* Generated at:  2022-01-03 17:15:43
+
+*  Snow layer (Ssnow in cm)
+ Ssnow =  0.00000E+00
+
+*  Liquid water in snow layer (cm)
+ Slw =  0.00000E+00
+
+*  Ponding layer (Pond in cm)
+ Pond =  0.00000E+00
+
+*  Soil water pressure heads  (z in cm, h in cm)
+       z_h,h
+      -0.5,-8.35604E+04
+      -1.4,-3.77742E+04
+      -2.2,-2.30379E+04
+      -3.1,-1.61215E+04
+      -4.0,-1.23405E+04
+      -5.0,-1.00305E+04
+      -5.9,-8.49040E+03
+      -6.8,-7.39220E+03
+      -7.7,-6.56808E+03
+      -8.6,-5.92512E+03
+     -10.1,-4.75576E+03
+     -12.3,-3.43499E+03
+     -14.5,-2.70896E+03
+     -16.7,-2.25119E+03
+     -18.9,-1.93604E+03
+     -22.0,-1.69633E+03
+     -26.0,-1.50489E+03
+     -30.0,-1.35884E+03
+     -34.0,-1.24385E+03
+     -38.0,-1.15108E+03
+     -44.0,-1.10867E+03
+     -52.0,-1.07649E+03
+     -60.0,-1.04915E+03
+     -68.0,-1.02609E+03
+     -76.0,-1.00685E+03
+     -84.0,-9.93983E+02
+     -92.0,-9.84844E+02
+    -100.0,-9.78044E+02
+    -108.0,-9.73524E+02
+    -116.0,-9.71259E+02
+
+*  Soil temperatures  (z in cm, Tsoil in C)
+   z_Tsoil,Tsoil
+      -0.5, 1.75491E+01
+      -1.4, 1.75473E+01
+      -2.2, 1.75455E+01
+      -3.1, 1.75438E+01
+      -4.0, 1.75421E+01
+      -5.0, 1.75406E+01
+      -5.9, 1.75390E+01
+      -6.8, 1.75376E+01
+      -7.7, 1.75363E+01
+      -8.6, 1.75351E+01
+     -10.1, 1.75333E+01
+     -12.3, 1.75315E+01
+     -14.5, 1.75308E+01
+     -16.7, 1.75312E+01
+     -18.9, 1.75329E+01
+     -22.0, 1.75373E+01
+     -26.0, 1.75488E+01
+     -30.0, 1.75667E+01
+     -34.0, 1.75917E+01
+     -38.0, 1.76243E+01
+     -44.0, 1.76872E+01
+     -52.0, 1.78116E+01
+     -60.0, 1.79757E+01
+     -68.0, 1.81794E+01
+     -76.0, 1.84209E+01
+     -84.0, 1.87108E+01
+     -92.0, 1.90473E+01
+    -100.0, 1.94095E+01
+    -108.0, 1.97904E+01
+    -116.0, 2.01831E+01
+
+*  Soil evaporation reservoir (Black)
+*  Time after significant rainfall (d)
+ ldwet =  0.12000E+02
+
+*  Timing parameters
+*  Length of final time step (d)
+ dt =  0.20000E+00
+
+*  Weather data
+*  Minimum temperatures of last week
+ atmin7 = 
+   0.10500E+02   0.10300E+02   0.13100E+02   0.78000E+01   0.54000E+01   0.40000E+01   0.51000E+01
+
+*  Crop growth data of last crop: Sugarcane_R
+ rd =  0.12000000E+03
+ rdpot =  0.00000000E+00
+ dvs =  0.00000000E+00
+ daycrop =  376
+ swanthesis =    0
+ tsum =  0.00000000E+00
+ ilvold =    0
+ ilvoldpot =    0
+ wrt =  0.00000000E+00
+ wrtpot =  0.00000000E+00
+ tadw =  0.00000000E+00
+ tadwpot =  0.00000000E+00
+ wst =  0.00000000E+00
+ wstpot =  0.00000000E+00
+ wso =  0.00000000E+00
+ wsopot =  0.00000000E+00
+ wlv =  0.00000000E+00
+ wlvpot =  0.00000000E+00
+ laiexp =  0.00000000E+00
+ lai =             NaN
+ laipot =  0.00000000E+00
+ dwrt =  0.00000000E+00
+ dwrtpot =  0.00000000E+00
+ dwlv =  0.00000000E+00
+ dwlvpot =  0.00000000E+00
+ dwst =  0.00000000E+00
+ dwstpot =  0.00000000E+00
+ gasst =  0.00000000E+00
+ gasstpot =  0.00000000E+00
+ mrest =  0.00000000E+00
+ mrestpot =  0.00000000E+00
+ cwdm =  0.00000000E+00
+ cwdmpot =  0.00000000E+00
+ tsumgerm =  0.00000000E+00
+ nofd =    7
+ iharvest =    1
+ rid =  0.00000000E+00
+ idregr =    0
+ idregrpot =    0
+ laiexppot =  0.00000000E+00
+ laimax =  0.00000000E+00
+ tagp =  0.00000000E+00
+ tagppot =  0.00000000E+00
+ tagpt =  0.00000000E+00
+ tagptpot =  0.00000000E+00
+ cuptgraz =  0.00000000E+00
+ cuptgrazpot =  0.00000000E+00
+ tsum200 =  0.00000000E+00
+ daymow =    0
+ daymowpot =    0
+ swcropharvest =    0
+ iseqgm =    0
+ iseqgmpot =    0
+ swgrazing =    0
+ swgrazingpot =    0
+ swCropEmergence =    0
+ idaysgraz =    0
+ idaysgrazpot =    0
+
+ day            sla         slapot          lvage       lvagepot             lv          lvpot

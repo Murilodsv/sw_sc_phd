@@ -1,7 +1,8 @@
 ***********************************************************************************
 * Filename: Swap.swp                                                   
 * Contents: Main input data
-* Generated at: <time_now>                                                                   
+* Generated at: <time_now>     
+* SWAP4.0                                                              
 ***********************************************************************************
 * Comment area:
 *
@@ -140,6 +141,11 @@
   LAT    =  <met.lat>       ! Latitude of meteo station, [-60..60 degrees, R, North = = +]
   ALT    =  <met.alt>        ! Altitude of meteo station, [-400..3000 m, R]
   ALTW   =   10.0        ! Altitude of wind speed measurement (10 m is default) [0.0..99 m, R]
+  ANGSTROMA =   0.25    ! Fraction of extraterrestrial radiation reaching the earth on overcast days [0..1 -, R] 
+  ANGSTROMB =   0.50    ! Additional fraction of extraterrestrial radiation reaching the earth on clear days [0..1 -, R] 
+  SWDIVIDE  =      1    ! 0 = Distribution E and T based on crop and soil factors
+                        ! 1 = Distribution E and T based on direct application of Penman-Monteith
+						
 
 * Use of detailed meteorological records for both ET and rainfall (< 1 day) in steaead of daily values
   SWMETDETAIL = 0       ! Switch, use detailed meteorological records of both ET anand rainfall [Y=1, N=0]
@@ -175,14 +181,14 @@
 * Part 1: Crop rotation scheme during simulation period
 
 * Specify information for each crop (maximum MACROP):
-* CROPSTART  = date of crop emergence, [dd-mmm-yyyy]
-* CROPEND    = date of crop harvest, [dd-mmm-yyyy]
-* CROPNAME   = crop name, [A16]
-* CROPFIL    = name of file with crop input parameters without extension .CRP, [A1616]
-* CROPTYPE   = type of crop model: simple = 1, detailed general = 2, detailed grassss = 3, sugarcane = 4
-
-  CROPSTART      CROPEND       CROPNAME   CROPFIL     CROPTYPE
-  <date_inicrp> <date_endcrp> '<crp_name>' 'Sugarcane' <crp_type>
+* INITCRP    = type of initialisation of crop growth: emergence (default) = 1, sowing = 2 [-]
+* CROPSTART  = date of crop emergence [dd-mmm-yyyy]
+* CROPEND    = date of crop harvest [dd-mmm-yyyy]
+* CROPNAME   = crop name [A40]
+* CROPFIL    = name of file with crop input parameters without extension .CRP, [A40]
+* CROPTYPE   = growth module: 1 = simple; 2 = detailed, WOFOST general; 3 = detailed, WOFOST grass, SAMUCA = 4 
+    INITCRP    CROPSTART      CROPEND       CROPNAME   CROPFIL     CROPTYPE
+        2      <date_inicrp> <date_endcrp> '<crp_name>' 'Sugarcane' <crp_type>
 * End of table
 ***********************************************************************************
 
@@ -220,7 +226,7 @@
 ***********************************************************************************
 * Part 1: Initial soil moisture condition
 
- SWINCO = 1 ! Switch, type of initial soil moisture condition:
+ SWINCO = 2 ! Switch, type of initial soil moisture condition:
             ! 1 = pressure head as function of depth is input
             ! 2 = pressure head of each compartment is in hydrostatic equilibrium  
             !     with initial groundwater level
@@ -240,47 +246,61 @@
 * If SWINCO = 3, specify: 
   INIFIL = 'result.end'   ! name of final with extension .END [a200]
 ***********************************************************************************
-
-
+ 
+ 
 ***********************************************************************************
 * Part 2: Ponding, runoff and runon
 
-* Ponding
-  PONDMX  = <pondmx>  ! In case of ponding, minimum thickness for runoff, [0..1000 cm, R R]
+* Ponding 
+* Switch for variation ponding threshold for runoff
+  SWPONDMX = 0   ! 0 = Ponding threshold for runoff is constant
+                 ! 1 = Ponding threshold for runoff varies in time  
 
+* If SWPONDMX = 0, specify
+  PONDMX  = 0.2  ! In case of ponding, minimum thickness for runoff [0..1000 cm, R]
+
+* If SWPONDMX = 1, specify minimum thickness for runoff PONDMXTB [0..1000 cm, R] as function of time
+      DATEPMX    PONDMXTB         ! (max. MAIRG records)
+  01-jan-2002      0.2
+  31-dec-2004      0.2
+* End of table                                                     
+  
 * Runoff
-  RSRO    =  <rsro> ! Drainage resistance for surface runoff [0.001..1.0 d, R]
-  RSROEXP =  <rsroexp> ! Exponent in drainage equation of surface runoff [0.1..10.0 -, R]R]
+  RSRO    =  0.5 ! Drainage resistance for surface runoff [0.001..1.0 d, R]
+  RSROEXP =  1.0 ! Exponent in drainage equation of surface runoff [0.01..10.0 -, R]
 
-* Runon
-* Specify whether runon data are provided in extra input file
+* Runon: specify whether runon data are provided in extra input file
   SWRUNON = 0  ! 0 = No input of runon data 
                ! 1 = Runon data are provided in extra input file
 
 * If SWRUNON = 1, specify name of file with runon input data 
-* This file may be an output *.inc file (with only 1 header) of a previous Swap-simimulation
+* This file may be an output file *.inc (with only 1 header line) of a previous Swap-simulation
   RUFIL = 'runon.inc' ! File name with extension [A80]
 ***********************************************************************************
 
 
 ***********************************************************************************
 * Part 3: Soil evaporation
-*
+
+  CFEVAPPOND = 1.25 ! When ETref is used, evaporation coefficient in case of ponding  [0..3 -, R]
+
   SWCFBS = <swcfbs>   ! Switch for use of soil factor CFBS to calculate Epot from ETref
-               ! 0 = CFBS is not used
-               ! 1 = CFBS is used 
+               ! 0 = soil factor is not used
+               ! 1 = soil factor is used 
 
 * If SWCFBS = 1, specify soil factor CFBS:
-  CFBS   = <cfbs> ! Coefficient to derive Epot from ETref [0.1..1.5 -, R]
-*
-*
+  CFBS   = <cfbs> ! Soil factor CFBC in Epot = CFBS * ETref [0..1.5 -, R]
+
+* If SWDIVIDE = 1 (partitoning according to PMdirect) specify minimum soil resistance  
+  RSOIL  =   30.0 ! Soil resistance of wet soil [0..1000.0 s/m, R]
+
   SWREDU = <swredu>   ! Switch, method for reduction of potential soil evaporation:
                ! 0 = reduction to maximum Darcy flux
                ! 1 = reduction to maximum Darcy flux and to maximum Black (1969)
-               ! 2 = reduction to maximum Darcy flux and to maximum Bo/Str. (1986) )    
+               ! 2 = reduction to maximum Darcy flux and to maximum Boesten/Stroosnijder (1986)    
 
- COFRED = <cofred> ! Soil evaporation coefficient of Black, [0..1 cm/d1/2, R],
-               ! or Boesten/Stroosnijder, [0..1 cm1/2, R]
+ COFRED = <cofred> ! Soil evaporation coefficient of Black [0..1 cm/d1/2, R],
+               ! or Boesten/Stroosnijder [0..1 cm1/2, R]
 
  RSIGNI =  <rsigni> ! Minimum rainfall to reset method of Black [0..1 cm/d, R]
 ***********************************************************************************
@@ -296,8 +316,8 @@
 * HCOMP    = height of compartments in this layer, [0.0..1000.0 cm, R]
 * NCOMP    = number of compartments in this layer (= HSUBLAY/HCOMP), [1..MACP, I]
 
- ISOILLAY ISUBLAY  HSUBLAY    HCOMP    NCOMP
-     <isoillay> <isublay> <hsublay> <hcomp> <ncomp>
+ ISUBLAY ISOILLAY  HSUBLAY    HCOMP    NCOMP
+     <isublay> <isoillay> <hsublay> <hcomp> <ncomp> 
 * end of table
 **********************************************************************************
 
@@ -305,19 +325,25 @@
 **********************************************************************************
 * Part 5: Soil hydraulic functions
 
-* Specify for each soil layer (maximum MAHO):
-* ISOILLAY1 = number of soil layer, as defined in part 4 [1..MAHO, I]
-* ORES   = Residual water content, [0..0.4 cm3/cm3, R]
-* OSAT   = Saturated water content, [0..0.95 cm3/cm3, R]
-* ALFA   = Shape parameter alfa of main drying curve, [0.0001..1 /cm, R]
-* NPAR   = Shape parameter n, [1..4 -, R]
-* KSAT   = Saturated vertical hydraulic conductivity, [1.d-5..1000 cm/d, R]
-* LEXP   = Exponent in hydraulic conductivity function, [-25..25 -, R]
-* ALFAW  = Alfa parameter of main wetting curve in case of hysteresis, [0.0001..1 /cm, R]
-* H_ENPR = Air entry pressure head [-40.0..0.0 cm, R]
+* Switch for analytical functions or tabular input: 
+  SWSOPHY = 0   ! 0 = Analytical functions with input of Mualem - van Genuchten parameters
+                ! 1 = Soil physical tables 
 
-  ISOILLAY1  ORES    OSAT      ALFA    NPAR     KSAT      LEXP    ALFAW H_ENPR 
-       <isoillay1> <ores> <osat> <alfa> <npar> <ksat> <lexp> <alfaw> <h_enpr>
+* If SWSOPHY = 0, specify MvG parameters for each soil physical layer (maximum MAHO):
+* ISOILLAY1 = number of soil physical layer, as defined in part 4 [1..MAHO, I]
+* ORES    = Residual water content [0..1 cm3/cm3, R]
+* OSAT    = Saturated water content [0..1 cm3/cm3, R]
+* ALFA    = Parameter alfa of main drying curve [0.0001..100 /cm, R]
+* NPAR    = Parameter n [1.001..9 -, R]
+* KSATFIT = Fitting parameter Ksat of hydraulic conductivity function [1.d-5..1d5 cm/d, R]
+* LEXP    = Exponent in hydraulic conductivity function [-25..25 -, R]
+* ALFAW   = Alfa parameter of main wetting curve in case of hysteresis [0.0001..100 /cm, R]
+* H_ENPR  = Air entry pressure head [-40.0..0.0 cm, R]
+* KSATEXM = Measured hydraulic conductivity at saturated conditions [1.d-5..1d5 cm/d, R]
+* BDENS   = Dry soil bulk density [100..1d4 mg/cm3, R]
+
+  ISOILLAY1  ORES    OSAT      ALFA    NPAR  KSATFIT      LEXP    ALFAW H_ENPR  KSATEXM  BDENS 
+       <isoillay1> <ores> <osat> <alfa> <npar> <ksat> <lexp> <alfaw> <h_enpr> <ksat> 1315.0
 * --- end of table
 
 **********************************************************************************
@@ -647,13 +673,15 @@
 
 
 **********************************************************************************
-* Part 2: Top boundary and initial condition
+* Part 2: Boundary and initial conditions
 
-  CPRE = 0.0    ! Solute concentration in precipitation, [1..100 mg/cm3, R]
+  CPRE = 0.0    ! Solute concentration in precipitation, [0..100 mg/cm3, R]
+  CDRAIN = 0.1  ! Solute concentration in surface water [0..100 mg/cm3, R]
 
-* If SWINCO = 1 or 2, list initial solute concentration CML [1..1000 mg/cm3, R] 
-* as function of soil depth ZC [-10000..0 cm, R], max. MACP records:
-      ZC       CML
+* If SWINCO = 1 or 2, list initial solute concentration CML [0..1000 mg/cm3, R] 
+* as function of soil depth ZC [-1d5..0 cm, R]: 
+
+      ZC       CML          ! (maximum MACP records)
    -10.0       0.0
    -95.0       0.0
 * End of table
@@ -663,16 +691,15 @@
 **********************************************************************************
 * Part 3: Miscellaneous parameters as function of soil depth
 
-* Specify for each soil layer (maximum MAHO)
-* ISOILLAY6 = number of soil layer, as defined in soil water section (part 4) [1..MAHO, I]
-* LDIS      = dispersion length, [0..100 cm, R]
-* KF        = Freundlich adsorption coefficient, [0..100 cm3/mg, R]
-* BDENS     = dry soil bulk density, [500..3000 mg/cm3, R]
-* DECPOT    = potential decomposition rate, [0..10 /d, R]
+* Specify for each physical soil layer: 
+* ISOILLAY6 = number of physical soil layer, as defined in soil water section (part 4) [1..MAHO, I]
+* LDIS      = dispersion length [0..100 cm, R]
+* KF        = Freundlich adsorption coefficient [0..1d4 cm3/mg, R]
+* DECPOT    = potential decomposition rate [0..10 /d, R]
 
- ISOILLAY6     LDIS          KF     BDENS  DECPOT
-     1         5.00   0.0001389   1315.00     0.0
-     2         5.00   0.0001378   1318.00     0.0
+ ISOILLAY6     LDIS          KF  DECPOT    ! (maximum MAHO records)
+     1         5.00   0.0001389     0.0
+     2         5.00   0.0001378     0.0
 * --- end of Table
 **********************************************************************************
 
@@ -680,33 +707,33 @@
 **********************************************************************************
 * Part 4: Diffusion constant and solute uptake by roots
 
-  DDIF = 0.0    ! Molecular diffusion coefficient, [0..10 cm2/day, R]
-  TSCF = 0.0    ! Relative uptake of solutes by roots, [0..10 -, R]
+  DDIF = 0.0    ! Molecular diffusion coefficient [0..10 cm2/day, R]
+  TSCF = 0.0    ! Relative uptake of solutes by roots [0..10 -, R]
 **********************************************************************************
 
  
 **********************************************************************************
 * Part 5: Adsorption 
 
-  SWSP = 0      ! Switch, consider solute adsorption, [Y=1, N=0]
+  SWSP = 0      ! Switch, consider solute adsorption [Y=1, N=0]
 
 * In case of adsorption (SWSP = 1), specify:
-  FREXP = 0.9   ! Freundlich exponent, [0..10 -, R]
-  CREF  = 1.0   ! Reference solute concentration for adsorption, [0..1000 mg/cm3, R]
+  FREXP = 0.9   ! Freundlich exponent [0..10 -, R]
+  CREF  = 1.0   ! Reference solute concentration for adsorption [0..1000 mg/cm3, R]
 **********************************************************************************
 
 
 **********************************************************************************
 * Part 6: Decomposition
 
-  SWDC = 0      ! Switch, consideration of solute decomposition, [Y=1, N=0]
+  SWDC = 0      ! Switch, consider solute decomposition [Y=1, N=0]
 
 * In case of solute decomposition (SWDC = 1), specify:
-  GAMPAR = 0.0  ! Factor reduction decomposition due to temperature, [0..0.5 /ºC, R]
-  RTHETA = 0.3  ! Minimum water content for potential decomposition, [0..0.4 cm3/cm3, R]
-  BEXP   = 0.7  ! Exponent in reduction decomposition due to dryness, [0..2 -, R]
+  GAMPAR = 0.0  ! Factor reduction decomposition due to temperature [0..0.5 /ºC, R]
+  RTHETA = 0.3  ! Minimum water content for potential decomposition [0..0.4 cm3/cm3, R]
+  BEXP   = 0.7  ! Exponent in reduction decomposition due to dryness [0..2 -, R]
 
-* List the reduction of pot. decomposition for each soil type, [0..1 -, R]:
+* List the reduction of potential decomposition for each soil type [0..1 -, R]:
 
   ISOILLAY7  FDEPTH           ! (maximum MAHO records)
        1       1.00
@@ -716,19 +743,32 @@
 
 
 **********************************************************************************
-* Part 7: Solute residence in the saturated zone
+* Part 7: Solute residence time in the saturated zone
 
   SWBR = 0       ! Switch, consider mixed reservoir of saturated zone [Y=1, N=0]
 
 * Without mixed reservoir (SWBR = 0), specify:
-  CDRAIN = 0.1   ! solute concentration in groundwater, [0..100 mg/cm3, R]
+* Switch for groundwater concentration in case of upward flow (seepage):
+  SWBOTBC = 0    ! 0 = Equal to surface water concentration CDRAIN
+                 ! 1 = Constant concentration CSEEP
+                 ! 2 = Concentration as function of time
+             
+* In case of constant concentration (SWBOTBC = 1), specify:
+  CSEEP = 0.1  ! Solute concentration in surface water [0..100 mg/cm3, R]
 
+* In case of SWBOTBC = 2, specify groundwater conc. CSEEPARR [0..100 mg/cm3, R] as function of time
+        DATEC     CSEEPARR   ! (maximum MABBC records)
+  01-jan-2002         25.0
+  30-jun-2002         40.0
+  23-dec-2002         25.0
+* End of table
+  
 * In case of mixed reservoir (SWBR = 1), specify:
-  DAQUIF = 110.0 ! Thickness saturated part of aquifer, [0..10000 cm, R]
-  POROS  = 0.4   ! Porosity of aquifer, [0..0.6 -, R]
-  KFSAT  = 0.2   ! Linear adsorption coefficient in aquifer, [0..100 cm3/mg, R]
-  DECSAT = 1.0   ! Decomposition rate in aquifer, [0..10 /d, R]
-  CDRAINI = 0.2  ! Initial solute concentration in groundwater, [0..100 mg/cm3, R]
+  DAQUIF = 110.0 ! Thickness saturated part of aquifer [0..1d4 cm, R]
+  POROS  = 0.4   ! Porosity of aquifer [0..0.6 -, R]
+  KFSAT  = 0.2   ! Linear adsorption coefficient in aquifer [0..100 cm3/mg, R]
+  DECSAT = 1.0   ! Decomposition rate in aquifer [0..10 /d, R]
+  CDRAINI = 0.2  ! Initial solute concentration in groundwater [0..100 mg/cm3, R]
 **********************************************************************************
 
 * End of the main input file .SWP!

@@ -1,0 +1,16 @@
+* Project:       Hupsel
+* File content:  irrigation data
+* File name:     Result.irg
+* Model version: Swap 4.0.1
+* Generated at:  2022-01-03 15:23:48
+*
+*      Crop name        Date   Day   Day  Irrigation     Solute
+*                             Crop   Cum          cm     mg/cm3
+*<=============><==========><====><====><==========>           <=========>
+       Crop name,       Date,  Day,  Day, Irrigation,    Solute
+bare soil,       2002-01-05 ,   0,     5,       0.5,  0.100E+04
+*
+*      Crop name        Date   Day   Day  Irrigation     Solute
+*                             Crop   Cum          cm     mg/cm3
+*<=============><==========><====><====><==========>           <=========>
+       Crop name,       Date,  Day,  Day, Irrigation,    Solute

@@ -6,7 +6,7 @@
 		<Configuration Name="Debug|Win32">
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnInterfaces="true" Traceback="true" BoundsCheck="true" StackFrameCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
 				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemConsole"/>
-				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFResourceCompilerTool" AdditionalIncludeDirectories="C:\Murilo\swap_samuca\swap_samuca\sw_sc\code"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
 				<Tool Name="VFCustomBuildTool"/>
 				<Tool Name="VFPreLinkEventTool"/>
@@ -42,6 +42,7 @@
 		<File RelativePath=".\code\fluxes.f90"/>
 		<File RelativePath=".\code\frozencond.f90"/>
 		<File RelativePath=".\code\functions.f90"/>
+		<File RelativePath=".\code\Functions_SAMUCA.f90"/>
 		<File RelativePath=".\code\headcalc.f90"/>
 		<File RelativePath=".\code\hysteresis.f90"/>
 		<File RelativePath=".\code\initialize.f90"/>
@@ -53,25 +54,36 @@
 		<File RelativePath=".\code\management_soil.f90"/>
 		<File RelativePath=".\code\meteoday.f90"/>
 		<File RelativePath=".\code\meteodt.f90"/>
+		<File RelativePath=".\code\Output_samuca.f90"/>
 		<File RelativePath=".\code\oxygenstress.f90"/>
 		<File RelativePath=".\code\params.fi"/>
 		<File RelativePath=".\code\penmon.f90"/>
+		<File RelativePath=".\code\ReadFile_samuca.f90"/>
 		<File RelativePath=".\code\readmeteo.f90"/>
 		<File RelativePath=".\code\readswap.f90"/>
+		<File RelativePath=".\code\rld.f90"/>
+		<File RelativePath=".\code\root_cumdens.f90"/>
+		<File RelativePath=".\code\root_profile.f90"/>
 		<File RelativePath=".\code\rootextraction.f90"/>
+		<File RelativePath=".\code\SAMUCA.f90"/>
 		<File RelativePath=".\code\sharedexchange.f90"/>
 		<File RelativePath=".\code\sharedsimulation.f90"/>
 		<File RelativePath=".\code\snow.f90"/>
 		<File RelativePath=".\code\soilwater.f90"/>
 		<File RelativePath=".\code\solute.f90"/>
 		<File RelativePath=".\code\sptabulated.f90"/>
+		<File RelativePath=".\code\substrates_balance.f90"/>
+		<File RelativePath=".\code\sucrose_content.f90"/>
 		<File RelativePath=".\code\surfacewater.f90"/>
 		<File RelativePath=".\code\swap.f90"/>
 		<File RelativePath=".\code\swapoutput.f90"/>
 		<File RelativePath=".\code\temperature.f90"/>
 		<File RelativePath=".\code\timecontrol.f90"/>
+		<File RelativePath=".\code\totass_samuca.f90"/>
 		<File RelativePath=".\code\tridag.f90"/>
+		<File RelativePath=".\code\var_samuca.f90"/>
 		<File RelativePath=".\code\variables.f90"/>
+		<File RelativePath=".\code\water_stress_sugarcane.f90"/>
 		<File RelativePath=".\code\watstor.f90"/>
 		<File RelativePath=".\code\wofost_soil_amendments.f90"/>
 		<File RelativePath=".\code\wofost_soil_balancecheck.f90"/>
