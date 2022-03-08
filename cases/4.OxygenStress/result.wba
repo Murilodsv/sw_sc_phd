@@ -1,0 +1,7 @@
+* Project:       Zegveld
+* File content:  cumulative water balance components (cm)
+* File name:     Result.wba
+* Model version: Swap 4.0.1
+* Generated at:  2022-03-08 14:04:18
+*
+       Date,Day,  Dcum,Rain_g,Rain_n,Irr_g,Irr_n,  RunOn, RunOff,  Tpot,  Tact,  Epot,  Eact,   Drain,     Bot,   DStor,       Gwl,  Pond, Wbal,      Date2

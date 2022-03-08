@@ -1,0 +1,7 @@
+* Project:       Zegveld
+* File content:  ES0, ET0, EW0, Epot, Tpot, Tact and 4 Tact-stress values for wetness, drought, salinity and frost (cm/period)
+* File name:     Result.str
+* Model version: Swap 4.0.1
+* Generated at:  2022-03-08 14:04:18
+*
+       Date,Day,  Dcum,ESoilWet,Tcropdry,Tcropwet,    Epot,    Tpot,    Tact, Tredwet, Treddry, Tredsol, Tredfrs

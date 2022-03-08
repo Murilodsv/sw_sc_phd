@@ -144,8 +144,7 @@
   ANGSTROMA =   0.25    ! Fraction of extraterrestrial radiation reaching the earth on overcast days [0..1 -, R] 
   ANGSTROMB =   0.50    ! Additional fraction of extraterrestrial radiation reaching the earth on clear days [0..1 -, R] 
   SWDIVIDE  =      1    ! 0 = Distribution E and T based on crop and soil factors
-                        ! 1 = Distribution E and T based on direct application of Penman-Monteith
-						
+                        ! 1 = Distribution E and T based on direct application of Penman-Monteith						
 
 * Use of detailed meteorological records for both ET and rainfall (< 1 day) in steaead of daily values
   SWMETDETAIL = 0       ! Switch, use detailed meteorological records of both ET anand rainfall [Y=1, N=0]
@@ -246,12 +245,12 @@
 * If SWINCO = 3, specify: 
   INIFIL = 'result.end'   ! name of final with extension .END [a200]
 ***********************************************************************************
- 
- 
+
+
 ***********************************************************************************
 * Part 2: Ponding, runoff and runon
 
-* Ponding 
+* Ponding
 * Switch for variation ponding threshold for runoff
   SWPONDMX = 0   ! 0 = Ponding threshold for runoff is constant
                  ! 1 = Ponding threshold for runoff varies in time  
@@ -264,7 +263,7 @@
   01-jan-2002      0.2
   31-dec-2004      0.2
 * End of table                                                     
-  
+
 * Runoff
   RSRO    =  0.5 ! Drainage resistance for surface runoff [0.001..1.0 d, R]
   RSROEXP =  1.0 ! Exponent in drainage equation of surface runoff [0.01..10.0 -, R]
@@ -302,7 +301,7 @@
  COFRED = <cofred> ! Soil evaporation coefficient of Black [0..1 cm/d1/2, R],
                ! or Boesten/Stroosnijder [0..1 cm1/2, R]
 
- RSIGNI =  <rsigni> ! Minimum rainfall to reset method of Black [0..1 cm/d, R]
+ RSIGNI = <rsigni> ! Minimum rainfall to reset method of Black [0..1 cm/d, R]
 ***********************************************************************************
  
 
@@ -343,7 +342,7 @@
 * BDENS   = Dry soil bulk density [100..1d4 mg/cm3, R]
 
   ISOILLAY1  ORES    OSAT      ALFA    NPAR  KSATFIT      LEXP    ALFAW H_ENPR  KSATEXM  BDENS 
-       <isoillay1> <ores> <osat> <alfa> <npar> <ksat> <lexp> <alfaw> <h_enpr> <ksat> 1315.0
+       <isoillay1> <ores> <osat> <alfa> <npar> <ksat> <lexp> <alfaw> <h_enpr> <ksat>   1315.0
 * --- end of table
 
 **********************************************************************************

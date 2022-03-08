@@ -22,8 +22,8 @@
                       1.09 ! ccmax                        !  (R)  !
                      0.007 ! cceff                        !  (R)  !
                        2.6 ! rue                          !  (R)  !
-                      12.0 ! tb                           !  (R)  !
-                      12.0 ! tb0pho                       !  (R)  !
+                      10.0 ! tb                           !  (R)  !
+                      10.0 ! tb0pho                       !  (R)  !
                       16.0 ! tb1pho                       !  (R)  !
                       32.0 ! tb2pho                       !  (R)  !
                       40.0 ! tbfpho                       !  (R)  !

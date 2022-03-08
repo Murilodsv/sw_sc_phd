@@ -77,6 +77,9 @@
         cumdens(i) = cumdens(i) / soma
     enddo
     
+    cumdens = cumdens
+    
+    
     return
 
     end

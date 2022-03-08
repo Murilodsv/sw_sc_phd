@@ -652,6 +652,54 @@
     ! potential_growth
     ! tillermet
     ! usetsoil
+    
+!   !Soil Surface Residue
+ !   call readint('Soil Surface Residue',1,ir_id,size(ir_id),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readint('Soil Surface Residue',2,yearmulch,size(yearmulch),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readint('Soil Surface Residue',3,doymulch,size(doymulch),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readint('Soil Surface Residue',4,restype,size(restype),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Soil Surface Residue',5,mumass,size(mumass),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Soil Surface Residue',6,muwatfac,size(muwatfac),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Soil Surface Residue',7,muam,size(muam),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Soil Surface Residue',8,muext,size(muext),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Soil Surface Residue',9,mualb,size(mualb),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Soil Surface Residue',10,lam_mu_dry,size(lam_mu_dry),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Soil Surface Residue',11,lam_dmu_wet,size(lam_dmu_wet),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Soil Surface Residue',12,max_mulch_evap,size(max_mulch_evap),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   
+ !   !Simulation Options
+ !   call readint('Simulation Options',1,ir_id,size(ir_id),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readint('Simulation Options',2,mesev,size(mesev),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readint('Simulation Options',3,petmethod,size(petmethod),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readint('Simulation Options',4,stempm,size(stempm),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readint('Simulation Options',5,SwBotbHea,size(SwBotbHea),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readint('Simulation Options',6,P_type,size(P_type),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readint('Simulation Options',7,metpg,size(metpg),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readint('Simulation Options',8,metpart,size(metpart),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readint('Simulation Options',9,tillermet,size(tillermet),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readlog('Simulation Options',10,usetsoil,size(usetsoil),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readlog('Simulation Options',11,sw_mulcheffect,size(sw_mulcheffect),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readlog('Simulation Options',12,potential_growth,size(potential_growth),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readlog('Simulation Options',13,flstandalone,size(flstandalone),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   
+ !   !Methods Parameters
+ !   call readint('Methods Parameters',1,ir_id,size(ir_id),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',2,slu1_rd,size(slu1_rd),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',3,hrnc_rd,size(hrnc_rd),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',4,dhrl_rd,size(dhrl_rd),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',5,drya1_rd,size(drya1_rd),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',6,drya2_rd,size(drya2_rd),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',7,dryb1_rd,size(dryb1_rd),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',8,dryb2_rd,size(dryb2_rd),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',9,sweta_rd,size(sweta_rd),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',10,swetb_rd,size(swetb_rd),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',11,swequa_rd,size(swequa_rd),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',12,swequb_rd,size(swequb_rd),.false.,.false.,ctrl,ctrlfile(sn),msg)    
+ !   call readrea('Methods Parameters',13,tbot_mean,size(tbot_mean),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',14,tbot_ampli,size(tbot_ampli),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',15,tbot_imref,size(tbot_imref),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   call readrea('Methods Parameters',16,tbot_ddamp,size(tbot_ddamp),.false.,.false.,ctrl,ctrlfile(sn),msg)
+ !   
 
 1000 continue
 
@@ -667,7 +715,33 @@
     writecumdens        = .true.
     detailedsoil        = .true.
     flprompt_msg        = .false.
-
+    
+    !-----------------!    
+    !--- HARDWIRED ---!
+    !-----------------!    
+    !--- Hardwired to provide parameters that are still not readable from SWAP-control files:
+    co2             =   400.        ! HARDWIRED FOR SWAP
+    rowsp           =   140.        ! HARDWIRED FOR SWAP
+    plantdepth      =    20.        ! HARDWIRED FOR SWAP
+    potential_growth= .false.       ! HARDWIRED FOR SWAP
+    swdrought       = 1             ! HARDWIRED FOR SWAP [feddes]
+    swoxygen        = 1
+    tillermet       = 2
+    metpg           = 2
+    
+    HLIM1  =      0.0
+    HLIM2U =      1.0
+    HLIM2L =     -1.0
+    
+    HLIM3H =    -200.0
+    HLIM3L =    -800.0
+    HLIM4  =   -8000.0
+    ADCRH  =       0.5
+    ADCRL  =       0.1
+    ALPHACRIT =    0.7
+    
+    
+    
     !-------------------------------!
     !--- Reading crop parameters ---!
     !-------------------------------!
@@ -1022,7 +1096,7 @@
 
         !--- Initial Crop depth as same as the planting depth [cm]
         initcropdepth = plantdepth
-
+        
         !--- Substrates reserve for before emergence is considered as sugars content remaining in the chopped stalks
         dw_it_BG    =   (init_stalkfw / init_stalkht * nstalks_planting) &
         &   / (rowsp/100.) / 1.e3 * 1.e4 ! [ton ha-1]
@@ -3688,7 +3762,7 @@
     & trwup*10.d0, max(trwup/(eop/10.),0.d0), swfacp, &
     & swface, swfacf, swfact, tmed, tempfac_pho, tempfac_per, &
     & co2, pho_fac_co2, diacem, agefactor_amax, &
-    & agefactor_per, sug_it_BG, amaxfbfac, dtg*(1.e6/1.e4), per
+    & agefactor_per, sug_it_BG, amaxfbfac, dtg*(1.e6/1.e4), per, ptra, peva, tra, reva
 
 145 format(1X,I4,3X,i4,3x,200F12.4)
     !--------------------!
